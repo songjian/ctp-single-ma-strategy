@@ -155,6 +155,7 @@
     <ClInclude Include="Bar.h" />
     <ClInclude Include="Indicators.h" />
     <ClInclude Include="KLine.h" />
+    <ClInclude Include="readfile.h" />
     <ClInclude Include="singleMaStrategy.h" />
     <ClInclude Include="strategy.h" />
     <ClInclude Include="ThostFtdcMdApi.h" />
@@ -175,6 +176,7 @@
     <ClCompile Include="Indicators.cpp" />
     <ClCompile Include="KLine.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="readfile.cpp" />
     <ClCompile Include="singleMaStrategy.cpp" />
     <ClCompile Include="Strategy.cpp" />
     <ClCompile Include="traderApi.cpp" />

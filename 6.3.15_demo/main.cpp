@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "main.h"
 
+/*
 int main()
 {
 	logfile = fopen("syslog.txt", "w");
@@ -40,4 +41,11 @@ int main()
 	WaitForSingleObject(xinhao, INFINITE);
 	pUserMdApi->Release();
 	return 0;
+}
+*/
+
+int main()
+{
+	printf("³ÌÐò¿ªÊ¼¡£\n");
+	Bar::getBars(1, 10);
 }

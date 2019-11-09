@@ -17,8 +17,8 @@
 #include "traderSpi.h"
 #include <vector>
 #include <map>
-#include "KLine.h"
 #include "singleMaStrategy.h"
+#include "Bar.h"
 
 using namespace std;
 FILE *logfile;
@@ -197,8 +197,8 @@ public:
 	{
 		fprintf(mdfile, "%s,%s,%s,%d,%s,%s,%.8lf,%.8lf,%.8lf,%.81lf,%.81lf,%d,%.8lf\n", pDepthMarketData->TradingDay, pDepthMarketData->ActionDay, pDepthMarketData->UpdateTime, pDepthMarketData->UpdateMillisec, pDepthMarketData->ExchangeID, pDepthMarketData->InstrumentID, pDepthMarketData->OpenPrice,pDepthMarketData->HighestPrice,pDepthMarketData->LowestPrice,pDepthMarketData->ClosePrice,pDepthMarketData->LastPrice,pDepthMarketData->Volume,pDepthMarketData->Turnover);
 		fflush(mdfile);
-		updateBufferMarketData(pDepthMarketData);
-		checkSignal(pDepthMarketData);
+		//updateBufferMarketData(pDepthMarketData);
+		//checkSignal(pDepthMarketData);
 		LOG("<OnRtnDepthMarketData>\n");
 		if (pDepthMarketData)
 		{
