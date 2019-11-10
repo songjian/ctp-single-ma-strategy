@@ -19,6 +19,5 @@ public:
 	//static int getBars(Bar buffBars[], int period, int timePeriod, int shift);
 	static int getBars(vector<Bar> buffBars, int period, int timePeriod, int shift);
 private:
-	vector<CThostFtdcDepthMarketDataField>* m_pBuffMd;
 	static Bar CsvToBar(string csv);
 };

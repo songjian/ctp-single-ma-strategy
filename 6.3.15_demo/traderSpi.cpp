@@ -9,6 +9,11 @@ void CTraderSpi::RegisterStrategy(Strategy *pStrategy)
 	m_pStrategy = pStrategy;
 }
 
+void CTraderSpi::RegisterMarketData(MarketData* pMarketData)
+{
+	m_pMarketData = pMarketData;
+}
+
 void CTraderSpi::OnFrontConnected()
 {
 	LOG("<OnFrontConnected>\n");

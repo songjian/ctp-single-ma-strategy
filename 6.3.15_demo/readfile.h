@@ -1,6 +1,4 @@
 #pragma once
-#include <vector>
-#include <string>
 #include "ThostFtdcUserApiStruct.h"
 
 using namespace std;

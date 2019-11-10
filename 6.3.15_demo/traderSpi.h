@@ -8,6 +8,7 @@
 #include <map>
 #include <iostream>
 #include "strategy.h"
+#include "MarketData.h"
 
 using namespace std;
 
@@ -16,13 +17,15 @@ class CTraderSpi : public CThostFtdcTraderSpi
 {
 protected:
 	Strategy* m_pStrategy;
+	MarketData* m_pMarketData;
 public:
 	CTraderSpi() {};
 	~CTraderSpi() {};
 
 public:
 	///注册策略
-	virtual void RegisterStrategy(Strategy *pStrategy);
+	virtual void RegisterStrategy(Strategy* pStrategy);
+	virtual void RegisterMarketData(MarketData* pMarketData);
 	///当客户端与交易后台建立起通信连接时（还未登录前），该方法被调用。
 	virtual void OnFrontConnected();
 

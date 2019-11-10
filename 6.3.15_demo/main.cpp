@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "main.h"
 
-/*
 int main()
 {
 	logfile = fopen("syslog.txt", "w");
@@ -12,6 +11,10 @@ int main()
 	CTraderApi* pUserApi = new CTraderApi();
 	pUserApi->CreateFtdcTraderApi(".\\flow\\");
 	CSimpleHandler sh(pUserApi);
+	SingleMaStrategy smaStrategy(g_chInstrumentID);
+	MarketData marketData;
+	sh.RegisterStrategy(&smaStrategy);
+	sh.RegisterMarketData(&marketData);
 	pUserApi->RegisterSpi(&sh);
 	pUserApi->SubscribePublicTopic(THOST_TERT_QUICK);
 	pUserApi->SubscribePrivateTopic(THOST_TERT_QUICK);
@@ -42,10 +45,10 @@ int main()
 	pUserMdApi->Release();
 	return 0;
 }
-*/
 
-int main()
+
+/*int main()
 {
 	SingleMaStrategy smaStrategy(g_chInstrumentID);
 	smaStrategy.OnStart();
-}
+}*/
