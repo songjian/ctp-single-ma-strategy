@@ -153,7 +153,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bar.h" />
+    <ClInclude Include="BarManager.h" />
     <ClInclude Include="Indicators.h" />
+    <ClInclude Include="MarketData.h" />
     <ClInclude Include="readfile.h" />
     <ClInclude Include="singleMaStrategy.h" />
     <ClInclude Include="strategy.h" />
@@ -172,8 +174,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bar.cpp" />
+    <ClCompile Include="BarManager.cpp" />
     <ClCompile Include="Indicators.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MarketData.cpp" />
     <ClCompile Include="readfile.cpp" />
     <ClCompile Include="singleMaStrategy.cpp" />
     <ClCompile Include="Strategy.cpp" />

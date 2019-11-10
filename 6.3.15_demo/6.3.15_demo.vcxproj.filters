@@ -69,6 +69,12 @@
     <ClInclude Include="readfile.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="BarManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MarketData.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -99,6 +105,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="readfile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BarManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MarketData.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
