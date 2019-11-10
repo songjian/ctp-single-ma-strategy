@@ -5,7 +5,7 @@
 
 using namespace std;
 
-int readFileTail(string, int, vector<string>*);
+int readFileTail(vector<string>*, string, int, int);
 
 //string* ReadTail(char, int);
 

@@ -6,17 +6,6 @@
 
 using namespace std;
 
-struct Bar {
-	TThostFtdcDateType	Day;
-	char Hour[3];
-	char Minute[3];
-	double Open;
-	double High;
-	double Low;
-	double Close;
-	int Volume;
-};
-
 extern vector<CThostFtdcDepthMarketDataField> bufferMdVec;
 extern tm lastMdTm;
 extern FILE* klinefile;

@@ -5,28 +5,37 @@ using namespace std;
 
 void Bar::update(CThostFtdcDepthMarketDataField* pMarketData)
 {
-
 }
 
-Bar* Bar::getBars(int timePeriod, int nums)
+int Bar::getBars(vector<Bar> buffBars, int period, int timePeriod, int shift = 0)
 {
 	vector<string> buffLine;
-	string filePath = ".\\klinefile\\" + to_string(timePeriod) + "m.csv";
+	string filePath = ".\\bars\\" + to_string(timePeriod) + ".csv";
+	printf("文件路径%s\n", filePath.c_str());
 	printf("开始读取bar。\n");
-	int ret = readFileTail(filePath, nums, &buffLine);
+	//int ret = readFileTail(filePath, period, &buffLine);
+	int r = readFileTail(&buffLine, filePath, period, shift);
 
-	if (ret == -2)
+	if (r == -2)
 	{
-		printf("文件记录不足。\n");
+		return -2;
 	}
 
-	printf("readFileTail结果%d", ret);
-
-	printf("buffLine Size:%zd", buffLine.size());
-
-	for (int i = 0; i < buffLine.size(); i++)
+	for (size_t i = 0; i < buffLine.size(); i++)
 	{
-		printf("buffLine_%d: %s\n", i, buffLine[i].c_str());
+		buffBars[i] = Bar::CsvToBar(buffLine[i]);
 	}
-	return nullptr;
+
+	for (size_t i = 0; i < period; i++)
+	{
+		printf("buffBars %zd Close  %.8lf\n", i, buffBars[i].close);
+	}
+	return 0;
+}
+
+Bar Bar::CsvToBar(string csv)
+{
+	Bar bar;
+	int r = sscanf(csv.c_str(), "%.8lf,%.8lf,%.8lf,%.8lf,%d", &bar.open, &bar.high, &bar.low, &bar.close, &bar.volume);
+	return bar;
 }

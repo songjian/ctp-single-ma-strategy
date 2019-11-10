@@ -54,9 +54,6 @@
     <ClInclude Include="ThostFtdcUserApiStruct.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="KLine.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="singleMaStrategy.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -87,9 +84,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="KLine.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="singleMaStrategy.cpp">

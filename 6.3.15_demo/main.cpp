@@ -46,6 +46,6 @@ int main()
 
 int main()
 {
-	printf("³ÌÐò¿ªÊ¼¡£\n");
-	Bar::getBars(1, 10);
+	SingleMaStrategy smaStrategy(g_chInstrumentID);
+	smaStrategy.OnStart();
 }

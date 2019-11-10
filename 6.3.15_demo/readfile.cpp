@@ -7,19 +7,19 @@
 
 using namespace std;
 
-int readFileTail(string filePath, int rows, vector<string>* buffLine)
+int readFileTail(vector<string>* buffLine, string filePath, int rows, int shift = 0)
 {
 	ifstream fin(filePath, ios::ate);
 
 	if (!fin) 
 	{
-		cerr << "打开日志文件失败！";
+		cerr << "打开日志文件失败！" << endl;
 		return -1;
 	}
 
 	// 先倒回文件末尾两个字符
 	fin.seekg(-2, fin.cur);
-	for(int i = 0; i < rows; i++)
+	for(int i = 0; i < rows + shift; i++)
 	{
 		// 查看前一个字符是否为回车符
 		while (fin.peek() != fin.widen('\n') && fin.peek() != EOF)
@@ -43,11 +43,17 @@ int readFileTail(string filePath, int rows, vector<string>* buffLine)
 	
 	// 现在文件指针指向99行的末尾，可以读取了
 	string  line;
-	while( getline(fin, line) )
+	for (size_t i = 0; i < rows; i++)
+	{
+		getline(fin, line);
+		buffLine->push_back(line);
+	}
+
+	/*while( getline(fin, line) )
 	{	
 		//cout <<"新入一行 : "; << line << endl;
 		buffLine->push_back(line);
-	}
+	}*/
 	fin.clear();
 	fin.close();
 	return 0;
