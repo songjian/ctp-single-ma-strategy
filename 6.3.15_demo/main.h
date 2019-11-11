@@ -195,10 +195,12 @@ public:
 	///深度行情通知
 	virtual void OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *pDepthMarketData)
 	{
-		fprintf(mdfile, "%s,%s,%s,%d,%s,%s,%.8lf,%.8lf,%.8lf,%.81lf,%.81lf,%d,%.8lf\n", pDepthMarketData->TradingDay, pDepthMarketData->ActionDay, pDepthMarketData->UpdateTime, pDepthMarketData->UpdateMillisec, pDepthMarketData->ExchangeID, pDepthMarketData->InstrumentID, pDepthMarketData->OpenPrice,pDepthMarketData->HighestPrice,pDepthMarketData->LowestPrice,pDepthMarketData->ClosePrice,pDepthMarketData->LastPrice,pDepthMarketData->Volume,pDepthMarketData->Turnover);
-		fflush(mdfile);
+		//fprintf(mdfile, "%s,%s,%s,%d,%s,%s,%.8lf,%.8lf,%.8lf,%.81lf,%.81lf,%d,%.8lf\n", pDepthMarketData->TradingDay, pDepthMarketData->ActionDay, pDepthMarketData->UpdateTime, pDepthMarketData->UpdateMillisec, pDepthMarketData->ExchangeID, pDepthMarketData->InstrumentID, pDepthMarketData->OpenPrice,pDepthMarketData->HighestPrice,pDepthMarketData->LowestPrice,pDepthMarketData->ClosePrice,pDepthMarketData->LastPrice,pDepthMarketData->Volume,pDepthMarketData->Turnover);
+		//fflush(mdfile);
 		//updateBufferMarketData(pDepthMarketData);
 		//checkSignal(pDepthMarketData);
+		m_pMarketData->OnTick(pDepthMarketData);
+		m_pStrategy->OnTick(pDepthMarketData);
 		LOG("<OnRtnDepthMarketData>\n");
 		if (pDepthMarketData)
 		{
@@ -262,9 +264,21 @@ public:
 		SetEvent(xinhao);
 	}
 
+	virtual void RegisterMarketData(MarketData* pMarketData)
+	{
+		m_pMarketData = pMarketData;
+	}
+
+	virtual void RegisterStrategy(Strategy* pStrategy)
+	{
+		m_pStrategy = pStrategy;
+	}
+
 private:
 	// 指向CThostFtdcMduserApi实例的指针
 	CThostFtdcMdApi *m_pUserMdApi;
+	MarketData* m_pMarketData;
+	Strategy* m_pStrategy;
 };
 
 //交易类
@@ -274,10 +288,6 @@ public:
 	CSimpleHandler(CThostFtdcTraderApi *pUserApi) :
 		m_pUserApi(pUserApi) {}
 	~CSimpleHandler() {}
-	virtual void RegisterStrategy(Strategy* pStrategy)
-	{
-
-	}
 
 	virtual void OnFrontConnected()
 	{

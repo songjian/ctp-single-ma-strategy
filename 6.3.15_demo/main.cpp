@@ -11,10 +11,6 @@ int main()
 	CTraderApi* pUserApi = new CTraderApi();
 	pUserApi->CreateFtdcTraderApi(".\\flow\\");
 	CSimpleHandler sh(pUserApi);
-	SingleMaStrategy smaStrategy(g_chInstrumentID);
-	MarketData marketData;
-	sh.RegisterStrategy(&smaStrategy);
-	sh.RegisterMarketData(&marketData);
 	pUserApi->RegisterSpi(&sh);
 	pUserApi->SubscribePublicTopic(THOST_TERT_QUICK);
 	pUserApi->SubscribePrivateTopic(THOST_TERT_QUICK);
@@ -34,6 +30,10 @@ int main()
 	string g_chFrontMdaddr = getConfig("config", "FrontMdAddr");
 	CThostFtdcMdApi* pUserMdApi = CThostFtdcMdApi::CreateFtdcMdApi(".\\flow\\md\\");
 	CSimpleMdHandler ash(pUserMdApi);
+	MarketData marketData;
+	ash.RegisterMarketData(&marketData);
+	SingleMaStrategy smaStrategy(g_chInstrumentID);
+	ash.RegisterStrategy(&smaStrategy);
 	pUserMdApi->RegisterSpi(&ash);
 	pUserMdApi->RegisterFront(const_cast<char*>(g_chFrontMdaddr.c_str()));
 	pUserMdApi->Init();

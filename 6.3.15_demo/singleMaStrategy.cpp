@@ -21,6 +21,7 @@ void SingleMaStrategy::OnStop()
 
 void SingleMaStrategy::OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData)
 {
+	printf("策略成功接收到Tick数据。\n");
 };
 
 void SingleMaStrategy::OnBar()

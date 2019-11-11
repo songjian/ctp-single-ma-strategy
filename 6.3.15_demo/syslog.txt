@@ -46,19 +46,19 @@
 	nRequestID [0]
 </ReqUserLogin>
 <OnRspUserLogin>
-	TradingDay [20191101]
-	LoginTime [15:11:49]
+	TradingDay [20191108]
+	LoginTime [22:03:31]
 	BrokerID [9999]
 	UserID [153183]
 	SystemName [TradingHosting]
 	MaxOrderRef [1]
-	SHFETime [15:58:32]
-	DCETime [15:58:31]
-	CZCETime [15:58:32]
-	FFEXTime [15:58:32]
+	SHFETime [22:50:50]
+	DCETime [22:50:50]
+	CZCETime [22:50:50]
+	FFEXTime [22:50:50]
 	INETime [--:--:--]
 	FrontID [1]
-	SessionID [2108493197]
+	SessionID [1781074298]
 	ErrorMsg [正确]
 	ErrorID [0]
 	nRequestID [0]
@@ -77,8 +77,8 @@
 <OnRspSettlementInfoConfirm>
 	BrokerID [9999]
 	InvestorID [153183]
-	ConfirmDate [20191101]
-	ConfirmTime [15:11:49]
+	ConfirmDate [20191108]
+	ConfirmTime [22:03:31]
 	AccountID []
 	CurrencyID []
 	SettlementID [0]
@@ -117,6 +117,73 @@ OnRspUserLogin:
 	nRequestID = [0]
 	bIsLast = [1]
 </OnRspSubMarketData>
-年：2019  月：11  日：1  时：10  分：32  秒：45
-lastMdTm年：0  月：0  日：0
-lastMdTm年：119  月：10  日：1
+<OnRtnDepthMarketData>
+	InstrumentID = [m2009]
+	ExchangeID = []
+	LastPrice = [2885.00000000]
+	PreSettlementPrice = [2874.00000000]
+	OpenPrice = [2880.00000000]
+	Volume = [146886]
+	Turnover = [4238129220.00000000]
+	OpenInterest = [0]
+</OnRtnDepthMarketData>
+<OnRtnDepthMarketData>
+	InstrumentID = [m2009]
+	ExchangeID = []
+	LastPrice = [2885.00000000]
+	PreSettlementPrice = [2874.00000000]
+	OpenPrice = [2880.00000000]
+	Volume = [146886]
+	Turnover = [4238129220.00000000]
+	OpenInterest = [0]
+</OnRtnDepthMarketData>
+<OnRtnDepthMarketData>
+	InstrumentID = [m2009]
+	ExchangeID = []
+	LastPrice = [2885.00000000]
+	PreSettlementPrice = [2874.00000000]
+	OpenPrice = [2880.00000000]
+	Volume = [146886]
+	Turnover = [4238129220.00000000]
+	OpenInterest = [0]
+</OnRtnDepthMarketData>
+<OnRtnDepthMarketData>
+	InstrumentID = [m2009]
+	ExchangeID = []
+	LastPrice = [2884.00000000]
+	PreSettlementPrice = [2874.00000000]
+	OpenPrice = [2880.00000000]
+	Volume = [146892]
+	Turnover = [4238302260.00000000]
+	OpenInterest = [0]
+</OnRtnDepthMarketData>
+<OnRtnDepthMarketData>
+	InstrumentID = [m2009]
+	ExchangeID = []
+	LastPrice = [2884.00000000]
+	PreSettlementPrice = [2874.00000000]
+	OpenPrice = [2880.00000000]
+	Volume = [146894]
+	Turnover = [4238359940.00000000]
+	OpenInterest = [0]
+</OnRtnDepthMarketData>
+<OnRtnDepthMarketData>
+	InstrumentID = [m2009]
+	ExchangeID = []
+	LastPrice = [2884.00000000]
+	PreSettlementPrice = [2874.00000000]
+	OpenPrice = [2880.00000000]
+	Volume = [146896]
+	Turnover = [4238417620.00000000]
+	OpenInterest = [0]
+</OnRtnDepthMarketData>
+<OnRtnDepthMarketData>
+	InstrumentID = [m2009]
+	ExchangeID = []
+	LastPrice = [2884.00000000]
+	PreSettlementPrice = [2874.00000000]
+	OpenPrice = [2880.00000000]
+	Volume = [147016]
+	Turnover = [4241878420.00000000]
+	OpenInterest = [0]
+</OnRtnDepthMarketData>

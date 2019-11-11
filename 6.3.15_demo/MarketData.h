@@ -1,19 +1,20 @@
 #pragma once
 #include "ThostFtdcUserApiStruct.h"
 #include <fstream>
+#include "BarManager.h"
 
 using namespace std;
 
 class MarketData
 {
 public:
-	vector<CThostFtdcDepthMarketDataField>* m_pMarketDataVec;
 	void OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData);
-	void OnBar();
+	MarketData();
 	~MarketData();
 private:
 	void MdToFile(CThostFtdcDepthMarketDataField* pDepthMarketData);
 	string FileName(CThostFtdcDepthMarketDataField* pDepthMarketData);
-	string lastFileName = NULL;
+	string lastFileName;
 	ofstream outfile;
+	BarManager* m_pBarManager;
 };

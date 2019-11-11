@@ -3,7 +3,14 @@
 
 void MarketData::OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData)
 {
+	printf("MD成功接收到Tick数据\n");
 	MdToFile(pDepthMarketData);
+	m_pBarManager->OnTick(pDepthMarketData);
+}
+
+MarketData::MarketData()
+{
+	m_pBarManager = BarManager::CreateBarManager();
 }
 
 MarketData::~MarketData()
@@ -33,5 +40,6 @@ string MarketData::FileName(CThostFtdcDepthMarketDataField* pDepthMarketData)
 {
 	string filePath = ".\\md\\";
 	string day = pDepthMarketData->ActionDay;
-	return filePath + day + ".csv";
+	string instrument = pDepthMarketData->InstrumentID;
+	return filePath + instrument + "_" + day + ".csv";
 }

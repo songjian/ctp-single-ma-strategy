@@ -1,12 +1,38 @@
 #include "stdafx.h"
 #include "BarManager.h"
+#include "getconfig.h"
+
+using namespace std;
+
+
+BarManager* BarManager::CreateBarManager()
+{
+	static BarManager bm;
+	return &bm;
+}
 
 void BarManager::OnTick(CThostFtdcDepthMarketDataField* pMarketData)
 {
-	m_pMarketDataVec->push_back(*pMarketData);
+	int index = findIndex(pMarketData->InstrumentID);
 
-	for (size_t i = 0; i < m_pMarketDataVec->size(); i++)
+	m_MarketDataMVec[index].push_back(*pMarketData);
+}
+
+BarManager::BarManager()
+{
+	string instrumentIds = getConfig("config", "InstrumentID");
+	m_InstrumentIdVec.push_back(instrumentIds);
+	m_MarketDataMVec.resize(m_InstrumentIdVec.size());
+}
+
+int BarManager::findIndex(string sInstrumentId)
+{
+	for (size_t i = 0; i < m_InstrumentIdVec.size(); i++)
 	{
-		printf("MarketDataVec_%zd_%s", i, m_pMarketDataVec[i].LastPrice);
+		if (m_InstrumentIdVec[i] == sInstrumentId)
+		{
+			return i;
+		}
 	}
+	return -1;
 }
