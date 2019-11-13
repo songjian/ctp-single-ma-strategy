@@ -3,7 +3,6 @@
 
 void MarketData::OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData)
 {
-	printf("MD成功接收到Tick数据\n");
 	MdToFile(pDepthMarketData);
 	m_pBarManager->OnTick(pDepthMarketData);
 }

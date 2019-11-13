@@ -4,7 +4,6 @@
 int main()
 {
 	logfile = fopen("syslog.txt", "w");
-	mdfile = fopen(".\\mdfile\\md.csv", "a");
 	string InstrumentID = getConfig("config", "InstrumentID");
 	strcpy_s(g_chInstrumentID, const_cast<char*>(InstrumentID.c_str()));
 	string g_chFrontaddr = getConfig("config", "FrontAddr");

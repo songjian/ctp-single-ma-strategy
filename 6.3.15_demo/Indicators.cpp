@@ -6,7 +6,7 @@ double Indicators::ma(TThostFtdcInstrumentIDType instrumentId, int period, int t
 {
 	vector<Bar> bars(period);
 	vector<double> closeVec(period);
-	int r = Bar::getBars(bars, period, timePeriod, shift);
+	int r = Bar::getBars(&bars, period, timePeriod, shift);
 
 	if (r == -2)
 	{
