@@ -13,67 +13,64 @@ BarManager* BarManager::CreateBarManager()
 
 void BarManager::OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData)
 {
-	string instrumentId = pDepthMarketData->InstrumentID;
-	int index = findIndex(instrumentId);
-	if (m_MarketDataMVec[index].empty())
+	string chInstrumentId = pDepthMarketData->InstrumentID;
+	string chFileName = FileName(chInstrumentId, 1);
+	int nIndex = FindIndex(chInstrumentId);
+	if (m_gDepthMarketData[nIndex].empty())
 	{
+		m_gDepthMarketData[nIndex].push_back(*pDepthMarketData);
 		return;
 	}
-	tm tmCurrMd = MdUpdateTimeToTm(pDepthMarketData);
-	tm tmPrevMd = MdUpdateTimeToTm(&m_MarketDataMVec[index].back());
+	tm tmCurrMd = GetDepthMarketDataTm(pDepthMarketData);
+	tm tmPrevMd = GetDepthMarketDataTm(&m_gDepthMarketData[nIndex].back());
 
 	if (tmCurrMd.tm_min != tmPrevMd.tm_min)
 	{
-		vector<int> currPeriodConverter = GetCurrentPeriodConverter(&m_MarketDataMVec[index].back());
-		Bar* bar = MdVecToBar(index);
-		string fileName = FileName(instrumentId, 1);
-		BarToFile(fileName, bar);
-
-		for (size_t i = 0; i < currPeriodConverter.size(); i++)
-		{
-			PeriodConverter(instrumentId, currPeriodConverter[i]);
-		}
+		Bar* pBar = MdVecToBar(nIndex);
+		BarToFile(chFileName, pBar);
+		//ExecutionPeriodConverter(chInstrumentId);
+		m_gDepthMarketData[nIndex].clear();
 	}
 
-	m_MarketDataMVec[index].push_back(*pDepthMarketData);
+	m_gDepthMarketData[nIndex].push_back(*pDepthMarketData);
 }
 
 BarManager::BarManager()
 {
 	string instrumentIds = getConfig("config", "InstrumentID");
-	m_InstrumentIdVec.push_back(instrumentIds);
-	m_MarketDataMVec.resize(m_InstrumentIdVec.size());
+	m_gchInstrumentIds.push_back(instrumentIds);
+	m_gDepthMarketData.resize(m_gchInstrumentIds.size());
 }
 
-string BarManager::FileName(string instrumentId, int i_TimePeriod = 1)
+string BarManager::FileName(string chInstrumentId, int nTimePeriod = 1)
 {
-	string filePath = ".\\bars\\";
-	return filePath + instrumentId + "_" + to_string(i_TimePeriod) + ".csv";
+	string chFilePath = ".\\bars\\";
+	return chFilePath + chInstrumentId + "_" + to_string(nTimePeriod) + ".csv";
 }
 
-void BarManager::BarToFile(string fileName, Bar* bar)
+void BarManager::BarToFile(string chFileName, Bar* pBar)
 {
-	outfile.open(fileName, ios::app);
+	m_Outfile.open(chFileName, ios::app);
 
-	outfile << bar->year << ",";
-	outfile << bar->month << ",";
-	outfile << bar->day << ",";
-	outfile << bar->hour << ",";
-	outfile << bar->minute << ",";
-	outfile << bar->open << ",";
-	outfile << bar->high << ",";
-	outfile << bar->low << ",";
-	outfile << bar->close << ",";
-	outfile << bar->volume << endl;
+	m_Outfile << pBar->year << ",";
+	m_Outfile << pBar->month << ",";
+	m_Outfile << pBar->day << ",";
+	m_Outfile << pBar->hour << ",";
+	m_Outfile << pBar->minute << ",";
+	m_Outfile << pBar->open << ",";
+	m_Outfile << pBar->high << ",";
+	m_Outfile << pBar->low << ",";
+	m_Outfile << pBar->close << ",";
+	m_Outfile << pBar->volume << endl;
 
-	outfile.close();
+	m_Outfile.close();
 }
 
-int BarManager::findIndex(string sInstrumentId)
+int BarManager::FindIndex(string chInstrumentId)
 {
-	for (size_t i = 0; i < m_InstrumentIdVec.size(); i++)
+	for (size_t i = 0; i < m_gchInstrumentIds.size(); i++)
 	{
-		if (m_InstrumentIdVec[i] == sInstrumentId)
+		if (m_gchInstrumentIds[i] == chInstrumentId)
 		{
 			return i;
 		}
@@ -81,7 +78,7 @@ int BarManager::findIndex(string sInstrumentId)
 	return -1;
 }
 
-tm BarManager::MdUpdateTimeToTm(CThostFtdcDepthMarketDataField* pDepthMarketData)
+tm BarManager::GetDepthMarketDataTm(CThostFtdcDepthMarketDataField* pDepthMarketData)
 {
 	int year, month, day, hour, minute, second;
 	sscanf_s(pDepthMarketData->ActionDay, "%4d%2d%2d", &year, &month, &day);
@@ -97,38 +94,40 @@ tm BarManager::MdUpdateTimeToTm(CThostFtdcDepthMarketDataField* pDepthMarketData
 	return mdTm;
 }
 
-Bar* BarManager::MdVecToBar(int iVecIndex)
+Bar* BarManager::MdVecToBar(int nVecIndex)
 {
 	static Bar bar;
-	tm tmMd = MdUpdateTimeToTm(&m_MarketDataMVec[iVecIndex].back());
+	tm tmMd = GetDepthMarketDataTm(&m_gDepthMarketData[nVecIndex].back());
 	bar.year = tmMd.tm_year;
 	bar.month = tmMd.tm_mon;
 	bar.day = tmMd.tm_yday;
 	bar.hour = tmMd.tm_hour;
 	bar.minute = tmMd.tm_min;
-	bar.open = m_MarketDataMVec[iVecIndex].front().LastPrice;
-	bar.close = m_MarketDataMVec[iVecIndex].back().LastPrice;
-	bar.high = m_MarketDataMVec[iVecIndex].front().LastPrice;
-	bar.low = m_MarketDataMVec[iVecIndex].front().LastPrice;
+	bar.open = m_gDepthMarketData[nVecIndex].front().LastPrice;
+	bar.close = m_gDepthMarketData[nVecIndex].back().LastPrice;
+	bar.high = m_gDepthMarketData[nVecIndex].front().LastPrice;
+	bar.low = m_gDepthMarketData[nVecIndex].front().LastPrice;
 
-	for (size_t i = 0; i < m_MarketDataMVec[iVecIndex].size(); i++)
+	for (size_t i = 0; i < m_gDepthMarketData[nVecIndex].size(); i++)
 	{
-		bar.high = m_MarketDataMVec[iVecIndex][i].LastPrice > bar.high ? m_MarketDataMVec[iVecIndex][i].LastPrice : bar.high;
-		bar.low = m_MarketDataMVec[iVecIndex][i].LastPrice < bar.low ? m_MarketDataMVec[iVecIndex][i].LastPrice : bar.low;
+		bar.high = m_gDepthMarketData[nVecIndex][i].LastPrice > bar.high ? m_gDepthMarketData[nVecIndex][i].LastPrice : bar.high;
+		bar.low = m_gDepthMarketData[nVecIndex][i].LastPrice < bar.low ? m_gDepthMarketData[nVecIndex][i].LastPrice : bar.low;
 	}
-
-	m_MarketDataMVec[iVecIndex].clear();
 
 	return &bar;
 }
 
-void BarManager::PeriodConverter(string instrumentId, int timePeriod)
+void BarManager::PeriodConverter(string chInstrumentId, int nTimePeriod)
 {
-	int iPervTimePeriod = GetPervPeriodIndex(timePeriod);
-	iPervTimePeriod = iPervTimePeriod > 0 ? iPervTimePeriod : 1;
-	int iBarNum = timePeriod / iPervTimePeriod;
-	vector<Bar> vecBars(iBarNum);
-	int r = Bar::getBars(&vecBars, iBarNum, iPervTimePeriod, 0);
+	int nPervTimePeriodIndex = GetPervTimePeriodIndex(nTimePeriod);
+	int converTimePeriod = 1;
+	if (nPervTimePeriodIndex >= 0)
+	{
+		int converTimePeriod = m_nTimePeriods[nPervTimePeriodIndex];
+	}
+	int nBarNum = nTimePeriod / converTimePeriod;
+	vector<Bar> vecBars(nBarNum);
+	int r = Bar::getBars(&vecBars, nBarNum, converTimePeriod, 0);
 
 	if (r == -2)
 	{
@@ -152,35 +151,46 @@ void BarManager::PeriodConverter(string instrumentId, int timePeriod)
 		bar.low = bar.low > vecBars[i].low ? vecBars[i].low : bar.low;
 	}
 
-	string outFileName = FileName(instrumentId, timePeriod);
+	string outFileName = FileName(chInstrumentId, nTimePeriod);
 	BarToFile(outFileName, &bar);
+}
+
+void BarManager::ExecutionPeriodConverter(string chInstrumentId)
+{
+	int nIndex = FindIndex(chInstrumentId);
+	vector<int> converPeriods = GetCurrentPeriodConverter(&m_gDepthMarketData[nIndex].back());
+	for (size_t i = 0; i < converPeriods.size(); i++)
+	{
+		PeriodConverter(chInstrumentId, converPeriods[i]);
+	}
 }
 
 vector<int> BarManager::GetCurrentPeriodConverter(CThostFtdcDepthMarketDataField* pDepthMarketData)
 {
 	static vector<int> periodVec;
-	tm tmMd = MdUpdateTimeToTm(pDepthMarketData);
-	for (size_t i = 0; i < sizeof(periods); i++)
+	tm tmMd = GetDepthMarketDataTm(pDepthMarketData);
+	int arrSize = sizeof(m_nTimePeriods) / sizeof(m_nTimePeriods[0]);
+	for (size_t i = 0; i < arrSize; i++)
 	{
-		if (tmMd.tm_min % periods[i] == 0)
+		if (tmMd.tm_min % m_nTimePeriods[i] == 0)
 		{
-			periodVec.push_back(periods[i]);
+			periodVec.push_back(m_nTimePeriods[i]);
 		}
 	}
 	return periodVec;
 }
 
-int BarManager::GetPervPeriodIndex(int period)
+int BarManager::GetPervTimePeriodIndex(int nTimePeriod)
 {
-	int index = 0;
-	for (size_t i = 0; i < sizeof(periods); i++)
+	int nIndex = -1;
+	int arrSize = sizeof(m_nTimePeriods) / sizeof(m_nTimePeriods[0]);
+	for (size_t i = 0; i < arrSize; i++)
 	{
-		if (periods[i] == period)
+		if (m_nTimePeriods[i] == nTimePeriod)
 		{
-			index = i;
+			nIndex = i - 1;
 		}
 	}
-
-	return index > 0 ? index - 1 : 0;
+	return nIndex;
 }
 
