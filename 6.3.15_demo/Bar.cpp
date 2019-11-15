@@ -3,11 +3,11 @@
 
 using namespace std;
 
-int Bar::getBars(vector<Bar>* buffBars, int period, int timePeriod, int shift = 0)
+int Bar::getBars(vector<Bar>* pBuffBars, string chInstrumentId, int nPeriod, int nTimePeriod, int nShift = 0)
 {
 	vector<string> buffLine;
-	string filePath = ".\\bars\\" + to_string(timePeriod) + ".csv";
-	int r = readFileTail(&buffLine, filePath, period, shift);
+	string filePath = ".\\bars\\" + chInstrumentId + "_" + to_string(nTimePeriod) + ".csv";
+	int r = readFileTail(&buffLine, filePath, nPeriod, nShift);
 
 	if (r == -2)
 	{
@@ -16,15 +16,18 @@ int Bar::getBars(vector<Bar>* buffBars, int period, int timePeriod, int shift = 
 
 	for (size_t i = 0; i < buffLine.size(); i++)
 	{
-		buffBars->push_back(Bar::CsvToBar(buffLine[i]));
+		Bar bar = Bar::GetBarFromCsv(buffLine[i]);
+			printf("++==bar_%zd: %d %d %d %d %d %lf %lf %lf %lf %d\n", i, bar.year, bar.month, bar.day, bar.hour, bar.minute, bar.open, bar.high, bar.low, bar.close, bar.volume);
+		pBuffBars->push_back(bar);
 	}
 
 	return 0;
 }
 
-Bar Bar::CsvToBar(string csv)
+Bar Bar::GetBarFromCsv(string chCsv)
 {
-	Bar bar;
-	int r = sscanf(csv.c_str(), "%.8lf,%.8lf,%.8lf,%.8lf,%d", &bar.open, &bar.high, &bar.low, &bar.close, &bar.volume);
+	static Bar bar;
+	int r = sscanf(chCsv.c_str(), "%d,%d,%d,%d,%d,%lf,%lf,%lf,%lf,%d", &bar.year, &bar.month, &bar.day, &bar.hour, &bar.minute, &bar.open, &bar.high, &bar.low, &bar.close, &bar.volume);
+	printf("++==bar: %d %d %d %d %d %lf %lf %lf %lf %d\n", bar.year, bar.month, bar.day, bar.hour, bar.minute, bar.open, bar.high, bar.low, bar.close, bar.volume);
 	return bar;
 }

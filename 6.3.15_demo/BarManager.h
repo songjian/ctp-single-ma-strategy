@@ -15,9 +15,9 @@ public:
 private:
 	string FileName(string chInstrumentId, int nTimePeriod);
 	void BarToFile(string chFileName, Bar* pBar);
-	int FindIndex(string chInstrumentId);
+	size_t FindIndex(string chInstrumentId);
 	tm GetDepthMarketDataTm(CThostFtdcDepthMarketDataField* pDepthMarketData);
-	Bar* MdVecToBar(int nVecIndex);
+	Bar* MdVecToBar(size_t nVecIndex);
 	void PeriodConverter(string chInstrumentId, int nTimePeriod);
 	void ExecutionPeriodConverter(string chInstrumentId);
 	vector<int> GetCurrentPeriodConverter(CThostFtdcDepthMarketDataField* pDepthMarketData);

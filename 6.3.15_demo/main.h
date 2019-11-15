@@ -8,7 +8,7 @@
 #include <time.h>
 #include "ThostFtdcTraderApi.h"
 #include "ThostFtdcMdApi.h"
-#include "DataCollect.h""
+#include "DataCollect.h"
 
 #include <conio.h>
 #include "getconfig.h"

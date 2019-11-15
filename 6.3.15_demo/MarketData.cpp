@@ -32,7 +32,19 @@ void MarketData::MdToFile(CThostFtdcDepthMarketDataField* pDepthMarketData)
 		}
 		outfile.open(fileName, ios::app);
 	}
-	outfile << pDepthMarketData->TradingDay << "," << pDepthMarketData->ActionDay << "," << pDepthMarketData->UpdateTime << "," << pDepthMarketData->UpdateMillisec << "," << pDepthMarketData->ExchangeID << "," << pDepthMarketData->InstrumentID << "," << pDepthMarketData->OpenPrice << "," << pDepthMarketData->HighestPrice << "," << pDepthMarketData->LowestPrice << "," << pDepthMarketData->ClosePrice << "," << pDepthMarketData->LastPrice << "," << pDepthMarketData->Volume << "," << pDepthMarketData->Turnover << endl;
+	outfile << pDepthMarketData->TradingDay << ",";
+	outfile << pDepthMarketData->ActionDay << ",";
+	outfile << pDepthMarketData->UpdateTime << ",";
+	outfile << pDepthMarketData->UpdateMillisec << ",";
+	outfile << pDepthMarketData->ExchangeID << ",";
+	outfile << pDepthMarketData->InstrumentID << ",";
+	outfile << pDepthMarketData->OpenPrice << ",";
+	outfile << pDepthMarketData->HighestPrice << ",";
+	outfile << pDepthMarketData->LowestPrice << ",";
+	outfile << pDepthMarketData->ClosePrice << ",";
+	outfile << pDepthMarketData->LastPrice << ",";
+	outfile << pDepthMarketData->Volume << ",";
+	outfile << pDepthMarketData->Turnover << endl;
 }
 
 string MarketData::FileName(CThostFtdcDepthMarketDataField* pDepthMarketData)

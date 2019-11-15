@@ -5,5 +5,5 @@
 class Indicators
 {
 public:
-	double ma(TThostFtdcInstrumentIDType instrumentId, int period, int timePeriod, int shift);
+	double ma(string chInstrumentId, int nPeriod, int nTimePeriod, int nShift);
 };

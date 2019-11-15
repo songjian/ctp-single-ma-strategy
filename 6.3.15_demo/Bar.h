@@ -18,7 +18,7 @@ public:
 	double close;
 	int volume;
 public:
-	static int getBars(vector<Bar>* buffBars, int period, int timePeriod, int shift);
+	static int getBars(vector<Bar>* pBuffBars, string chInstrumentId, int nPeriod, int nTimePeriod, int nShift);
 private:
-	static Bar CsvToBar(string csv);
+	static Bar GetBarFromCsv(string chCsv);
 };

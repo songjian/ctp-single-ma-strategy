@@ -15,7 +15,7 @@ void BarManager::OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData)
 {
 	string chInstrumentId = pDepthMarketData->InstrumentID;
 	string chFileName = FileName(chInstrumentId, 1);
-	int nIndex = FindIndex(chInstrumentId);
+	size_t nIndex = FindIndex(chInstrumentId);
 	if (m_gDepthMarketData[nIndex].empty())
 	{
 		m_gDepthMarketData[nIndex].push_back(*pDepthMarketData);
@@ -28,7 +28,7 @@ void BarManager::OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData)
 	{
 		Bar* pBar = MdVecToBar(nIndex);
 		BarToFile(chFileName, pBar);
-		//ExecutionPeriodConverter(chInstrumentId);
+		ExecutionPeriodConverter(chInstrumentId);
 		m_gDepthMarketData[nIndex].clear();
 	}
 
@@ -66,7 +66,7 @@ void BarManager::BarToFile(string chFileName, Bar* pBar)
 	m_Outfile.close();
 }
 
-int BarManager::FindIndex(string chInstrumentId)
+size_t BarManager::FindIndex(string chInstrumentId)
 {
 	for (size_t i = 0; i < m_gchInstrumentIds.size(); i++)
 	{
@@ -94,19 +94,20 @@ tm BarManager::GetDepthMarketDataTm(CThostFtdcDepthMarketDataField* pDepthMarket
 	return mdTm;
 }
 
-Bar* BarManager::MdVecToBar(int nVecIndex)
+Bar* BarManager::MdVecToBar(size_t nVecIndex)
 {
 	static Bar bar;
 	tm tmMd = GetDepthMarketDataTm(&m_gDepthMarketData[nVecIndex].back());
-	bar.year = tmMd.tm_year;
-	bar.month = tmMd.tm_mon;
-	bar.day = tmMd.tm_yday;
+	bar.year = tmMd.tm_year + 1900;
+	bar.month = tmMd.tm_mon + 1;
+	bar.day = tmMd.tm_mday;
 	bar.hour = tmMd.tm_hour;
 	bar.minute = tmMd.tm_min;
 	bar.open = m_gDepthMarketData[nVecIndex].front().LastPrice;
 	bar.close = m_gDepthMarketData[nVecIndex].back().LastPrice;
 	bar.high = m_gDepthMarketData[nVecIndex].front().LastPrice;
 	bar.low = m_gDepthMarketData[nVecIndex].front().LastPrice;
+	bar.volume = m_gDepthMarketData[nVecIndex].back().Volume - m_gDepthMarketData[nVecIndex].front().Volume;
 
 	for (size_t i = 0; i < m_gDepthMarketData[nVecIndex].size(); i++)
 	{
@@ -126,13 +127,26 @@ void BarManager::PeriodConverter(string chInstrumentId, int nTimePeriod)
 		int converTimePeriod = m_nTimePeriods[nPervTimePeriodIndex];
 	}
 	int nBarNum = nTimePeriod / converTimePeriod;
-	vector<Bar> vecBars(nBarNum);
-	int r = Bar::getBars(&vecBars, nBarNum, converTimePeriod, 0);
+	printf("nTimePeriod:%d   nPervTimePeriodIndex:%d   converTimePeriod:%d   nBarNum:%d\n", nTimePeriod, nPervTimePeriodIndex, converTimePeriod, nBarNum);
+	vector<Bar> vecBars;
+	int r = Bar::getBars(&vecBars, chInstrumentId, nBarNum, converTimePeriod, 0);
 
 	if (r == -2)
 	{
 		return;
 	}
+
+	//检查getBars数据
+	printf("检查getBars数据\n");
+	for (size_t i = 0; i < vecBars.size(); i++)
+	{
+		printf("vecBars_%zd: %d %d %d %d %d %lf %lf %lf %lf %d\n", i, vecBars[i].year, vecBars[i].month, vecBars[i].day, vecBars[i].hour, vecBars[i].minute, vecBars[i].open, vecBars[i].high, vecBars[i].low, vecBars[i].close, vecBars[i].volume);
+	}
+	/*
+	printf("vecBars.front().year:%d   vecBars.size():%zd\n", vecBars.front().year, vecBars.size());
+	printf("vecBars.back().year:%d   vecBars.size():%zd\n", vecBars.back().year, vecBars.size());
+	printf("vecBars.front().high:%lf   vecBars.size():%zd\n", vecBars.front().high, vecBars.size());
+	*/
 
 	Bar bar;
 	bar.year = vecBars.front().year;
@@ -144,11 +158,13 @@ void BarManager::PeriodConverter(string chInstrumentId, int nTimePeriod)
 	bar.close = vecBars.back().close;
 	bar.high = vecBars.front().high;
 	bar.low = vecBars.front().low;
+	bar.volume = 0;
 
 	for (size_t i = 0; i < vecBars.size(); i++)
 	{
 		bar.high = bar.high < vecBars[i].high ? vecBars[i].high : bar.high;
 		bar.low = bar.low > vecBars[i].low ? vecBars[i].low : bar.low;
+		bar.volume += vecBars[i].volume;
 	}
 
 	string outFileName = FileName(chInstrumentId, nTimePeriod);
@@ -157,7 +173,7 @@ void BarManager::PeriodConverter(string chInstrumentId, int nTimePeriod)
 
 void BarManager::ExecutionPeriodConverter(string chInstrumentId)
 {
-	int nIndex = FindIndex(chInstrumentId);
+	size_t nIndex = FindIndex(chInstrumentId);
 	vector<int> converPeriods = GetCurrentPeriodConverter(&m_gDepthMarketData[nIndex].back());
 	for (size_t i = 0; i < converPeriods.size(); i++)
 	{
@@ -169,10 +185,11 @@ vector<int> BarManager::GetCurrentPeriodConverter(CThostFtdcDepthMarketDataField
 {
 	static vector<int> periodVec;
 	tm tmMd = GetDepthMarketDataTm(pDepthMarketData);
+	int minute = tmMd.tm_min + 1;
 	int arrSize = sizeof(m_nTimePeriods) / sizeof(m_nTimePeriods[0]);
 	for (size_t i = 0; i < arrSize; i++)
 	{
-		if (tmMd.tm_min % m_nTimePeriods[i] == 0)
+		if (minute % m_nTimePeriods[i] == 0)
 		{
 			periodVec.push_back(m_nTimePeriods[i]);
 		}
@@ -184,7 +201,7 @@ int BarManager::GetPervTimePeriodIndex(int nTimePeriod)
 {
 	int nIndex = -1;
 	int arrSize = sizeof(m_nTimePeriods) / sizeof(m_nTimePeriods[0]);
-	for (size_t i = 0; i < arrSize; i++)
+	for (int i = 0; i < arrSize; i++)
 	{
 		if (m_nTimePeriods[i] == nTimePeriod)
 		{

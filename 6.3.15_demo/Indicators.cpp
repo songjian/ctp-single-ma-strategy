@@ -2,11 +2,11 @@
 #include "Indicators.h"
 #include <numeric>
 
-double Indicators::ma(TThostFtdcInstrumentIDType instrumentId, int period, int timePeriod, int shift)
+double Indicators::ma(string chInstrumentId, int nPeriod, int nTimePeriod, int nShift)
 {
-	vector<Bar> bars(period);
-	vector<double> closeVec(period);
-	int r = Bar::getBars(&bars, period, timePeriod, shift);
+	vector<Bar> bars(nPeriod);
+	vector<double> closeVec(nPeriod);
+	int r = Bar::getBars(&bars, chInstrumentId, nPeriod, nTimePeriod, nShift);
 
 	if (r == -2)
 	{
@@ -20,5 +20,5 @@ double Indicators::ma(TThostFtdcInstrumentIDType instrumentId, int period, int t
 
 	int sum = accumulate(closeVec.begin(), closeVec.end(), 0);
 	
-	return sum / period;
+	return sum / nPeriod;
 }
