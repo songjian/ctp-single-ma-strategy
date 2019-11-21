@@ -18,10 +18,10 @@ private:
 	size_t FindIndex(string chInstrumentId);
 	tm GetDepthMarketDataTm(CThostFtdcDepthMarketDataField* pDepthMarketData);
 	Bar* MdVecToBar(size_t nVecIndex);
-	void PeriodConverter(string chInstrumentId, int nTimePeriod);
+	void PeriodConverter(string chInstrumentId, size_t nTimePeriod);
 	void ExecutionPeriodConverter(string chInstrumentId);
-	vector<int> GetCurrentPeriodConverter(CThostFtdcDepthMarketDataField* pDepthMarketData);
-	int GetPervTimePeriodIndex(int nTimePeriod);
+	size_t GetCurrentPeriodConverter(CThostFtdcDepthMarketDataField* pDepthMarketData, vector<int>* gnConverTimePeriods);
+	size_t GetPervTimePeriod(size_t nTimePeriod);
 	vector<string> m_gchInstrumentIds;
 	vector<vector<CThostFtdcDepthMarketDataField> > m_gDepthMarketData;
 	ofstream m_Outfile;

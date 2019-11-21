@@ -118,18 +118,13 @@ Bar* BarManager::MdVecToBar(size_t nVecIndex)
 	return &bar;
 }
 
-void BarManager::PeriodConverter(string chInstrumentId, int nTimePeriod)
+void BarManager::PeriodConverter(string chInstrumentId, size_t nTimePeriod)
 {
-	int nPervTimePeriodIndex = GetPervTimePeriodIndex(nTimePeriod);
-	int converTimePeriod = 1;
-	if (nPervTimePeriodIndex >= 0)
-	{
-		int converTimePeriod = m_nTimePeriods[nPervTimePeriodIndex];
-	}
-	int nBarNum = nTimePeriod / converTimePeriod;
-	printf("nTimePeriod:%d   nPervTimePeriodIndex:%d   converTimePeriod:%d   nBarNum:%d\n", nTimePeriod, nPervTimePeriodIndex, converTimePeriod, nBarNum);
+	size_t nConverTimePeriod = GetPervTimePeriod(nTimePeriod);
+	int nBarNum = nTimePeriod / nConverTimePeriod;
+	printf("nTimePeriod:%zd  nConverTimePeriod:%d   nBarNum:%d\n", nTimePeriod, nConverTimePeriod, nBarNum);
 	vector<Bar> vecBars;
-	int r = Bar::getBars(&vecBars, chInstrumentId, nBarNum, converTimePeriod, 0);
+	int r = Bar::getBars(&vecBars, chInstrumentId, nBarNum, nConverTimePeriod, 0);
 
 	if (r == -2)
 	{
@@ -137,16 +132,11 @@ void BarManager::PeriodConverter(string chInstrumentId, int nTimePeriod)
 	}
 
 	//检查getBars数据
-	printf("检查getBars数据\n");
+	/*printf("检查getBars数据\n");
 	for (size_t i = 0; i < vecBars.size(); i++)
 	{
 		printf("vecBars_%zd: %d %d %d %d %d %lf %lf %lf %lf %d\n", i, vecBars[i].year, vecBars[i].month, vecBars[i].day, vecBars[i].hour, vecBars[i].minute, vecBars[i].open, vecBars[i].high, vecBars[i].low, vecBars[i].close, vecBars[i].volume);
-	}
-	/*
-	printf("vecBars.front().year:%d   vecBars.size():%zd\n", vecBars.front().year, vecBars.size());
-	printf("vecBars.back().year:%d   vecBars.size():%zd\n", vecBars.back().year, vecBars.size());
-	printf("vecBars.front().high:%lf   vecBars.size():%zd\n", vecBars.front().high, vecBars.size());
-	*/
+	}*/
 
 	Bar bar;
 	bar.year = vecBars.front().year;
@@ -174,16 +164,24 @@ void BarManager::PeriodConverter(string chInstrumentId, int nTimePeriod)
 void BarManager::ExecutionPeriodConverter(string chInstrumentId)
 {
 	size_t nIndex = FindIndex(chInstrumentId);
-	vector<int> converPeriods = GetCurrentPeriodConverter(&m_gDepthMarketData[nIndex].back());
-	for (size_t i = 0; i < converPeriods.size(); i++)
+	vector<int> gnConverTimePeriods;
+	GetCurrentPeriodConverter(&m_gDepthMarketData[nIndex].back(), &gnConverTimePeriods);
+	//调试
+	if (gnConverTimePeriods.size() > 0)
 	{
-		PeriodConverter(chInstrumentId, converPeriods[i]);
+		tm bTm = GetDepthMarketDataTm(&m_gDepthMarketData[nIndex].back());
+		printf("DepthMarketData时间：%d\n", bTm.tm_min);
+		printf("转换周期大小converPeriods：%zd\n", gnConverTimePeriods.size());
+	}
+
+	for (size_t i = 0; i < gnConverTimePeriods.size(); i++)
+	{
+		PeriodConverter(chInstrumentId, gnConverTimePeriods[i]);
 	}
 }
 
-vector<int> BarManager::GetCurrentPeriodConverter(CThostFtdcDepthMarketDataField* pDepthMarketData)
+size_t BarManager::GetCurrentPeriodConverter(CThostFtdcDepthMarketDataField* pDepthMarketData, vector<int>* gnConverTimePeriods)
 {
-	static vector<int> periodVec;
 	tm tmMd = GetDepthMarketDataTm(pDepthMarketData);
 	int minute = tmMd.tm_min + 1;
 	int arrSize = sizeof(m_nTimePeriods) / sizeof(m_nTimePeriods[0]);
@@ -191,23 +189,33 @@ vector<int> BarManager::GetCurrentPeriodConverter(CThostFtdcDepthMarketDataField
 	{
 		if (minute % m_nTimePeriods[i] == 0)
 		{
-			periodVec.push_back(m_nTimePeriods[i]);
+			// 调试
+			printf("minute:%d   m_nTimePeriods_%zd:%d\n", minute, i, m_nTimePeriods[i]);
+			gnConverTimePeriods->push_back(m_nTimePeriods[i]);
 		}
 	}
-	return periodVec;
+	return gnConverTimePeriods->size();
 }
 
-int BarManager::GetPervTimePeriodIndex(int nTimePeriod)
+size_t BarManager::GetPervTimePeriod(size_t nTimePeriod)
 {
-	int nIndex = -1;
-	int arrSize = sizeof(m_nTimePeriods) / sizeof(m_nTimePeriods[0]);
-	for (int i = 0; i < arrSize; i++)
+	size_t nPervTimePeriod = 1;
+	if (nTimePeriod == 1)
 	{
-		if (m_nTimePeriods[i] == nTimePeriod)
+		return 1;
+	}
+	size_t nSize = sizeof(m_nTimePeriods) / sizeof(m_nTimePeriods[0]);
+	for (size_t i = 0; i < nSize; i++)
+	{
+		if (i == 0)
 		{
-			nIndex = i - 1;
+			return 1;
+		}
+		else if (m_nTimePeriods[i] == nTimePeriod)
+		{
+			nPervTimePeriod = m_nTimePeriods[i - 1];
 		}
 	}
-	return nIndex;
+	return nPervTimePeriod > 1 ? nPervTimePeriod : 1;
 }
 

@@ -17,7 +17,6 @@ int Bar::getBars(vector<Bar>* pBuffBars, string chInstrumentId, int nPeriod, int
 	for (size_t i = 0; i < buffLine.size(); i++)
 	{
 		Bar bar = Bar::GetBarFromCsv(buffLine[i]);
-			printf("++==bar_%zd: %d %d %d %d %d %lf %lf %lf %lf %d\n", i, bar.year, bar.month, bar.day, bar.hour, bar.minute, bar.open, bar.high, bar.low, bar.close, bar.volume);
 		pBuffBars->push_back(bar);
 	}
 
@@ -28,6 +27,5 @@ Bar Bar::GetBarFromCsv(string chCsv)
 {
 	static Bar bar;
 	int r = sscanf(chCsv.c_str(), "%d,%d,%d,%d,%d,%lf,%lf,%lf,%lf,%d", &bar.year, &bar.month, &bar.day, &bar.hour, &bar.minute, &bar.open, &bar.high, &bar.low, &bar.close, &bar.volume);
-	printf("++==bar: %d %d %d %d %d %lf %lf %lf %lf %d\n", bar.year, bar.month, bar.day, bar.hour, bar.minute, bar.open, bar.high, bar.low, bar.close, bar.volume);
 	return bar;
 }
