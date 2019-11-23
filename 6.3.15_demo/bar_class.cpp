@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Bar.h"
+#include "bar_class.h"
 
 using namespace std;
 

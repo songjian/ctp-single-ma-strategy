@@ -1,9 +1,10 @@
 #pragma once
+#include "getconfig.h"
 #include "ThostFtdcUserApiStruct.h"
 #include <algorithm>
 #include <fstream>
-#include "Bar.h"
-#include "strategy.h"
+#include "bar_class.h"
+#include "strategy_class.h"
 
 using namespace std;
 

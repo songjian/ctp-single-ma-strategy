@@ -1,6 +1,6 @@
 #pragma once
 #include "ThostFtdcUserApiDataType.h"
-#include "Bar.h"
+#include "bar_class.h"
 
 class Indicators
 {

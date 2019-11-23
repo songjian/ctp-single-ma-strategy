@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "strategy.h"
+#include "strategy_class.h"
 
 void Strategy::OnStart()
 {

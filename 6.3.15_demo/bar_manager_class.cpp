@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "BarManager.h"
 #include "getconfig.h"
+#include "bar_manager_class.h"
 
 using namespace std;
 
@@ -117,8 +117,8 @@ void BarManager::PeriodConverter(string chInstrumentId, size_t nTimePeriod)
 		return;
 	}
 
-	//¼ì²égetBarsÊı¾İ
-	/*printf("¼ì²égetBarsÊı¾İ\n");
+	//é”Ÿæ–¤æ‹·é”ŸçµetBarsé”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·
+	/*printf("é”Ÿæ–¤æ‹·é”ŸçµetBarsé”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·\n");
 	for (size_t i = 0; i < vecBars.size(); i++)
 	{
 		printf("vecBars_%zd: %d %d %d %d %d %lf %lf %lf %lf %d\n", i, vecBars[i].year, vecBars[i].month, vecBars[i].day, vecBars[i].hour, vecBars[i].minute, vecBars[i].open, vecBars[i].high, vecBars[i].low, vecBars[i].close, vecBars[i].volume);
@@ -146,7 +146,7 @@ void BarManager::PeriodConverter(string chInstrumentId, size_t nTimePeriod)
 	string outFileName = FileName(chInstrumentId, nTimePeriod);
 	BarToFile(outFileName, &bar);
 
-	//Í¨ÖªStrategyĞÂÖùÉú³É
+	//é€šçŸ¥Strategyé”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·
 	int nIndex = FindIndex(chInstrumentId);
 	m_pStrategy->OnBar(&m_gDepthMarketData[nIndex].back(), nTimePeriod);
 }
@@ -156,12 +156,12 @@ void BarManager::ExecutionPeriodConverter(string chInstrumentId)
 	size_t nIndex = FindIndex(chInstrumentId);
 	vector<int> gnConverTimePeriods;
 	GetCurrentPeriodConverter(&m_gDepthMarketData[nIndex].back(), &gnConverTimePeriods);
-	//µ÷ÊÔ
+	//é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·
 	if (gnConverTimePeriods.size() > 0)
 	{
 		tm bTm = GetDepthMarketDataTm(&m_gDepthMarketData[nIndex].back());
-		printf("DepthMarketDataÊ±¼ä£º%d\n", bTm.tm_min);
-		printf("×ª»»ÖÜÆÚ´óĞ¡converPeriods£º%zd\n", gnConverTimePeriods.size());
+		printf("DepthMarketDataæ—¶é”Ÿæˆ’ï¼š%d\n", bTm.tm_min);
+		printf("è½¬é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·é”ŸèŠ‚è¾¾æ‹·å°converPeriodsé”Ÿæ–¤æ‹·%zd\n", gnConverTimePeriods.size());
 	}
 
 	for (size_t i = 0; i < gnConverTimePeriods.size(); i++)
@@ -179,7 +179,7 @@ size_t BarManager::GetCurrentPeriodConverter(CThostFtdcDepthMarketDataField* pDe
 	{
 		if (minute % m_nTimePeriods[i] == 0)
 		{
-			// µ÷ÊÔ
+			// é”Ÿæ–¤æ‹·é”Ÿæ–¤æ‹·
 			printf("minute:%d   m_nTimePeriods_%zd:%d\n", minute, i, m_nTimePeriods[i]);
 			gnConverTimePeriods->push_back(m_nTimePeriods[i]);
 		}

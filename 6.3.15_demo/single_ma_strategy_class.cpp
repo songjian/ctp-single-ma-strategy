@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "singleMaStrategy.h"
+#include "single_ma_strategy_class.h"
 
 void SingleMaStrategy::OnStart()
 {
@@ -15,7 +15,7 @@ void SingleMaStrategy::OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData)
 	double fMa = m_Indicators.ma(m_InstrumentId, m_nPeriod, m_nTimePeriod, 0);
 	if (fMa == 0)
 	{
-		printf("Êı¾İ²»×ã£¬Çë²»Òª¹Ø±ÕÈí¼ş£¬µÈ´ıÊı¾İ½ÓÊÕÍê±Ïºó³ÌĞò¿ªÊ¼Ö´ĞĞ¡£\n");
+		printf("æ•°æ®ä¸è¶³ï¼Œè¯·ä¸è¦å…³é—­è½¯ä»¶ï¼Œç­‰å¾…æ•°æ®æ¥æ”¶å®Œæ¯•åç¨‹åºå¼€å§‹æ‰§è¡Œã€‚\n");
 		return;
 	}
 
@@ -27,7 +27,7 @@ void SingleMaStrategy::OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData)
 
 void SingleMaStrategy::OnBar(CThostFtdcDepthMarketDataField* pDepthMarketData, size_t nTimePeriod)
 {
-	printf("ĞÂBar£¡ Ê±¼äÖÜÆÚ£º%zd\n", nTimePeriod);
+	printf("æ–°Barï¼ æ—¶é—´å‘¨æœŸï¼š%zd\n", nTimePeriod);
 }
 
 int SingleMaStrategy::OpenPosition(TThostFtdcDirectionType cDirection, double fLimitPrice)
@@ -35,7 +35,7 @@ int SingleMaStrategy::OpenPosition(TThostFtdcDirectionType cDirection, double fL
 	CThostFtdcInputOrderField ord = { 0 };
 	strcpy_s(ord.BrokerID, getConfig("config", "BrokerID").c_str());
 	strcpy_s(ord.InvestorID, getConfig("config", "InvestorID").c_str());
-	strcpy_s(ord.InstrumentID, m_InstrumentId);
+	strcpy_s(ord.InstrumentID, m_InstrumentId.c_str());
 	strcpy_s(ord.UserID, getConfig("config", "UserID").c_str());
 	strcpy_s(ord.ExchangeID, getConfig("config", "ExchangeID").c_str());
 	ord.OrderPriceType = THOST_FTDC_OPT_LimitPrice;
@@ -45,8 +45,8 @@ int SingleMaStrategy::OpenPosition(TThostFtdcDirectionType cDirection, double fL
 	//ord.LimitPrice = atoi(getConfig("config", "LimitPrice").c_str());
 	ord.LimitPrice = fLimitPrice;
 	ord.VolumeTotalOriginal = 1;
-	ord.TimeCondition = THOST_FTDC_TC_GFD;///µ±ÈÕÓĞĞ§
-	ord.VolumeCondition = THOST_FTDC_VC_CV;///È«²¿ÊıÁ¿
+	ord.TimeCondition = THOST_FTDC_TC_GFD;///å½“æ—¥æœ‰æ•ˆ
+	ord.VolumeCondition = THOST_FTDC_VC_CV;///å…¨éƒ¨æ•°é‡
 	ord.MinVolume = 1;
 	ord.ContingentCondition = THOST_FTDC_CC_Immediately;
 	ord.StopPrice = 0;

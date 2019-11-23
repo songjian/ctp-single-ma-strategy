@@ -1,7 +1,7 @@
 #pragma once
 #include "ThostFtdcUserApiStruct.h"
 #include <fstream>
-#include "BarManager.h"
+#include "bar_manager_class.h"
 
 using namespace std;
 

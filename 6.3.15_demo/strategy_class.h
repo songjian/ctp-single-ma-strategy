@@ -2,6 +2,8 @@
 #include "ThostFtdcUserApiStruct.h"
 #include "ThostFtdcTraderApi.h"
 
+using namespace std;
+
 class Strategy
 {
 public:

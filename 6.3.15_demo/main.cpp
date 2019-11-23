@@ -22,7 +22,7 @@ int main()
 	sh.ReqUserLogin();
 	WaitForSingleObject(g_hEvent, INFINITE);
 
-	//½áËãµ¥È·ÈÏÇëÇó
+	//ç»“ç®—å•ç¡®è®¤è¯·æ±‚
 	sh.ReqSettlementInfoConfirm();
 	WaitForSingleObject(g_hEvent, INFINITE);
 

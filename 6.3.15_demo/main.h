@@ -9,7 +9,6 @@
 #include "ThostFtdcTraderApi.h"
 #include "ThostFtdcMdApi.h"
 #include "DataCollect.h"
-
 #include <conio.h>
 #include "getconfig.h"
 #include "traderApi.h"
@@ -23,42 +22,42 @@
 using namespace std;
 FILE *logfile;
 
-// ±¨µ¥Â¼Èë²Ù×÷ÊÇ·ñÍê³ÉµÄ±êÖ¾
+// æŠ¥å•å½•å…¥æ“ä½œæ˜¯å¦å®Œæˆçš„æ ‡å¿—
 // Create a manual reset event with no signal
 HANDLE g_hEvent = CreateEvent(NULL, false, false, NULL);
-/// »áÔ±´úÂë
+/// ä¼šå‘˜ä»£ç 
 TThostFtdcBrokerIDType g_chBrokerID;
-/// ½»Ò×ÓÃ»§´úÂë
+/// äº¤æ˜“ç”¨æˆ·ä»£ç 
 TThostFtdcUserIDType g_chUserID;
-/// ½»Ò×ÓÃ»§ÃÜÂë
+/// äº¤æ˜“ç”¨æˆ·å¯†ç 
 TThostFtdcPasswordType g_chPassword;
-/// ½»Ò×Ëù´úÂë
+/// äº¤æ˜“æ‰€ä»£ç 
 TThostFtdcExchangeIDType g_chExchangeID;
-///ºÏÔ¼´úÂë
+///åˆçº¦ä»£ç 
 TThostFtdcInstrumentIDType	g_chInstrumentID;
-///Í¶×ÊÕß´úÂë
+///æŠ•èµ„è€…ä»£ç 
 TThostFtdcInvestorIDType g_chInvestorID;
-///Ô¤Âñ³·µ¥±àºÅ
+///é¢„åŸ‹æ’¤å•ç¼–å·
 TThostFtdcParkedOrderActionIDType	g_chParkedOrderActionID1;
-///Ô¤Âñ±¨µ¥±àºÅ
+///é¢„åŸ‹æŠ¥å•ç¼–å·
 TThostFtdcParkedOrderIDType	g_chParkedOrderID1;
-///±¨µ¥ÒıÓÃ
+///æŠ¥å•å¼•ç”¨
 TThostFtdcOrderRefType	g_chOrderRef;
-///Ç°ÖÃ±àºÅ
+///å‰ç½®ç¼–å·
 TThostFtdcFrontIDType	g_chFrontID;
-///»á»°±àºÅ
+///ä¼šè¯ç¼–å·
 TThostFtdcSessionIDType	g_chSessionID;
-///±¨µ¥±àºÅ
+///æŠ¥å•ç¼–å·
 TThostFtdcOrderSysIDType	g_chOrderSysID;
-///Ö¹Ëğ¼Û
+///æ­¢æŸä»·
 TThostFtdcPriceType	g_chStopPrice;
-///±¨¼ÛÒıÓÃ
+///æŠ¥ä»·å¼•ç”¨
 TThostFtdcOrderRefType	g_chQuoteRef;
 int FrontID = 0;
 int SessionID = 0;
 int Limitprice = 0;
 int nRequestID = 0;
-int chioce_action = 0;//Îª0ÔòÈ«²¿±¨
+int chioce_action = 0;//ä¸º0åˆ™å…¨éƒ¨æŠ¥
 
 vector<string> vector_OrderSysID;
 vector<string> vector_ExchangeID;
@@ -66,39 +65,39 @@ vector<string> vector_InstrumentID;
 vector<string> md_InstrumentID;
 int action_number;
 
-///Ö´ĞĞĞû¸æÒıÓÃ
+///æ‰§è¡Œå®£å‘Šå¼•ç”¨
 TThostFtdcOrderRefType	g_NewExecOrderRef;
-///Ö´ĞĞĞû¸æ±àºÅ
+///æ‰§è¡Œå®£å‘Šç¼–å·
 TThostFtdcExecOrderSysIDType	g_NewExecOrderSysID;
-///Ç°ÖÃ±àºÅ
+///å‰ç½®ç¼–å·
 TThostFtdcFrontIDType	g_NewFrontID;
-///»á»°±àºÅ
+///ä¼šè¯ç¼–å·
 TThostFtdcSessionIDType	g_NewSessionID;
 
-//ÆÚÈ¨×Ô¶Ô³åÏìÓ¦Í¨Öª
-///ÆÚÈ¨×Ô¶Ô³å±àºÅ
+//æœŸæƒè‡ªå¯¹å†²å“åº”é€šçŸ¥
+///æœŸæƒè‡ªå¯¹å†²ç¼–å·
 TThostFtdcOrderSysIDType	g_chOptionSelfCloseSysID;
-///ÆÚÈ¨×Ô¶Ô³åÒıÓÃ
+///æœŸæƒè‡ªå¯¹å†²å¼•ç”¨
 TThostFtdcOrderRefType	g_chOptionSelfCloseRef;
-///ÓÃ»§¶Ë²úÆ·ĞÅÏ¢
+///ç”¨æˆ·ç«¯äº§å“ä¿¡æ¯
 TThostFtdcProductInfoType	g_chUserProductInfo;
-///ÈÏÖ¤Âë
+///è®¤è¯ç 
 TThostFtdcAuthCodeType	g_chAuthCode;
-///App´úÂë
+///Appä»£ç 
 TThostFtdcAppIDType	g_chAppID;
 
 HANDLE xinhao = CreateEvent(NULL, false, false, NULL);
 
 CTraderApi *pUserApi = new CTraderApi;
 
-//ĞĞÇéÀà
+//è¡Œæƒ…ç±»
 class CSimpleMdHandler : public CThostFtdcMdSpi
 {
 public:
-	// ¹¹Ôìº¯Êı£¬ĞèÒªÒ»¸öÓĞĞ§µÄÖ¸ÏòCThostFtdcMduserApiÊµÀıµÄÖ¸Õë
+	// æ„é€ å‡½æ•°ï¼Œéœ€è¦ä¸€ä¸ªæœ‰æ•ˆçš„æŒ‡å‘CThostFtdcMduserApiå®ä¾‹çš„æŒ‡é’ˆ
 	CSimpleMdHandler(CThostFtdcMdApi *pUserApi) : m_pUserMdApi(pUserApi) {}
 	~CSimpleMdHandler() {}
-	// µ±¿Í»§¶ËÓë½»Ò×ÍĞ¹ÜÏµÍ³½¨Á¢ÆğÍ¨ĞÅÁ¬½Ó£¬¿Í»§¶ËĞèÒª½øĞĞµÇÂ¼
+	// å½“å®¢æˆ·ç«¯ä¸äº¤æ˜“æ‰˜ç®¡ç³»ç»Ÿå»ºç«‹èµ·é€šä¿¡è¿æ¥ï¼Œå®¢æˆ·ç«¯éœ€è¦è¿›è¡Œç™»å½•
 	virtual void OnFrontConnected()
 	{
 		/*strcpy_s(g_chBrokerID, getConfig("config", "BrokerID").c_str());
@@ -114,16 +113,16 @@ public:
 		LOG("\tlogin num = %d\n", num);
 	}
 
-	// µ±¿Í»§¶ËÓë½»Ò×ÍĞ¹ÜÏµÍ³Í¨ĞÅÁ¬½Ó¶Ï¿ªÊ±£¬¸Ã·½·¨±»µ÷ÓÃ
+	// å½“å®¢æˆ·ç«¯ä¸äº¤æ˜“æ‰˜ç®¡ç³»ç»Ÿé€šä¿¡è¿æ¥æ–­å¼€æ—¶ï¼Œè¯¥æ–¹æ³•è¢«è°ƒç”¨
 	virtual void OnFrontDisconnected(int nReason)
 	{
-		// µ±·¢ÉúÕâ¸öÇé¿öºó£¬API»á×Ô¶¯ÖØĞÂÁ¬½Ó£¬¿Í»§¶Ë¿É²»×ö´¦Àí
+		// å½“å‘ç”Ÿè¿™ä¸ªæƒ…å†µåï¼ŒAPIä¼šè‡ªåŠ¨é‡æ–°è¿æ¥ï¼Œå®¢æˆ·ç«¯å¯ä¸åšå¤„ç†
 		LOG("<OnFrontDisconnected>\n");
 		LOG("\tnReason= = [%d]", nReason);
 		LOG("</OnFrontDisconnected>\n");
 	}
 
-	// µ±¿Í»§¶Ë·¢³öµÇÂ¼ÇëÇóÖ®ºó£¬¸Ã·½·¨»á±»µ÷ÓÃ£¬Í¨Öª¿Í»§¶ËµÇÂ¼ÊÇ·ñ³É¹¦
+	// å½“å®¢æˆ·ç«¯å‘å‡ºç™»å½•è¯·æ±‚ä¹‹åï¼Œè¯¥æ–¹æ³•ä¼šè¢«è°ƒç”¨ï¼Œé€šçŸ¥å®¢æˆ·ç«¯ç™»å½•æ˜¯å¦æˆåŠŸ
 	virtual void OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin,
 		CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 	{
@@ -132,17 +131,17 @@ public:
 			pRspInfo->ErrorMsg);
 		LOG("\tRequestID=[%d], Chain=[%d]\n", nRequestID, bIsLast);
 		if (pRspInfo->ErrorID != 0) {
-			// ¶ËµÇÊ§°Ü£¬¿Í»§¶ËĞè½øĞĞ´íÎó´¦Àí
+			// ç«¯ç™»å¤±è´¥ï¼Œå®¢æˆ·ç«¯éœ€è¿›è¡Œé”™è¯¯å¤„ç†
 			LOG("\tFailed to login, errorcode=%d errormsg=%s requestid=%d chain = %d",
 				pRspInfo->ErrorID, pRspInfo->ErrorMsg, nRequestID, bIsLast);
 			exit(-1);
 		}
 		SetEvent(xinhao);
-		//SubscribeMarketData();//¶©ÔÄĞĞÇé
-		//SubscribeForQuoteRsp();//Ñ¯¼ÛÇëÇó
+		//SubscribeMarketData();//è®¢é˜…è¡Œæƒ…
+		//SubscribeForQuoteRsp();//è¯¢ä»·è¯·æ±‚
 	}
 
-	void SubscribeMarketData()//ÊÕĞĞÇé
+	void SubscribeMarketData()//æ”¶è¡Œæƒ…
 	{
 		int md_num = 0;
 		char **ppInstrumentID = new char*[5000];
@@ -157,7 +156,7 @@ public:
 					md_num++;
 				}
 				int result = m_pUserMdApi->SubscribeMarketData(ppInstrumentID, a);
-				LOG((result == 0) ? "¶©ÔÄĞĞÇéÇëÇó1......·¢ËÍ³É¹¦\n" : "¶©ÔÄĞĞÇéÇëÇó1......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", result);
+				LOG((result == 0) ? "è®¢é˜…è¡Œæƒ…è¯·æ±‚1......å‘é€æˆåŠŸ\n" : "è®¢é˜…è¡Œæƒ…è¯·æ±‚1......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", result);
 			}
 			else if (count1 == md_InstrumentID.size() / 500)
 			{
@@ -168,12 +167,12 @@ public:
 					md_num++;
 				}
 				int result = m_pUserMdApi->SubscribeMarketData(ppInstrumentID, count2);
-				LOG((result == 0) ? "¶©ÔÄĞĞÇéÇëÇó2......·¢ËÍ³É¹¦\n" : "¶©ÔÄĞĞÇéÇëÇó2......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", result);
+				LOG((result == 0) ? "è®¢é˜…è¡Œæƒ…è¯·æ±‚2......å‘é€æˆåŠŸ\n" : "è®¢é˜…è¡Œæƒ…è¯·æ±‚2......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", result);
 			}
 		}
 	}
 
-	///¶©ÔÄĞĞÇéÓ¦´ğ
+	///è®¢é˜…è¡Œæƒ…åº”ç­”
 	virtual void OnRspSubMarketData(CThostFtdcSpecificInstrumentField *pSpecificInstrument, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 	{
 		LOG("<OnRspSubMarketData>\n");
@@ -191,7 +190,7 @@ public:
 		LOG("</OnRspSubMarketData>\n");
 	}
 
-	///Éî¶ÈĞĞÇéÍ¨Öª
+	///æ·±åº¦è¡Œæƒ…é€šçŸ¥
 	virtual void OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *pDepthMarketData)
 	{
 		m_pMarketData->OnTick(pDepthMarketData);
@@ -211,17 +210,17 @@ public:
 		LOG("</OnRtnDepthMarketData>\n");
 	}
 
-	///¶©ÔÄÑ¯¼ÛÇëÇó
+	///è®¢é˜…è¯¢ä»·è¯·æ±‚
 	void SubscribeForQuoteRsp()
 	{
-		LOG("ĞĞÇéÖĞ¶©ÔÄÑ¯¼ÛÇëÇó\n");
+		LOG("è¡Œæƒ…ä¸­è®¢é˜…è¯¢ä»·è¯·æ±‚\n");
 		char **ppInstrumentID = new char*[50];
 		string g_chInstrumentID = getConfig("config", "InstrumentID");
 		ppInstrumentID[0] = const_cast<char *>(g_chInstrumentID.c_str());
 		int result = m_pUserMdApi->SubscribeForQuoteRsp(ppInstrumentID, 1);
 	}
 
-	///¶©ÔÄÑ¯¼ÛÓ¦´ğ
+	///è®¢é˜…è¯¢ä»·åº”ç­”
 	virtual void OnRspSubForQuoteRsp(CThostFtdcSpecificInstrumentField *pSpecificInstrument, CThostFtdcRspInfoField *pRspInfo,
 		int nRequestID, bool bIsLast)
 	{
@@ -242,7 +241,7 @@ public:
 	}
 
 
-	///Ñ¯¼ÛÍ¨Öª
+	///è¯¢ä»·é€šçŸ¥
 	virtual void OnRtnForQuoteRsp(CThostFtdcForQuoteRspField *pForQuoteRsp)
 	{
 		LOG("<OnRtnForQuoteRsp>\n");
@@ -270,13 +269,13 @@ public:
 	}
 
 private:
-	// Ö¸ÏòCThostFtdcMduserApiÊµÀıµÄÖ¸Õë
+	// æŒ‡å‘CThostFtdcMduserApiå®ä¾‹çš„æŒ‡é’ˆ
 	CThostFtdcMdApi *m_pUserMdApi;
 	MarketDataWriter* m_pMarketData;
 	Strategy* m_pStrategy;
 };
 
-//½»Ò×Àà
+//äº¤æ˜“ç±»
 class CSimpleHandler : public CTraderSpi
 {
 public:
@@ -302,7 +301,7 @@ public:
 		SetEvent(g_hEvent);
 	}
 
-	//¿Í»§¶ËÈÏÖ¤
+	//å®¢æˆ·ç«¯è®¤è¯
 	void ReqAuthenticate()
 	{
 		//strcpy_s(g_chUserProductInfo, getConfig("config", "UserProductInfo").c_str());
@@ -316,10 +315,10 @@ public:
 		strcpy_s(a.AuthCode, g_chAuthCode);
 		strcpy_s(a.AppID, g_chAppID);
 		int b = m_pUserApi->ReqAuthenticate(&a, 1);
-		printf("\t¿Í»§¶ËÈÏÖ¤ = [%d]\n", b);
+		printf("\tå®¢æˆ·ç«¯è®¤è¯ = [%d]\n", b);
 	}
 
-	///¿Í»§¶ËÈÏÖ¤ÏìÓ¦
+	///å®¢æˆ·ç«¯è®¤è¯å“åº”
 	virtual void OnRspAuthenticate(CThostFtdcRspAuthenticateField *pRspAuthenticateField, CThostFtdcRspInfoField *pRspInfo,
 		int nRequestID, bool bIsLast)
 	{
@@ -351,7 +350,7 @@ public:
 		strcpy_s(reqUserLogin.Password, g_chPassword);
 		//strcpy_s(reqUserLogin.ClientIPAddress, "::c0a8:0101");
 		//strcpy_s(reqUserLogin.UserProductInfo, "123");
-		// ·¢³öµÇÂ½ÇëÇó
+		// å‘å‡ºç™»é™†è¯·æ±‚
 		m_pUserApi->ReqUserLogin(&reqUserLogin, nRequestID++);
 	}
 
@@ -379,7 +378,7 @@ public:
 		m_pUserApi->ReqUserLogout(&a, nRequestID++);
 	}
 
-	///µÇ³öÇëÇóÏìÓ¦
+	///ç™»å‡ºè¯·æ±‚å“åº”
 	virtual void OnRspUserLogout(CThostFtdcUserLogoutField *pUserLogout, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 	{
 		LOG("<OnRspUserLogout>\n");
@@ -399,18 +398,18 @@ public:
 		pUserApi->Release();
 	}
 
-	///ÇëÇóÈ·ÈÏ½áËãµ¥
+	///è¯·æ±‚ç¡®è®¤ç»“ç®—å•
 	void ReqSettlementInfoConfirm()
 	{
 		CThostFtdcSettlementInfoConfirmField Confirm = { 0 };
-		///¾­¼Í¹«Ë¾´úÂë
+		///ç»çºªå…¬å¸ä»£ç 
 		strcpy_s(Confirm.BrokerID, g_chBrokerID);
-		///Í¶×ÊÕß´úÂë
+		///æŠ•èµ„è€…ä»£ç 
 		strcpy_s(Confirm.InvestorID, g_chUserID);
 		m_pUserApi->ReqSettlementInfoConfirm(&Confirm, nRequestID++);
 	}
 
-	///Í¶×ÊÕß½áËã½á¹ûÈ·ÈÏÏìÓ¦
+	///æŠ•èµ„è€…ç»“ç®—ç»“æœç¡®è®¤å“åº”
 	virtual void OnRspSettlementInfoConfirm(CThostFtdcSettlementInfoConfirmField *pSettlementInfoConfirm,
 		CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 	{
@@ -418,11 +417,11 @@ public:
 		SetEvent(g_hEvent);
 	}
 
-	///ÓÃ»§¿ÚÁî¸üĞÂÇëÇó
+	///ç”¨æˆ·å£ä»¤æ›´æ–°è¯·æ±‚
 	void ReqUserPasswordUpdate()
 	{
 		string newpassword;
-		LOG("ÇëÊäÈëĞÂµÇÂ¼ÃÜÂë£º\n");
+		LOG("è¯·è¾“å…¥æ–°ç™»å½•å¯†ç ï¼š\n");
 		cin >> newpassword;
 		CThostFtdcUserPasswordUpdateField a = { 0 };
 		strcpy_s(a.BrokerID, g_chBrokerID);
@@ -430,21 +429,21 @@ public:
 		strcpy_s(a.OldPassword, g_chPassword);
 		strcpy_s(a.NewPassword, newpassword.c_str());
 		int b = m_pUserApi->ReqUserPasswordUpdate(&a, nRequestID++);
-		LOG((b == 0) ? "ÓÃ»§¿ÚÁî¸üĞÂÇëÇó......·¢ËÍ³É¹¦\n" : "ÓÃ»§¿ÚÁî¸üĞÂÇëÇó......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "ç”¨æˆ·å£ä»¤æ›´æ–°è¯·æ±‚......å‘é€æˆåŠŸ\n" : "ç”¨æˆ·å£ä»¤æ›´æ–°è¯·æ±‚......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", b);
 	}
 
-	///ÓÃ»§¿ÚÁî¸üĞÂÇëÇóÏìÓ¦
+	///ç”¨æˆ·å£ä»¤æ›´æ–°è¯·æ±‚å“åº”
 	virtual void OnRspUserPasswordUpdate(CThostFtdcUserPasswordUpdateField *pUserPasswordUpdate, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 	{
 		CTraderSpi::OnRspUserPasswordUpdate(pUserPasswordUpdate, pRspInfo, nRequestID, bIsLast);
 		SetEvent(g_hEvent);
 	}
 
-	///×Ê½ğÕË»§¿ÚÁî¸üĞÂÇëÇó
+	///èµ„é‡‘è´¦æˆ·å£ä»¤æ›´æ–°è¯·æ±‚
 	void ReqTradingAccountPasswordUpdate()
 	{
 		string newpassword;
-		LOG("ÇëÊäÈëĞÂ×Ê½ğÃÜÂë£º\n");
+		LOG("è¯·è¾“å…¥æ–°èµ„é‡‘å¯†ç ï¼š\n");
 		cin >> newpassword;
 		CThostFtdcTradingAccountPasswordUpdateField a = { 0 };
 		strcpy_s(a.BrokerID, g_chBrokerID);
@@ -453,21 +452,21 @@ public:
 		strcpy_s(a.NewPassword, newpassword.c_str());
 		strcpy_s(a.CurrencyID, "CNY");
 		int b = m_pUserApi->ReqTradingAccountPasswordUpdate(&a, nRequestID++);
-		LOG((b == 0) ? "×Ê½ğÕË»§¿ÚÁî¸üĞÂÇëÇó......·¢ËÍ³É¹¦\n" : "×Ê½ğÕË»§¿ÚÁî¸üĞÂÇëÇó......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "èµ„é‡‘è´¦æˆ·å£ä»¤æ›´æ–°è¯·æ±‚......å‘é€æˆåŠŸ\n" : "èµ„é‡‘è´¦æˆ·å£ä»¤æ›´æ–°è¯·æ±‚......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", b);
 	}
 
-	///×Ê½ğÕË»§¿ÚÁî¸üĞÂÇëÇóÏìÓ¦
+	///èµ„é‡‘è´¦æˆ·å£ä»¤æ›´æ–°è¯·æ±‚å“åº”
 	virtual void OnRspTradingAccountPasswordUpdate(CThostFtdcTradingAccountPasswordUpdateField *pTradingAccountPasswordUpdate, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 	{
 		CTraderSpi::OnRspTradingAccountPasswordUpdate(pTradingAccountPasswordUpdate, pRspInfo, nRequestID, bIsLast);
 		SetEvent(g_hEvent);
 	}
 
-	///Ô¤Âñµ¥Â¼Èë//ÏŞ¼Ûµ¥
+	///é¢„åŸ‹å•å½•å…¥//é™ä»·å•
 	void ReqParkedOrderInsert()
 	{
 		int limitprice = 0;
-		LOG("ÇëÊäÈëÏŞ¼Ûµ¥¼Û¸ñ£º(Ä¬ÈÏ0)\n");
+		LOG("è¯·è¾“å…¥é™ä»·å•ä»·æ ¼ï¼š(é»˜è®¤0)\n");
 		cin >> limitprice;
 		CThostFtdcParkedOrderField a = { 0 };
 		strcpy_s(a.BrokerID, g_chBrokerID);
@@ -489,10 +488,10 @@ public:
 		a.IsAutoSuspend = 0;
 		strcpy_s(a.ExchangeID, g_chExchangeID);
 		int b = m_pUserApi->ReqParkedOrderInsert(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇóÂ¼ÈëÔ¤Âñµ¥......·¢ËÍ³É¹¦\n" : "ÇëÇóÂ¼ÈëÔ¤Âñµ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚å½•å…¥é¢„åŸ‹å•......å‘é€æˆåŠŸ\n" : "è¯·æ±‚å½•å…¥é¢„åŸ‹å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", b);
 	}
 
-	///Ô¤Âñ³·µ¥Â¼ÈëÇëÇó
+	///é¢„åŸ‹æ’¤å•å½•å…¥è¯·æ±‚
 	void ReqParkedOrderAction()
 	{
 		CThostFtdcParkedOrderActionField a = { 0 };
@@ -507,10 +506,10 @@ public:
 		strcpy_s(a.InstrumentID, g_chInstrumentID);
 		a.ActionFlag = THOST_FTDC_AF_Delete;
 		int b = m_pUserApi->ReqParkedOrderAction(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇóÂ¼ÈëÔ¤Âñ³·µ¥......·¢ËÍ³É¹¦\n" : "ÇëÇóÂ¼ÈëÔ¤Âñ³·µ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚å½•å…¥é¢„åŸ‹æ’¤å•......å‘é€æˆåŠŸ\n" : "è¯·æ±‚å½•å…¥é¢„åŸ‹æ’¤å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", b);
 	}
 
-	///ÇëÇóÉ¾³ıÔ¤Âñµ¥
+	///è¯·æ±‚åˆ é™¤é¢„åŸ‹å•
 	void ReqRemoveParkedOrder()
 	{
 		CThostFtdcRemoveParkedOrderField a = { 0 };
@@ -518,10 +517,10 @@ public:
 		strcpy_s(a.InvestorID, g_chInvestorID);
 		strcpy_s(a.ParkedOrderID, g_chParkedOrderID1);
 		int b = m_pUserApi->ReqRemoveParkedOrder(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇóÉ¾³ıÔ¤Âñµ¥......·¢ËÍ³É¹¦\n" : "ÇëÇóÉ¾³ıÔ¤Âñµ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚åˆ é™¤é¢„åŸ‹å•......å‘é€æˆåŠŸ\n" : "è¯·æ±‚åˆ é™¤é¢„åŸ‹å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", b);
 	}
 
-	///ÇëÇóÉ¾³ıÔ¤Âñ³·µ¥
+	///è¯·æ±‚åˆ é™¤é¢„åŸ‹æ’¤å•
 	void ReqRemoveParkedOrderAction()
 	{
 		CThostFtdcRemoveParkedOrderActionField a = { 0 };
@@ -529,15 +528,15 @@ public:
 		strcpy_s(a.InvestorID, g_chInvestorID);
 		strcpy_s(a.ParkedOrderActionID, g_chParkedOrderActionID1);
 		int b = m_pUserApi->ReqRemoveParkedOrderAction(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇóÉ¾³ıÔ¤Âñ³·µ¥......·¢ËÍ³É¹¦\n" : "ÇëÇóÉ¾³ıÔ¤Âñ³·µ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚åˆ é™¤é¢„åŸ‹æ’¤å•......å‘é€æˆåŠŸ\n" : "è¯·æ±‚åˆ é™¤é¢„åŸ‹æ’¤å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", b);
 	}
 
-	///±¨µ¥Â¼ÈëÇëÇó
+	///æŠ¥å•å½•å…¥è¯·æ±‚
 	void ReqOrderInsert_Ordinary()
 	{
 		system("cls");
 		string new_limitprice;
-		LOG("ÇëÊäÈëÖ¸¶¨¼Û¸ñ£º\n");
+		LOG("è¯·è¾“å…¥æŒ‡å®šä»·æ ¼ï¼š\n");
 		cin >> new_limitprice;
 
 		CThostFtdcInputOrderField ord = { 0 };
@@ -549,22 +548,22 @@ public:
 		ord.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
 		
 		int num1;
-	Direction:LOG("ÇëÑ¡ÔñÂòÂô·½Ïò\t1.Âò\t2.Âô\n");
+	Direction:LOG("è¯·é€‰æ‹©ä¹°å–æ–¹å‘\t1.ä¹°\t2.å–\n");
 		cin >> num1;
 		if(num1==1){
-			ord.Direction = THOST_FTDC_D_Buy;//Âò
+			ord.Direction = THOST_FTDC_D_Buy;//ä¹°
 		}
 		else if (num1 == 2) {
-			ord.Direction = THOST_FTDC_D_Sell;//Âô
+			ord.Direction = THOST_FTDC_D_Sell;//å–
 		}
 		else {
-			LOG("ÊäÈë´íÎóÇëÖØĞÂÊäÈë\n");
+			LOG("è¾“å…¥é”™è¯¯è¯·é‡æ–°è¾“å…¥\n");
 			_getch();
 			goto Direction;
 		}
 
 		int num2;
-	CombOffsetFlag:LOG("ÇëÊäÈë¿ªÆ½·½Ïò\t1.¿ª²Ö\t2.Æ½²Ö\t3.Ç¿Æ½\t4.Æ½½ñ\t5.Æ½×ò\t6.Ç¿¼õ\t7.±¾µØÇ¿Æ½\n");
+	CombOffsetFlag:LOG("è¯·è¾“å…¥å¼€å¹³æ–¹å‘\t1.å¼€ä»“\t2.å¹³ä»“\t3.å¼ºå¹³\t4.å¹³ä»Š\t5.å¹³æ˜¨\t6.å¼ºå‡\t7.æœ¬åœ°å¼ºå¹³\n");
 		cin >> num2;
 		if (num2 == 1) {
 			ord.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
@@ -588,7 +587,7 @@ public:
 			ord.CombOffsetFlag[0] = THOST_FTDC_OF_LocalForceClose;
 		}
 		else {
-			LOG("ÊäÈë´íÎóÇëÖØĞÂÊäÈë\n");
+			LOG("è¾“å…¥é”™è¯¯è¯·é‡æ–°è¾“å…¥\n");
 			_getch();
 			goto CombOffsetFlag;
 		}
@@ -598,8 +597,8 @@ public:
 		//ord.LimitPrice = atoi(getConfig("config", "LimitPrice").c_str());
 		ord.LimitPrice = atoi(new_limitprice.c_str());
 		ord.VolumeTotalOriginal = 1;
-		ord.TimeCondition = THOST_FTDC_TC_GFD;///µ±ÈÕÓĞĞ§
-		ord.VolumeCondition = THOST_FTDC_VC_CV;///È«²¿ÊıÁ¿
+		ord.TimeCondition = THOST_FTDC_TC_GFD;///å½“æ—¥æœ‰æ•ˆ
+		ord.VolumeCondition = THOST_FTDC_VC_CV;///å…¨éƒ¨æ•°é‡
 		ord.MinVolume = 1;
 		ord.ContingentCondition = THOST_FTDC_CC_Immediately;
 		ord.StopPrice = 0;
@@ -607,18 +606,18 @@ public:
 		ord.IsAutoSuspend = 0;
 		strcpy_s(ord.ExchangeID, g_chExchangeID);
 		int a = m_pUserApi->ReqOrderInsert(&ord, 1);
-		LOG((a == 0) ? "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍ³É¹¦\n" : "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", a);
+		LOG((a == 0) ? "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€æˆåŠŸ\n" : "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", a);
 	}
 
-	///´óÉÌËùÖ¹Ëğµ¥
+	///å¤§å•†æ‰€æ­¢æŸå•
 	void ReqOrderInsert_Touch()
 	{
 		int new_limitprice;
-		LOG("ÇëÊäÈëÖ¸¶¨¼Û¸ñlimitprice£º\n");
+		LOG("è¯·è¾“å…¥æŒ‡å®šä»·æ ¼limitpriceï¼š\n");
 		cin >> new_limitprice;
 
 		int new_StopPrice;
-		LOG("ÇëÊäÈëÖ¸¶¨¼Û¸ñstopprice£º\n");
+		LOG("è¯·è¾“å…¥æŒ‡å®šä»·æ ¼stoppriceï¼š\n");
 		cin >> new_StopPrice;
 
 		CThostFtdcInputOrderField ord = { 0 };
@@ -628,14 +627,14 @@ public:
 		strcpy_s(ord.UserID, g_chUserID);
 		//strcpy_s(ord.OrderRef, "");
 		ord.OrderPriceType = THOST_FTDC_OPT_LimitPrice;
-		ord.Direction = THOST_FTDC_D_Buy;//Âò
+		ord.Direction = THOST_FTDC_D_Buy;//ä¹°
 		ord.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
 		ord.CombHedgeFlag[0] = THOST_FTDC_HF_Speculation;
 		//ord.LimitPrice = atoi(getConfig("config", "LimitPrice").c_str());
 		ord.LimitPrice = new_limitprice;
 		ord.VolumeTotalOriginal = 1;
-		ord.TimeCondition = THOST_FTDC_TC_GFD;///µ±ÈÕÓĞĞ§
-		ord.VolumeCondition = THOST_FTDC_VC_AV;///ÈÎºÎÊıÁ¿
+		ord.TimeCondition = THOST_FTDC_TC_GFD;///å½“æ—¥æœ‰æ•ˆ
+		ord.VolumeCondition = THOST_FTDC_VC_AV;///ä»»ä½•æ•°é‡
 		ord.MinVolume = 1;
 		ord.ContingentCondition = THOST_FTDC_CC_Touch;
 		ord.StopPrice = new_StopPrice;
@@ -643,18 +642,18 @@ public:
 		ord.IsAutoSuspend = 0;
 		strcpy_s(ord.ExchangeID, g_chExchangeID);
 		int a = m_pUserApi->ReqOrderInsert(&ord, 1);
-		LOG((a == 0) ? "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍ³É¹¦\n" : "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", a);
+		LOG((a == 0) ? "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€æˆåŠŸ\n" : "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", a);
 	}
 
-	///´óÉÌËùÖ¹Ó¯µ¥
+	///å¤§å•†æ‰€æ­¢ç›ˆå•
 	void ReqOrderInsert_TouchProfit()
 	{
 		int new_limitprice;
-		LOG("ÇëÊäÈëÖ¸¶¨¼Û¸ñlimitprice£º\n");
+		LOG("è¯·è¾“å…¥æŒ‡å®šä»·æ ¼limitpriceï¼š\n");
 		cin >> new_limitprice;
 
 		int new_StopPrice;
-		LOG("ÇëÊäÈëÖ¸¶¨¼Û¸ñstopprice£º\n");
+		LOG("è¯·è¾“å…¥æŒ‡å®šä»·æ ¼stoppriceï¼š\n");
 		cin >> new_StopPrice;
 
 		CThostFtdcInputOrderField ord = { 0 };
@@ -664,14 +663,14 @@ public:
 		strcpy_s(ord.UserID, g_chUserID);
 		//strcpy_s(ord.OrderRef, "");
 		ord.OrderPriceType = THOST_FTDC_OPT_LimitPrice;
-		ord.Direction = THOST_FTDC_D_Buy;//Âò
+		ord.Direction = THOST_FTDC_D_Buy;//ä¹°
 		ord.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
 		ord.CombHedgeFlag[0] = THOST_FTDC_HF_Speculation;
 		//ord.LimitPrice = atoi(getConfig("config", "LimitPrice").c_str());
 		ord.LimitPrice = new_limitprice;
 		ord.VolumeTotalOriginal = 1;
-		ord.TimeCondition = THOST_FTDC_TC_GFD;///µ±ÈÕÓĞĞ§
-		ord.VolumeCondition = THOST_FTDC_VC_AV;///È«²¿ÊıÁ¿
+		ord.TimeCondition = THOST_FTDC_TC_GFD;///å½“æ—¥æœ‰æ•ˆ
+		ord.VolumeCondition = THOST_FTDC_VC_AV;///å…¨éƒ¨æ•°é‡
 		ord.MinVolume = 1;
 		ord.ContingentCondition = THOST_FTDC_CC_TouchProfit;
 		ord.StopPrice = new_StopPrice;
@@ -679,18 +678,18 @@ public:
 		ord.IsAutoSuspend = 0;
 		strcpy_s(ord.ExchangeID, g_chExchangeID);
 		int a = m_pUserApi->ReqOrderInsert(&ord, 1);
-		LOG((a == 0) ? "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍ³É¹¦\n" : "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", a);
+		LOG((a == 0) ? "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€æˆåŠŸ\n" : "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", a);
 	}
 
-	//È«³ÉÈ«³·
+	//å…¨æˆå…¨æ’¤
 	void ReqOrderInsert_VC_CV()
 	{
 		int new_limitprice;
-		LOG("ÇëÊäÈëÖ¸¶¨¼Û¸ñ£º\n");
+		LOG("è¯·è¾“å…¥æŒ‡å®šä»·æ ¼ï¼š\n");
 		cin >> new_limitprice;
 
 		int insert_num;
-		LOG("ÇëÊäÈëÏÂµ¥ÊıÁ¿£º\n");
+		LOG("è¯·è¾“å…¥ä¸‹å•æ•°é‡ï¼š\n");
 		cin >> insert_num;
 
 		CThostFtdcInputOrderField ord = { 0 };
@@ -700,14 +699,14 @@ public:
 		strcpy_s(ord.UserID, g_chUserID);
 		//strcpy_s(ord.OrderRef, "");
 		ord.OrderPriceType = THOST_FTDC_OPT_LimitPrice;
-		ord.Direction = THOST_FTDC_D_Buy;//Âò
+		ord.Direction = THOST_FTDC_D_Buy;//ä¹°
 		ord.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
 		ord.CombHedgeFlag[0] = THOST_FTDC_HF_Speculation;
 		//ord.LimitPrice = atoi(getConfig("config", "LimitPrice").c_str());
 		ord.LimitPrice = new_limitprice;
 		ord.VolumeTotalOriginal = insert_num;
-		ord.TimeCondition = THOST_FTDC_TC_GFD;///µ±ÈÕÓĞĞ§
-		ord.VolumeCondition = THOST_FTDC_VC_CV;///È«²¿ÊıÁ¿
+		ord.TimeCondition = THOST_FTDC_TC_GFD;///å½“æ—¥æœ‰æ•ˆ
+		ord.VolumeCondition = THOST_FTDC_VC_CV;///å…¨éƒ¨æ•°é‡
 		ord.MinVolume = 1;
 		ord.ContingentCondition = THOST_FTDC_CC_Immediately;
 		ord.StopPrice = 0;
@@ -715,18 +714,18 @@ public:
 		ord.IsAutoSuspend = 0;
 		strcpy_s(ord.ExchangeID, g_chExchangeID);
 		int a = m_pUserApi->ReqOrderInsert(&ord, 1);
-		LOG((a == 0) ? "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍ³É¹¦\n" : "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", a);
+		LOG((a == 0) ? "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€æˆåŠŸ\n" : "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", a);
 	}
 
-	//²¿³É²¿³·
+	//éƒ¨æˆéƒ¨æ’¤
 	void ReqOrderInsert_VC_AV()
 	{
 		int new_limitprice;
-		LOG("ÇëÊäÈëÖ¸¶¨¼Û¸ñ£º\n");
+		LOG("è¯·è¾“å…¥æŒ‡å®šä»·æ ¼ï¼š\n");
 		cin >> new_limitprice;
 
 		int insert_num;
-		LOG("ÇëÊäÈëÏÂµ¥ÊıÁ¿£º\n");
+		LOG("è¯·è¾“å…¥ä¸‹å•æ•°é‡ï¼š\n");
 		cin >> insert_num;
 
 		CThostFtdcInputOrderField ord = { 0 };
@@ -736,14 +735,14 @@ public:
 		strcpy_s(ord.UserID, g_chUserID);
 		//strcpy_s(ord.OrderRef, "");
 		ord.OrderPriceType = THOST_FTDC_OPT_LimitPrice;
-		ord.Direction = THOST_FTDC_D_Buy;//Âò
+		ord.Direction = THOST_FTDC_D_Buy;//ä¹°
 		ord.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
 		ord.CombHedgeFlag[0] = THOST_FTDC_HF_Speculation;
 		//ord.LimitPrice = atoi(getConfig("config", "LimitPrice").c_str());
 		ord.LimitPrice = new_limitprice;
 		ord.VolumeTotalOriginal = insert_num;
-		ord.TimeCondition = THOST_FTDC_TC_GFD;///µ±ÈÕÓĞĞ§
-		ord.VolumeCondition = THOST_FTDC_VC_AV;///ÈÎºÎÊıÁ¿
+		ord.TimeCondition = THOST_FTDC_TC_GFD;///å½“æ—¥æœ‰æ•ˆ
+		ord.VolumeCondition = THOST_FTDC_VC_AV;///ä»»ä½•æ•°é‡
 		ord.MinVolume = 1;
 		ord.ContingentCondition = THOST_FTDC_CC_Immediately;
 		ord.StopPrice = 0;
@@ -751,10 +750,10 @@ public:
 		ord.IsAutoSuspend = 0;
 		strcpy_s(ord.ExchangeID, g_chExchangeID);
 		int a = m_pUserApi->ReqOrderInsert(&ord, 1);
-		LOG((a == 0) ? "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍ³É¹¦\n" : "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", a);
+		LOG((a == 0) ? "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€æˆåŠŸ\n" : "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", a);
 	}
 
-	//ÊĞ¼Ûµ¥
+	//å¸‚ä»·å•
 	void ReqOrderInsert_AnyPrice()
 	{
 		CThostFtdcInputOrderField ord = { 0 };
@@ -764,15 +763,15 @@ public:
 		strcpy_s(ord.UserID, g_chUserID);
 		//strcpy_s(ord.OrderRef, "");
 		ord.OrderPriceType = THOST_FTDC_OPT_AnyPrice;
-		ord.Direction = THOST_FTDC_D_Buy;//Âò
+		ord.Direction = THOST_FTDC_D_Buy;//ä¹°
 		ord.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
 		ord.CombHedgeFlag[0] = THOST_FTDC_HF_Speculation;
 		//ord.LimitPrice = atoi(getConfig("config", "LimitPrice").c_str());
 		//ord.LimitPrice = new_limitprice;
 		ord.LimitPrice = 0;
 		ord.VolumeTotalOriginal = 1;
-		ord.TimeCondition = THOST_FTDC_TC_IOC;///Á¢¼´Íê³É£¬·ñÔò³·Ïú
-		ord.VolumeCondition = THOST_FTDC_VC_AV;///ÈÎºÎÊıÁ¿
+		ord.TimeCondition = THOST_FTDC_TC_IOC;///ç«‹å³å®Œæˆï¼Œå¦åˆ™æ’¤é”€
+		ord.VolumeCondition = THOST_FTDC_VC_AV;///ä»»ä½•æ•°é‡
 		ord.MinVolume = 1;
 		ord.ContingentCondition = THOST_FTDC_CC_Immediately;
 		//ord.StopPrice = 0;
@@ -780,10 +779,10 @@ public:
 		ord.IsAutoSuspend = 0;
 		strcpy_s(ord.ExchangeID, g_chExchangeID);
 		int a = m_pUserApi->ReqOrderInsert(&ord, 1);
-		LOG((a == 0) ? "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍ³É¹¦\n" : "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", a);
+		LOG((a == 0) ? "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€æˆåŠŸ\n" : "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", a);
 	}
 
-	//ÊĞ¼Û×ªÏŞ¼Ûµ¥(ÖĞ½ğËù)
+	//å¸‚ä»·è½¬é™ä»·å•(ä¸­é‡‘æ‰€)
 	void ReqOrderInsert_BestPrice()
 	{
 		CThostFtdcInputOrderField ord = { 0 };
@@ -793,14 +792,14 @@ public:
 		strcpy_s(ord.UserID, g_chUserID);
 		//strcpy_s(ord.OrderRef, "");
 		ord.OrderPriceType = THOST_FTDC_OPT_BestPrice;
-		ord.Direction = THOST_FTDC_D_Buy;//Âò
+		ord.Direction = THOST_FTDC_D_Buy;//ä¹°
 		ord.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
 		ord.CombHedgeFlag[0] = THOST_FTDC_HF_Speculation;
 		//ord.LimitPrice = atoi(getConfig("config", "LimitPrice").c_str());
 		//ord.LimitPrice = new_limitprice;
 		ord.VolumeTotalOriginal = 1;
-		ord.TimeCondition = THOST_FTDC_TC_GFD;///µ±ÈÕÓĞĞ§
-		ord.VolumeCondition = THOST_FTDC_VC_AV;///ÈÎºÎÊıÁ¿
+		ord.TimeCondition = THOST_FTDC_TC_GFD;///å½“æ—¥æœ‰æ•ˆ
+		ord.VolumeCondition = THOST_FTDC_VC_AV;///ä»»ä½•æ•°é‡
 		ord.MinVolume = 1;
 		ord.ContingentCondition = THOST_FTDC_CC_Immediately;
 		ord.StopPrice = 0;
@@ -808,14 +807,14 @@ public:
 		ord.IsAutoSuspend = 0;
 		strcpy_s(ord.ExchangeID, g_chExchangeID);
 		int a = m_pUserApi->ReqOrderInsert(&ord, 1);
-		LOG((a == 0) ? "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍ³É¹¦\n" : "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", a);
+		LOG((a == 0) ? "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€æˆåŠŸ\n" : "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", a);
 	}
 
-	//Ì×ÀûÖ¸Áî
+	//å¥—åˆ©æŒ‡ä»¤
 	void ReqOrderInsert_Arbitrage()
 	{
 		int new_limitprice;
-		LOG("ÇëÊäÈëÖ¸¶¨¼Û¸ñ£º\n");
+		LOG("è¯·è¾“å…¥æŒ‡å®šä»·æ ¼ï¼š\n");
 		cin >> new_limitprice;
 
 		CThostFtdcInputOrderField ord = { 0 };
@@ -825,14 +824,14 @@ public:
 		strcpy_s(ord.UserID, g_chUserID);
 		//strcpy_s(ord.OrderRef, "");
 		ord.OrderPriceType = THOST_FTDC_OPT_LimitPrice;
-		ord.Direction = THOST_FTDC_D_Buy;//Âò
+		ord.Direction = THOST_FTDC_D_Buy;//ä¹°
 		ord.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
 		ord.CombHedgeFlag[0] = THOST_FTDC_HF_Speculation;
 		//ord.LimitPrice = atoi(getConfig("config", "LimitPrice").c_str());
 		ord.LimitPrice = new_limitprice;
 		ord.VolumeTotalOriginal = 1;
-		ord.TimeCondition = THOST_FTDC_TC_GFD;///µ±ÈÕÓĞĞ§
-		ord.VolumeCondition = THOST_FTDC_VC_AV;///ÈÎºÎÊıÁ¿
+		ord.TimeCondition = THOST_FTDC_TC_GFD;///å½“æ—¥æœ‰æ•ˆ
+		ord.VolumeCondition = THOST_FTDC_VC_AV;///ä»»ä½•æ•°é‡
 		ord.MinVolume = 1;
 		ord.ContingentCondition = THOST_FTDC_CC_Immediately;
 		ord.StopPrice = 0;
@@ -840,14 +839,14 @@ public:
 		ord.IsAutoSuspend = 0;
 		strcpy_s(ord.ExchangeID, g_chExchangeID);
 		int a = m_pUserApi->ReqOrderInsert(&ord, 1);
-		LOG((a == 0) ? "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍ³É¹¦\n" : "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", a);
+		LOG((a == 0) ? "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€æˆåŠŸ\n" : "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", a);
 	}
 
-	//»¥»»µ¥
+	//äº’æ¢å•
 	void ReqOrderInsert_IsSwapOrder()
 	{
 		int new_limitprice;
-		LOG("ÇëÊäÈëÖ¸¶¨¼Û¸ñ£º\n");
+		LOG("è¯·è¾“å…¥æŒ‡å®šä»·æ ¼ï¼š\n");
 		cin >> new_limitprice;
 
 		CThostFtdcInputOrderField ord = { 0 };
@@ -857,26 +856,26 @@ public:
 		strcpy_s(ord.UserID, g_chUserID);
 		//strcpy_s(ord.OrderRef, "");
 		ord.OrderPriceType = THOST_FTDC_OPT_LimitPrice;
-		ord.Direction = THOST_FTDC_D_Buy;//Âò
+		ord.Direction = THOST_FTDC_D_Buy;//ä¹°
 		ord.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
 		ord.CombHedgeFlag[0] = THOST_FTDC_HF_Speculation;
 		//ord.LimitPrice = atoi(getConfig("config", "LimitPrice").c_str());
 		ord.LimitPrice = new_limitprice;
 		ord.VolumeTotalOriginal = 1;
-		ord.TimeCondition = THOST_FTDC_TC_GFD;///µ±ÈÕÓĞĞ§
-		ord.VolumeCondition = THOST_FTDC_VC_AV;///ÈÎºÎÊıÁ¿
+		ord.TimeCondition = THOST_FTDC_TC_GFD;///å½“æ—¥æœ‰æ•ˆ
+		ord.VolumeCondition = THOST_FTDC_VC_AV;///ä»»ä½•æ•°é‡
 		ord.MinVolume = 1;
 		ord.ContingentCondition = THOST_FTDC_CC_Immediately;
 		ord.StopPrice = 0;
 		ord.ForceCloseReason = THOST_FTDC_FCC_NotForceClose;
 		ord.IsAutoSuspend = 0;
-		ord.IsSwapOrder = 1;//»¥»»µ¥±êÖ¾
+		ord.IsSwapOrder = 1;//äº’æ¢å•æ ‡å¿—
 		strcpy_s(ord.ExchangeID, g_chExchangeID);
 		int a = m_pUserApi->ReqOrderInsert(&ord, 1);
-		LOG((a == 0) ? "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍ³É¹¦\n" : "±¨µ¥Â¼ÈëÇëÇóÏŞ¼Ûµ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", a);
+		LOG((a == 0) ? "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€æˆåŠŸ\n" : "æŠ¥å•å½•å…¥è¯·æ±‚é™ä»·å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", a);
 	}
 
-	///±¨µ¥²Ù×÷ÇëÇó
+	///æŠ¥å•æ“ä½œè¯·æ±‚
 	void ReqOrderAction_Ordinary()
 	{
 		CThostFtdcInputOrderActionField a = { 0 };
@@ -892,10 +891,10 @@ public:
 		a.ActionFlag = THOST_FTDC_AF_Delete;
 		strcpy_s(a.UserID, g_chUserID);
 		int ab = m_pUserApi->ReqOrderAction(&a, nRequestID++);
-		LOG((ab == 0) ? "±¨µ¥²Ù×÷ÇëÇó......·¢ËÍ³É¹¦\n" : "±¨µ¥²Ù×÷ÇëÇó......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", ab);
+		LOG((ab == 0) ? "æŠ¥å•æ“ä½œè¯·æ±‚......å‘é€æˆåŠŸ\n" : "æŠ¥å•æ“ä½œè¯·æ±‚......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", ab);
 	}
 
-	///Ö´ĞĞĞû¸æÂ¼ÈëÇëÇó
+	///æ‰§è¡Œå®£å‘Šå½•å…¥è¯·æ±‚
 	void ReqExecOrderInsert(int a)
 	{
 		CThostFtdcInputExecOrderField OrderInsert = { 0 };
@@ -907,28 +906,28 @@ public:
 		strcpy_s(OrderInsert.UserID, g_chUserID);
 		OrderInsert.Volume = 1;
 		OrderInsert.RequestID = 1;
-		OrderInsert.OffsetFlag = THOST_FTDC_OF_Close;//¿ªÆ½±êÖ¾
-		OrderInsert.HedgeFlag = THOST_FTDC_HF_Speculation;//Í¶»úÌ×±£±êÖ¾
+		OrderInsert.OffsetFlag = THOST_FTDC_OF_Close;//å¼€å¹³æ ‡å¿—
+		OrderInsert.HedgeFlag = THOST_FTDC_HF_Speculation;//æŠ•æœºå¥—ä¿æ ‡å¿—
 		if (a == 0) {
-			OrderInsert.ActionType = THOST_FTDC_ACTP_Exec;//Ö´ĞĞÀàĞÍÀàĞÍ
+			OrderInsert.ActionType = THOST_FTDC_ACTP_Exec;//æ‰§è¡Œç±»å‹ç±»å‹
 		}
 		if (a == 1) {
-			OrderInsert.ActionType = THOST_FTDC_ACTP_Abandon;//Ö´ĞĞÀàĞÍÀàĞÍ
+			OrderInsert.ActionType = THOST_FTDC_ACTP_Abandon;//æ‰§è¡Œç±»å‹ç±»å‹
 		}
-		OrderInsert.PosiDirection = THOST_FTDC_PD_Long;//³Ö²Ö¶à¿Õ·½ÏòÀàĞÍ
-		OrderInsert.ReservePositionFlag = THOST_FTDC_EOPF_Reserve;//ÆÚÈ¨ĞĞÈ¨ºóÊÇ·ñ±£ÁôÆÚ»õÍ·´çµÄ±ê¼ÇÀàĞÍ
-		//OrderInsert.ReservePositionFlag = THOST_FTDC_EOPF_UnReserve;//²»±£ÁôÍ·´ç
-		OrderInsert.CloseFlag = THOST_FTDC_EOCF_NotToClose;//ÆÚÈ¨ĞĞÈ¨ºóÉú³ÉµÄÍ·´çÊÇ·ñ×Ô¶¯Æ½²ÖÀàĞÍ
-		//OrderInsert.CloseFlag = THOST_FTDC_EOCF_AutoClose;//×Ô¶¯Æ½²Ö
+		OrderInsert.PosiDirection = THOST_FTDC_PD_Long;//æŒä»“å¤šç©ºæ–¹å‘ç±»å‹
+		OrderInsert.ReservePositionFlag = THOST_FTDC_EOPF_Reserve;//æœŸæƒè¡Œæƒåæ˜¯å¦ä¿ç•™æœŸè´§å¤´å¯¸çš„æ ‡è®°ç±»å‹
+		//OrderInsert.ReservePositionFlag = THOST_FTDC_EOPF_UnReserve;//ä¸ä¿ç•™å¤´å¯¸
+		OrderInsert.CloseFlag = THOST_FTDC_EOCF_NotToClose;//æœŸæƒè¡Œæƒåç”Ÿæˆçš„å¤´å¯¸æ˜¯å¦è‡ªåŠ¨å¹³ä»“ç±»å‹
+		//OrderInsert.CloseFlag = THOST_FTDC_EOCF_AutoClose;//è‡ªåŠ¨å¹³ä»“
 		//strcpy_s(OrderInsert.InvestUnitID, "");AccountID
 		//strcpy_s(OrderInsert.AccountID, "");
 		//strcpy_s(OrderInsert.CurrencyID, "CNY");
 		//strcpy_s(OrderInsert.ClientID, "");
 		int b = m_pUserApi->ReqExecOrderInsert(&OrderInsert, 1);
-		LOG((b == 0) ? "Ö´ĞĞĞû¸æÂ¼ÈëÇëÇó......·¢ËÍ³É¹¦\n" : "Ö´ĞĞĞû¸æÂ¼ÈëÇëÇó......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "æ‰§è¡Œå®£å‘Šå½•å…¥è¯·æ±‚......å‘é€æˆåŠŸ\n" : "æ‰§è¡Œå®£å‘Šå½•å…¥è¯·æ±‚......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///Ö´ĞĞĞû¸æ²Ù×÷ÇëÇó
+	///æ‰§è¡Œå®£å‘Šæ“ä½œè¯·æ±‚
 	void ReqExecOrderAction()
 	{
 		CThostFtdcInputExecOrderActionField a = { 0 };
@@ -940,24 +939,24 @@ public:
 		a.SessionID = g_NewSessionID;
 		strcpy_s(a.ExchangeID, g_chExchangeID);
 		strcpy_s(a.ExecOrderSysID, g_NewExecOrderSysID);
-		a.ActionFlag = THOST_FTDC_AF_Delete;//É¾³ı
+		a.ActionFlag = THOST_FTDC_AF_Delete;//åˆ é™¤
 		strcpy_s(a.UserID, g_chUserID);
 		strcpy_s(a.InstrumentID, g_chInstrumentID);
 		//strcpy_s(a.InvestUnitID, "");
 		//strcpy_s(a.IPAddress, "");
 		//strcpy_s(a.MacAddress, "");
 		int b = m_pUserApi->ReqExecOrderAction(&a, 1);
-		LOG((b == 0) ? "Ö´ĞĞĞû¸æ²Ù×÷ÇëÇó......·¢ËÍ³É¹¦\n" : "Ö´ĞĞĞû¸æ²Ù×÷ÇëÇó......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "æ‰§è¡Œå®£å‘Šæ“ä½œè¯·æ±‚......å‘é€æˆåŠŸ\n" : "æ‰§è¡Œå®£å‘Šæ“ä½œè¯·æ±‚......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÅúÁ¿±¨µ¥²Ù×÷ÇëÇó
+	//æ‰¹é‡æŠ¥å•æ“ä½œè¯·æ±‚
 	void ReqBatchOrderAction()
 	{
 		CThostFtdcInputBatchOrderActionField a = { 0 };
 
 	}
 
-	///ÇëÇó²éÑ¯±¨µ¥
+	///è¯·æ±‚æŸ¥è¯¢æŠ¥å•
 	void ReqQryOrder()
 	{
 		action_number = 0;
@@ -970,18 +969,18 @@ public:
 		//strcpy_s(a.InstrumentID, g_chInstrumentID);
 		strcpy_s(a.ExchangeID, g_chExchangeID);
 		int ab = m_pUserApi->ReqQryOrder(&a, nRequestID++);
-		LOG((ab == 0) ? "ÇëÇó²éÑ¯±¨µ¥......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯±¨µ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", ab);
+		LOG((ab == 0) ? "è¯·æ±‚æŸ¥è¯¢æŠ¥å•......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢æŠ¥å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", ab);
 	}
 
-	///±¨µ¥Â¼ÈëÇëÇó
+	///æŠ¥å•å½•å…¥è¯·æ±‚
 	void ReqOrderInsert_Condition(int select_num)
 	{
 		string limit_price;
-		LOG("ÇëÊäÈëÖ¸¶¨¼Û¸ñ(limitprice):\n");
+		LOG("è¯·è¾“å…¥æŒ‡å®šä»·æ ¼(limitprice):\n");
 		cin >> limit_price;
 
 		string stop_price;
-		LOG("ÇëÊäÈë´¥·¢¼Û¸ñ(stopprice):\n");
+		LOG("è¯·è¾“å…¥è§¦å‘ä»·æ ¼(stopprice):\n");
 		cin >> stop_price;
 
 		CThostFtdcInputOrderField a = { 0 };
@@ -990,7 +989,7 @@ public:
 		strcpy_s(a.InstrumentID, g_chInstrumentID);
 		strcpy_s(a.UserID, g_chUserID);
 		a.OrderPriceType = THOST_FTDC_OPT_LimitPrice;
-		a.Direction = THOST_FTDC_D_Buy;//Âò
+		a.Direction = THOST_FTDC_D_Buy;//ä¹°
 		//a.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
 		a.CombHedgeFlag[0] = THOST_FTDC_HF_Speculation;
 		strcpy_s(a.CombOffsetFlag, "0");
@@ -1054,10 +1053,10 @@ public:
 		a.IsAutoSuspend = 0;
 		strcpy_s(a.ExchangeID, g_chExchangeID);
 		int ab = m_pUserApi->ReqOrderInsert(&a, nRequestID++);
-		LOG((ab == 0) ? "ÇëÇó±¨ÈëÌõ¼şµ¥......·¢ËÍ³É¹¦\n" : "ÇëÇó±¨ÈëÌõ¼şµ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", ab);
+		LOG((ab == 0) ? "è¯·æ±‚æŠ¥å…¥æ¡ä»¶å•......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŠ¥å…¥æ¡ä»¶å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", ab);
 	}
 
-	///±¨µ¥²Ù×÷ÇëÇó
+	///æŠ¥å•æ“ä½œè¯·æ±‚
 	void ReqOrderAction_Condition()
 	{
 		CThostFtdcInputOrderActionField a = { 0 };
@@ -1078,10 +1077,10 @@ public:
 		strcpy_s(a.ExchangeID, g_chExchangeID);
 		a.ActionFlag = THOST_FTDC_AF_Delete;
 		int ab = m_pUserApi->ReqOrderAction(&a, nRequestID++);
-		LOG((ab == 0) ? "ÇëÇó³·ÏúÌõ¼şµ¥......·¢ËÍ³É¹¦\n" : "ÇëÇó³·ÏúÌõ¼şµ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", ab);
+		LOG((ab == 0) ? "è¯·æ±‚æ’¤é”€æ¡ä»¶å•......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æ’¤é”€æ¡ä»¶å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", ab);
 	}
 
-	//³·Ïú²éÑ¯µÄ±¨µ¥
+	//æ’¤é”€æŸ¥è¯¢çš„æŠ¥å•
 	void ReqOrderAction_forqry(int action_num)
 	{
 		CThostFtdcInputOrderActionField a = { 0 };
@@ -1095,10 +1094,10 @@ public:
 
 		a.ActionFlag = THOST_FTDC_AF_Delete;
 		int ab = m_pUserApi->ReqOrderAction(&a, nRequestID++);
-		LOG((ab == 0) ? "ÇëÇó³·ÏúÌõ¼şµ¥......·¢ËÍ³É¹¦\n" : "ÇëÇó³·ÏúÌõ¼şµ¥......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", ab);
+		LOG((ab == 0) ? "è¯·æ±‚æ’¤é”€æ¡ä»¶å•......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æ’¤é”€æ¡ä»¶å•......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", ab);
 	}
 
-	///ÇëÇó²éÑ¯³É½»
+	///è¯·æ±‚æŸ¥è¯¢æˆäº¤
 	void ReqQryTrade()
 	{
 		CThostFtdcQryTradeField a = { 0 };
@@ -1106,14 +1105,14 @@ public:
 		strcpy_s(a.InvestorID, g_chInvestorID);
 		string instr;
 		instr.clear();
-		LOG("ÇëÊäÈëºÏÔ¼´úÂë(²»ÊäÈëÔòÎª¿Õ)\n");
+		LOG("è¯·è¾“å…¥åˆçº¦ä»£ç (ä¸è¾“å…¥åˆ™ä¸ºç©º)\n");
 		cin.ignore();
 		getline(cin, instr);
 		strcpy_s(a.InstrumentID, instr.c_str());
 
 		string Exch;
 		Exch.clear();
-		LOG("ÇëÊäÈë½»Ò×Ëù´úÂë(²»ÊäÈëÔòÎª¿Õ)\n");
+		LOG("è¯·è¾“å…¥äº¤æ˜“æ‰€ä»£ç (ä¸è¾“å…¥åˆ™ä¸ºç©º)\n");
 		//cin.ignore();
 		getline(cin, Exch);
 		strcpy_s(a.ExchangeID, Exch.c_str());
@@ -1121,10 +1120,10 @@ public:
 		strcpy_s(a.TradeTimeStart, "");
 		strcpy_s(a.TradeTimeEnd, "");*/
 		int b = m_pUserApi->ReqQryTrade(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯³É½»......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯³É½»......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢æˆäº¤......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢æˆäº¤......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///ÇëÇó²éÑ¯Ô¤Âñµ¥
+	///è¯·æ±‚æŸ¥è¯¢é¢„åŸ‹å•
 	void ReqQryParkedOrder()
 	{
 		CThostFtdcQryParkedOrderField a = { 0 };
@@ -1133,10 +1132,10 @@ public:
 		//strcpy_s(a.InstrumentID, g_chInstrumentID);
 		strcpy_s(a.ExchangeID, g_chExchangeID);
 		int ab = m_pUserApi->ReqQryParkedOrder(&a, nRequestID++);
-		LOG((ab == 0) ? "ÇëÇó²éÑ¯Ô¤Âñµ¥......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯Ô¤Âñµ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", ab);
+		LOG((ab == 0) ? "è¯·æ±‚æŸ¥è¯¢é¢„åŸ‹å•......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢é¢„åŸ‹å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", ab);
 	}
 
-	//ÇëÇó²éÑ¯·şÎñÆ÷Ô¤Âñ³·µ¥
+	//è¯·æ±‚æŸ¥è¯¢æœåŠ¡å™¨é¢„åŸ‹æ’¤å•
 	void ReqQryParkedOrderAction()
 	{
 		CThostFtdcQryParkedOrderActionField a = { 0 };
@@ -1145,10 +1144,10 @@ public:
 		strcpy_s(a.InstrumentID, g_chInstrumentID);
 		strcpy_s(a.ExchangeID, g_chExchangeID);
 		int ab = m_pUserApi->ReqQryParkedOrderAction(&a, nRequestID++);
-		LOG((ab == 0) ? "ÇëÇó²éÑ¯·şÎñÆ÷Ô¤Âñ³·µ¥......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯·şÎñÆ÷Ô¤Âñ³·µ¥......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", ab);
+		LOG((ab == 0) ? "è¯·æ±‚æŸ¥è¯¢æœåŠ¡å™¨é¢„åŸ‹æ’¤å•......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢æœåŠ¡å™¨é¢„åŸ‹æ’¤å•......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", ab);
 	}
 
-	//ÇëÇó²éÑ¯×Ê½ğÕË»§
+	//è¯·æ±‚æŸ¥è¯¢èµ„é‡‘è´¦æˆ·
 	void ReqQryTradingAccount()
 	{
 		CThostFtdcQryTradingAccountField a = { 0 };
@@ -1156,10 +1155,10 @@ public:
 		strcpy_s(a.InvestorID, g_chInvestorID);
 		strcpy_s(a.CurrencyID, "CNY");
 		int ab = m_pUserApi->ReqQryTradingAccount(&a, nRequestID++);
-		LOG((ab == 0) ? "ÇëÇó²éÑ¯×Ê½ğÕË»§......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯×Ê½ğÕË»§......·¢ËÍÊ§°Ü£¬ĞòºÅ=[%d]\n", ab);
+		LOG((ab == 0) ? "è¯·æ±‚æŸ¥è¯¢èµ„é‡‘è´¦æˆ·......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢èµ„é‡‘è´¦æˆ·......å‘é€å¤±è´¥ï¼Œåºå·=[%d]\n", ab);
 	}
 
-	//ÇëÇó²éÑ¯Í¶×ÊÕß³Ö²Ö
+	//è¯·æ±‚æŸ¥è¯¢æŠ•èµ„è€…æŒä»“
 	void ReqQryInvestorPosition()
 	{
 		CThostFtdcQryInvestorPositionField a = { 0 };
@@ -1168,22 +1167,22 @@ public:
 		string instr;
 		instr.clear();
 		cin.ignore();
-		LOG("ÇëÊäÈëºÏÔ¼´úÂë(²»ÊäÈëÔòÎª¿Õ)£º\n");
+		LOG("è¯·è¾“å…¥åˆçº¦ä»£ç (ä¸è¾“å…¥åˆ™ä¸ºç©º)ï¼š\n");
 		getline(cin, instr);
 		strcpy_s(a.InstrumentID, instr.c_str());
 
 		string exch;
 		exch.clear();
 		cin.ignore();
-		LOG("ÇëÊäÈë½»Ò×Ëù´úÂë(²»ÊäÈëÔòÎª¿Õ)£º\n");
+		LOG("è¯·è¾“å…¥äº¤æ˜“æ‰€ä»£ç (ä¸è¾“å…¥åˆ™ä¸ºç©º)ï¼š\n");
 		getline(cin, exch);
 		strcpy_s(a.ExchangeID, exch.c_str());
 		//strcpy_s(a.InstrumentID, "SPD");
 		int b = m_pUserApi->ReqQryInvestorPosition(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯Í¶×ÊÕß³Ö²Ö......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯Í¶×ÊÕß³Ö²Ö......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢æŠ•èµ„è€…æŒä»“......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢æŠ•èµ„è€…æŒä»“......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯Í¶×ÊÕß³Ö²ÖÃ÷Ï¸
+	//è¯·æ±‚æŸ¥è¯¢æŠ•èµ„è€…æŒä»“æ˜ç»†
 	void ReqQryInvestorPositionDetail()
 	{
 		CThostFtdcQryInvestorPositionDetailField a = { 0 };
@@ -1192,44 +1191,44 @@ public:
 		string instr;
 		instr.clear();
 		cin.ignore();
-		LOG("ÇëÊäÈëºÏÔ¼´úÂë(²»ÊäÈëÔòÎª¿Õ)\n");
+		LOG("è¯·è¾“å…¥åˆçº¦ä»£ç (ä¸è¾“å…¥åˆ™ä¸ºç©º)\n");
 		getline(cin, instr);
 		strcpy_s(a.InstrumentID, instr.c_str());
 		string exch;
 		exch.clear();
 		cin.ignore();
-		LOG("ÇëÊäÈë½»Ò×Ëù´úÂë(²»ÊäÈëÔòÎª¿Õ)£º\n");
+		LOG("è¯·è¾“å…¥äº¤æ˜“æ‰€ä»£ç (ä¸è¾“å…¥åˆ™ä¸ºç©º)ï¼š\n");
 		getline(cin, exch);
 		strcpy_s(a.ExchangeID, exch.c_str());
 		//strcpy_s(a.InstrumentID, g_chInstrumentID);
 		int b = m_pUserApi->ReqQryInvestorPositionDetail(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯Í¶×ÊÕß³Ö²ÖÃ÷Ï¸......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯Í¶×ÊÕß³Ö²ÖÃ÷Ï¸......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢æŠ•èµ„è€…æŒä»“æ˜ç»†......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢æŠ•èµ„è€…æŒä»“æ˜ç»†......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯½»Ò×Ëù±£Ö¤½ğÂÊ
+	//è¯·æ±‚æŸ¥è¯¢äº¤æ˜“æ‰€ä¿è¯é‡‘ç‡
 	void ReqQryExchangeMarginRate()
 	{
 		CThostFtdcQryExchangeMarginRateField a = { 0 };
 		strcpy_s(a.BrokerID, g_chBrokerID);
 		strcpy_s(a.InstrumentID, g_chInstrumentID);
-		a.HedgeFlag = THOST_FTDC_HF_Speculation;//Í¶»ú
+		a.HedgeFlag = THOST_FTDC_HF_Speculation;//æŠ•æœº
 		int b = m_pUserApi->ReqQryExchangeMarginRate(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯½»Ò×Ëù±£Ö¤½ğÂÊ......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯½»Ò×Ëù±£Ö¤½ğÂÊ......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢äº¤æ˜“æ‰€ä¿è¯é‡‘ç‡......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢äº¤æ˜“æ‰€ä¿è¯é‡‘ç‡......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯ºÏÔ¼±£Ö¤½ğÂÊ
+	//è¯·æ±‚æŸ¥è¯¢åˆçº¦ä¿è¯é‡‘ç‡
 	void ReqQryInstrumentMarginRate()
 	{
 		CThostFtdcQryInstrumentMarginRateField a = { 0 };
 		strcpy_s(a.BrokerID, g_chBrokerID);
 		strcpy_s(a.InvestorID, g_chInvestorID);
 		strcpy_s(a.InstrumentID, g_chInstrumentID);
-		a.HedgeFlag = THOST_FTDC_HF_Speculation;//Í¶»ú
+		a.HedgeFlag = THOST_FTDC_HF_Speculation;//æŠ•æœº
 		int b = m_pUserApi->ReqQryInstrumentMarginRate(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯ºÏÔ¼±£Ö¤½ğÂÊ......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯ºÏÔ¼±£Ö¤½ğÂÊ......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢åˆçº¦ä¿è¯é‡‘ç‡......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢åˆçº¦ä¿è¯é‡‘ç‡......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯ºÏÔ¼ÊÖĞø·ÑÂÊ
+	//è¯·æ±‚æŸ¥è¯¢åˆçº¦æ‰‹ç»­è´¹ç‡
 	void ReqQryInstrumentCommissionRate()
 	{
 		CThostFtdcQryInstrumentCommissionRateField a = { 0 };
@@ -1237,10 +1236,10 @@ public:
 		strcpy_s(a.InvestorID, g_chInvestorID);
 		strcpy_s(a.InstrumentID, g_chInstrumentID);
 		int b = m_pUserApi->ReqQryInstrumentCommissionRate(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯ºÏÔ¼ÊÖĞø·ÑÂÊ......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯ºÏÔ¼ÊÖĞø·ÑÂÊ......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢åˆçº¦æ‰‹ç»­è´¹ç‡......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢åˆçº¦æ‰‹ç»­è´¹ç‡......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯×öÊĞÉÌºÏÔ¼ÊÖĞø·ÑÂÊ
+	//è¯·æ±‚æŸ¥è¯¢åšå¸‚å•†åˆçº¦æ‰‹ç»­è´¹ç‡
 	void ReqQryMMInstrumentCommissionRate()
 	{
 		CThostFtdcQryMMInstrumentCommissionRateField a = { 0 };
@@ -1248,10 +1247,10 @@ public:
 		strcpy_s(a.InvestorID, g_chInvestorID);
 		strcpy_s(a.InstrumentID, g_chInstrumentID);
 		int b = m_pUserApi->ReqQryMMInstrumentCommissionRate(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯×öÊĞÉÌºÏÔ¼ÊÖĞø·ÑÂÊ......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯×öÊĞÉÌºÏÔ¼ÊÖĞø·ÑÂÊ......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢åšå¸‚å•†åˆçº¦æ‰‹ç»­è´¹ç‡......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢åšå¸‚å•†åˆçº¦æ‰‹ç»­è´¹ç‡......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯×öÊĞÉÌÆÚÈ¨ºÏÔ¼ÊÖĞø·Ñ
+	//è¯·æ±‚æŸ¥è¯¢åšå¸‚å•†æœŸæƒåˆçº¦æ‰‹ç»­è´¹
 	void ReqQryMMOptionInstrCommRate()
 	{
 		CThostFtdcQryMMOptionInstrCommRateField a = { 0 };
@@ -1259,10 +1258,10 @@ public:
 		strcpy_s(a.InvestorID, g_chInvestorID);
 		strcpy_s(a.InstrumentID, g_chInstrumentID);
 		int b = m_pUserApi->ReqQryMMOptionInstrCommRate(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯×öÊĞÉÌÆÚÈ¨ºÏÔ¼ÊÖĞø·Ñ......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯×öÊĞÉÌÆÚÈ¨ºÏÔ¼ÊÖĞø·Ñ......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢åšå¸‚å•†æœŸæƒåˆçº¦æ‰‹ç»­è´¹......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢åšå¸‚å•†æœŸæƒåˆçº¦æ‰‹ç»­è´¹......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯±¨µ¥ÊÖĞø·Ñ
+	//è¯·æ±‚æŸ¥è¯¢æŠ¥å•æ‰‹ç»­è´¹
 	void ReqQryInstrumentOrderCommRate()
 	{
 		CThostFtdcQryInstrumentOrderCommRateField a = { 0 };
@@ -1270,10 +1269,10 @@ public:
 		strcpy_s(a.InvestorID, g_chInvestorID);
 		strcpy_s(a.InstrumentID, g_chInstrumentID);
 		int b = m_pUserApi->ReqQryInstrumentOrderCommRate(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯±¨µ¥ÊÖĞø·Ñ......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯±¨µ¥ÊÖĞø·Ñ......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢æŠ¥å•æ‰‹ç»­è´¹......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢æŠ¥å•æ‰‹ç»­è´¹......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯ÆÚÈ¨ºÏÔ¼ÊÖĞø·Ñ
+	//è¯·æ±‚æŸ¥è¯¢æœŸæƒåˆçº¦æ‰‹ç»­è´¹
 	void ReqQryOptionInstrCommRate()
 	{
 		CThostFtdcQryOptionInstrCommRateField a = { 0 };
@@ -1282,20 +1281,20 @@ public:
 		string Inst;
 		string Exch;
 		string InvestUnit;
-		LOG("ÇëÊäÈëºÏÔ¼´úÂë:(²»ÌîÔòÎª¿Õ)");
+		LOG("è¯·è¾“å…¥åˆçº¦ä»£ç :(ä¸å¡«åˆ™ä¸ºç©º)");
 		cin >> Inst;
-		LOG("ÇëÊäÈë½»Ò×Ëù´úÂë:(²»ÌîÔòÎª¿Õ)");
+		LOG("è¯·è¾“å…¥äº¤æ˜“æ‰€ä»£ç :(ä¸å¡«åˆ™ä¸ºç©º)");
 		cin >> Exch;
-		LOG("ÇëÊäÈëÍ¶×ÊÕßµ¥Ôª´úÂë:(²»ÌîÔòÎª¿Õ)");
+		LOG("è¯·è¾“å…¥æŠ•èµ„è€…å•å…ƒä»£ç :(ä¸å¡«åˆ™ä¸ºç©º)");
 		cin >> InvestUnit;
 		strcpy_s(a.InstrumentID, Inst.c_str());
 		strcpy_s(a.ExchangeID, Exch.c_str());
 		strcpy_s(a.InvestUnitID, InvestUnit.c_str());
 		int b = m_pUserApi->ReqQryOptionInstrCommRate(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯ÆÚÈ¨ºÏÔ¼ÊÖĞø·Ñ......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯ÆÚÈ¨ºÏÔ¼ÊÖĞø·Ñ......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢æœŸæƒåˆçº¦æ‰‹ç»­è´¹......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢æœŸæƒåˆçº¦æ‰‹ç»­è´¹......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯ºÏÔ¼
+	//è¯·æ±‚æŸ¥è¯¢åˆçº¦
 	void ReqQryInstrument()
 	{
 		CThostFtdcQryInstrumentField a = { 0 };
@@ -1304,10 +1303,10 @@ public:
 		//strcpy_s(a.ExchangeInstID,"");
 		//strcpy_s(a.ProductID, "m");
 		int b = m_pUserApi->ReqQryInstrument(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯ºÏÔ¼......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯ºÏÔ¼......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢åˆçº¦......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢åˆçº¦......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///ÇëÇó²éÑ¯ºÏÔ¼ÏìÓ¦
+	///è¯·æ±‚æŸ¥è¯¢åˆçº¦å“åº”
 	virtual void OnRspQryInstrument(CThostFtdcInstrumentField *pInstrument, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 	{
 		LOG("<OnRspQryInstrument>\n");
@@ -1360,56 +1359,56 @@ public:
 		}
 	}
 
-	//ÇëÇó²éÑ¯Í¶×ÊÕß½áËã½á¹û
+	//è¯·æ±‚æŸ¥è¯¢æŠ•èµ„è€…ç»“ç®—ç»“æœ
 	void ReqQrySettlementInfo()
 	{
 		CThostFtdcQrySettlementInfoField a = { 0 };
 		strcpy_s(a.BrokerID, g_chBrokerID);
 		strcpy_s(a.InvestorID, g_chInvestorID);
 		string Traday;
-		LOG("ÇëÊäÈë½»Ò×ÈÕÆÚ»òÕß½»Ò×ÔÂ·İ(ÀıÈç:20180101,ÔÂ·İÔò201801):");
+		LOG("è¯·è¾“å…¥äº¤æ˜“æ—¥æœŸæˆ–è€…äº¤æ˜“æœˆä»½(ä¾‹å¦‚:20180101,æœˆä»½åˆ™201801):");
 		cin >> Traday;
 		strcpy_s(a.TradingDay, Traday.c_str());
 		int b = m_pUserApi->ReqQrySettlementInfo(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯Í¶×ÊÕß½áËã½á¹û......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯Í¶×ÊÕß½áËã½á¹û......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢æŠ•èµ„è€…ç»“ç®—ç»“æœ......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢æŠ•èµ„è€…ç»“ç®—ç»“æœ......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯×ªÕÊÁ÷Ë®
+	//è¯·æ±‚æŸ¥è¯¢è½¬å¸æµæ°´
 	void ReqQryTransferSerial()
 	{
 		CThostFtdcQryTransferSerialField a = { 0 };
 		strcpy_s(a.BrokerID, g_chBrokerID);
 		strcpy_s(a.AccountID, g_chInvestorID);
 	cir1:int bankid;
-		LOG("ÇëÊäÈëÄãĞèÒªµÄ²éÑ¯µÄÒøĞĞ\n");
-		LOG("1.¹¤ÉÌÒøĞĞ\n");
-		LOG("2.Å©ÒµÒøĞĞ\n");
-		LOG("3.ÖĞ¹úÒøĞĞ\n");
-		LOG("5.½»Í¨ÒøĞĞ\n");
-		LOG("6.ÕĞÉÌÒøĞĞ\n");
-		LOG("7.ĞËÒµÒøĞĞ\n");
-		LOG("8.ÆÖ·¢ÒøĞĞ\n");
-		LOG("9.ÃñÉúÒøĞĞ\n");
-		LOG("10.¹â´óÒøĞĞ\n");
-		LOG("11.ÖĞĞÅÒøĞĞ\n");
-		LOG("12.»ã·áÒøĞĞ\n");
-		LOG("13.Æ½°²ÒøĞĞ\n");
-		LOG("14.Å©·¢ÒøĞĞ\n");
-		LOG("15.ĞÇÕ¹ÒøĞĞ\n");
-		LOG("16.¹ã·¢ÒøĞĞ\n");
+		LOG("è¯·è¾“å…¥ä½ éœ€è¦çš„æŸ¥è¯¢çš„é“¶è¡Œ\n");
+		LOG("1.å·¥å•†é“¶è¡Œ\n");
+		LOG("2.å†œä¸šé“¶è¡Œ\n");
+		LOG("3.ä¸­å›½é“¶è¡Œ\n");
+		LOG("5.äº¤é€šé“¶è¡Œ\n");
+		LOG("6.æ‹›å•†é“¶è¡Œ\n");
+		LOG("7.å…´ä¸šé“¶è¡Œ\n");
+		LOG("8.æµ¦å‘é“¶è¡Œ\n");
+		LOG("9.æ°‘ç”Ÿé“¶è¡Œ\n");
+		LOG("10.å…‰å¤§é“¶è¡Œ\n");
+		LOG("11.ä¸­ä¿¡é“¶è¡Œ\n");
+		LOG("12.æ±‡ä¸°é“¶è¡Œ\n");
+		LOG("13.å¹³å®‰é“¶è¡Œ\n");
+		LOG("14.å†œå‘é“¶è¡Œ\n");
+		LOG("15.æ˜Ÿå±•é“¶è¡Œ\n");
+		LOG("16.å¹¿å‘é“¶è¡Œ\n");
 		cin >> bankid;
 		if (bankid == 1 | 2 | 3 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16)
 		{
-			//strcpy_s(a.BankID, itoa(bankid, a.BankID, 10));///ÒøĞĞ´úÂë
+			//strcpy_s(a.BankID, itoa(bankid, a.BankID, 10));///é“¶è¡Œä»£ç 
 			itoa(bankid, a.BankID, 10);
 		}
 		else
 		{
-			LOG("ÇëÖØĞÂÊäÈëÒøĞĞ´úÂë¡£\n");
+			LOG("è¯·é‡æ–°è¾“å…¥é“¶è¡Œä»£ç ã€‚\n");
 			goto cir1;
 		}
 		int choos;
-	curr:LOG("ÇëÊäÈë±ÒÖÖ´úÂë\t1.CNY\t2.USD\n");
+	curr:LOG("è¯·è¾“å…¥å¸ç§ä»£ç \t1.CNY\t2.USD\n");
 		cin >> choos;
 		switch (choos)
 		{
@@ -1420,15 +1419,15 @@ public:
 			strcpy_s(a.CurrencyID, "USD");
 			break;
 		default:
-			LOG("ÇëÊäÈëÕıÈ·µÄĞòºÅ\n");
+			LOG("è¯·è¾“å…¥æ­£ç¡®çš„åºå·\n");
 			_getch();
 			goto curr;
 		}
 		int b = m_pUserApi->ReqQryTransferSerial(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯×ªÕÊÁ÷Ë®......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯×ªÕÊÁ÷Ë®......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢è½¬å¸æµæ°´......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢è½¬å¸æµæ°´......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯²úÆ·
+	//è¯·æ±‚æŸ¥è¯¢äº§å“
 	void ReqQryProduct()
 	{
 		CThostFtdcQryProductField a = { 0 };
@@ -1438,26 +1437,26 @@ public:
 		m_pUserApi->ReqQryProduct(&a, nRequestID++);
 	}
 
-	//ÇëÇó²éÑ¯×ªÕÊÒøĞĞ
+	//è¯·æ±‚æŸ¥è¯¢è½¬å¸é“¶è¡Œ
 	void ReqQryTransferBank()
 	{
 		CThostFtdcQryTransferBankField a = { 0 };
 		strcpy_s(a.BankID,"3");
 		int b = m_pUserApi->ReqQryTransferBank(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯×ªÕÊÒøĞĞ......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯×ªÕÊÒøĞĞ......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢è½¬å¸é“¶è¡Œ......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢è½¬å¸é“¶è¡Œ......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯½»Ò×Í¨Öª
+	//è¯·æ±‚æŸ¥è¯¢äº¤æ˜“é€šçŸ¥
 	void ReqQryTradingNotice()
 	{
 		CThostFtdcQryTradingNoticeField a = { 0 };
 		strcpy_s(a.BrokerID, g_chBrokerID);
 		strcpy_s(a.InvestorID, g_chInvestorID);
 		int b = m_pUserApi->ReqQryTradingNotice(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯½»Ò×Í¨Öª......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯½»Ò×Í¨Öª......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢äº¤æ˜“é€šçŸ¥......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢äº¤æ˜“é€šçŸ¥......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯½»Ò×±àÂë
+	//è¯·æ±‚æŸ¥è¯¢äº¤æ˜“ç¼–ç 
 	void ReqQryTradingCode()
 	{
 		CThostFtdcQryTradingCodeField a = { 0 };
@@ -1466,10 +1465,10 @@ public:
 		strcpy_s(a.ExchangeID, g_chExchangeID);
 		a.ClientIDType = THOST_FTDC_CIDT_Speculation;
 		int b = m_pUserApi->ReqQryTradingCode(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯½»Ò×±àÂë......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯½»Ò×±àÂë......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢äº¤æ˜“ç¼–ç ......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢äº¤æ˜“ç¼–ç ......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯½áËãĞÅÏ¢È·ÈÏ
+	//è¯·æ±‚æŸ¥è¯¢ç»“ç®—ä¿¡æ¯ç¡®è®¤
 	void ReqQrySettlementInfoConfirm()
 	{
 		CThostFtdcQrySettlementInfoConfirmField a = { 0 };
@@ -1478,17 +1477,17 @@ public:
 		//strcpy_s(a.AccountID, g_chInvestorID);
 		strcpy_s(a.CurrencyID, "CNY");
 		int b = m_pUserApi->ReqQrySettlementInfoConfirm(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯½áËãĞÅÏ¢È·ÈÏ......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯½áËãĞÅÏ¢È·ÈÏ......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢ç»“ç®—ä¿¡æ¯ç¡®è®¤......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢ç»“ç®—ä¿¡æ¯ç¡®è®¤......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯²úÆ·×é
+	//è¯·æ±‚æŸ¥è¯¢äº§å“ç»„
 	void ReqQryProductGroup()
 	{
 		CThostFtdcQryProductGroupField a = { 0 };
 
 	}
 
-	//ÇëÇó²éÑ¯Í¶×ÊÕßµ¥Ôª
+	//è¯·æ±‚æŸ¥è¯¢æŠ•èµ„è€…å•å…ƒ
 	void ReqQryInvestUnit()
 	{
 		CThostFtdcQryInvestUnitField a = { 0 };
@@ -1496,10 +1495,10 @@ public:
 		//strcpy_s(a.InvestorID, "00402");
 		//strcpy_s(a.InvestorID, g_chInvestorID);
 		int b = m_pUserApi->ReqQryInvestUnit(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯Í¶×ÊÕßµ¥Ôª......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯Í¶×ÊÕßµ¥Ôª......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢æŠ•èµ„è€…å•å…ƒ......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢æŠ•èµ„è€…å•å…ƒ......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯¾­¼Í¹«Ë¾½»Ò×²ÎÊı
+	//è¯·æ±‚æŸ¥è¯¢ç»çºªå…¬å¸äº¤æ˜“å‚æ•°
 	void ReqQryBrokerTradingParams()
 	{
 		CThostFtdcQryBrokerTradingParamsField a = { 0 };
@@ -1507,10 +1506,10 @@ public:
 		strcpy_s(a.InvestorID, g_chInvestorID);
 		strcpy_s(a.CurrencyID, "CNY");
 		int b = m_pUserApi->ReqQryBrokerTradingParams(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯¾­¼Í¹«Ë¾½»Ò×²ÎÊı......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯¾­¼Í¹«Ë¾½»Ò×²ÎÊı......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢ç»çºªå…¬å¸äº¤æ˜“å‚æ•°......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢ç»çºªå…¬å¸äº¤æ˜“å‚æ•°......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯Ñ¯¼Û
+	//è¯·æ±‚æŸ¥è¯¢è¯¢ä»·
 	void ReqQryForQuote()
 	{
 		CThostFtdcQryForQuoteField a = { 0 };
@@ -1522,10 +1521,10 @@ public:
 		strcpy_s(a.InsertTimeEnd, "");
 		strcpy_s(a.InvestUnitID, "");
 		int b = m_pUserApi->ReqQryForQuote(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯Ñ¯¼Û......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯Ñ¯¼Û......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢è¯¢ä»·......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢è¯¢ä»·......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯±¨¼Û
+	//è¯·æ±‚æŸ¥è¯¢æŠ¥ä»·
 	void ReqQryQuote()
 	{
 		CThostFtdcQryQuoteField a = { 0 };
@@ -1538,10 +1537,10 @@ public:
 		strcpy_s(a.InsertTimeEnd, "");
 		strcpy_s(a.InvestUnitID, "");
 		int b = m_pUserApi->ReqQryQuote(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯Ñ¯¼Û......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯Ñ¯¼Û......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢è¯¢ä»·......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢è¯¢ä»·......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///Ñ¯¼ÛÂ¼ÈëÇëÇó
+	///è¯¢ä»·å½•å…¥è¯·æ±‚
 	void ReqForQuoteInsert()
 	{
 		CThostFtdcInputForQuoteField a = { 0 };
@@ -1555,40 +1554,40 @@ public:
 		//strcpy_s(a.IPAddress, "");
 		//strcpy_s(a.MacAddress, "");
 		int b = m_pUserApi->ReqForQuoteInsert(&a, nRequestID++);
-		LOG((b == 0) ? "Ñ¯¼ÛÂ¼ÈëÇëÇó......·¢ËÍ³É¹¦\n" : "Ñ¯¼ÛÂ¼ÈëÇëÇó......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯¢ä»·å½•å…¥è¯·æ±‚......å‘é€æˆåŠŸ\n" : "è¯¢ä»·å½•å…¥è¯·æ±‚......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///×öÊĞÉÌ±¨¼ÛÂ¼ÈëÇëÇó
+	///åšå¸‚å•†æŠ¥ä»·å½•å…¥è¯·æ±‚
 	void ReqQuoteInsert()
 	{
 	choose:int choose_Flag;
-		LOG("ÇëÈ·ÈÏ¿ªÆ½±êÖ¾\t1.¿ª²Ö\t2.Æ½²Ö\n");
+		LOG("è¯·ç¡®è®¤å¼€å¹³æ ‡å¿—\t1.å¼€ä»“\t2.å¹³ä»“\n");
 		cin >> choose_Flag;
 
 		if (choose_Flag != 1 && choose_Flag!=2)
 		{
-			LOG("ÇëÖØĞÂÑ¡Ôñ¿ªÆ½±êÖ¾\n");
+			LOG("è¯·é‡æ–°é€‰æ‹©å¼€å¹³æ ‡å¿—\n");
 			_getch();
-			choose_Flag = NULL;
+			choose_Flag = 0;
 			goto choose;
 		}
 
 		int price_bid;
-		LOG("ÇëÊäÈëÂò·½Ïò¼Û¸ñ£º\n");
+		LOG("è¯·è¾“å…¥ä¹°æ–¹å‘ä»·æ ¼ï¼š\n");
 		cin >> price_bid;
 
 		int price_ask;
-		LOG("ÇëÊäÈëÂô·½Ïò¼Û¸ñ£º\n");
+		LOG("è¯·è¾“å…¥å–æ–¹å‘ä»·æ ¼ï¼š\n");
 		cin >> price_ask;
-		LOG("ÂòÂôÊıÁ¿Ä¬ÈÏÊÇ1¡£\n");
+		LOG("ä¹°å–æ•°é‡é»˜è®¤æ˜¯1ã€‚\n");
 		string quoteref;
-		LOG("ÇëÊäÈëquoterefĞòºÅ£º\n");
+		LOG("è¯·è¾“å…¥quoterefåºå·ï¼š\n");
 		cin >> quoteref;
 		string AskOrderRef;
 		string BidOrderRef;
-		LOG("ÇëÊäÈëAskOrderRefĞòºÅ:\n");
+		LOG("è¯·è¾“å…¥AskOrderRefåºå·:\n");
 		cin >> AskOrderRef;
-		LOG("ÇëÊäÈëBidOrderRefĞòºÅ:\n");
+		LOG("è¯·è¾“å…¥BidOrderRefåºå·:\n");
 		cin >> BidOrderRef;
 		_getch();
 		CThostFtdcInputQuoteField t = { 0 };
@@ -1605,26 +1604,26 @@ public:
 		t.BidVolume = 1;
 		if (choose_Flag ==1)
 		{
-			t.AskOffsetFlag = THOST_FTDC_OF_Open;///Âô¿ªÆ½±êÖ¾
-			t.BidOffsetFlag = THOST_FTDC_OF_Open;///Âò¿ªÆ½±êÖ¾
+			t.AskOffsetFlag = THOST_FTDC_OF_Open;///å–å¼€å¹³æ ‡å¿—
+			t.BidOffsetFlag = THOST_FTDC_OF_Open;///ä¹°å¼€å¹³æ ‡å¿—
 		}
 		else if (choose_Flag ==2)
 		{
-			t.AskOffsetFlag = THOST_FTDC_OF_Close;///Âô¿ªÆ½±êÖ¾
-			t.BidOffsetFlag = THOST_FTDC_OF_Close;///Âò¿ªÆ½±êÖ¾
+			t.AskOffsetFlag = THOST_FTDC_OF_Close;///å–å¼€å¹³æ ‡å¿—
+			t.BidOffsetFlag = THOST_FTDC_OF_Close;///ä¹°å¼€å¹³æ ‡å¿—
 		}
-		t.AskHedgeFlag = THOST_FTDC_HF_Speculation;///ÂôÍ¶»úÌ×±£±êÖ¾
-		t.BidHedgeFlag = THOST_FTDC_HF_Speculation;///ÂòÍ¶»úÌ×±£±êÖ¾
+		t.AskHedgeFlag = THOST_FTDC_HF_Speculation;///å–æŠ•æœºå¥—ä¿æ ‡å¿—
+		t.BidHedgeFlag = THOST_FTDC_HF_Speculation;///ä¹°æŠ•æœºå¥—ä¿æ ‡å¿—
 
-		strcpy_s(t.AskOrderRef, AskOrderRef.c_str());///ÑÜÉúÂô±¨µ¥ÒıÓÃ
-		strcpy_s(t.BidOrderRef, BidOrderRef.c_str());///ÑÜÉúÂò±¨µ¥ÒıÓÃ
-		//strcpy_s(t.ForQuoteSysID, "");///Ó¦¼Û±àºÅ
-		//strcpy_s(t.InvestUnitID, "1");///Í¶×Êµ¥Ôª´úÂë
+		strcpy_s(t.AskOrderRef, AskOrderRef.c_str());///è¡ç”Ÿå–æŠ¥å•å¼•ç”¨
+		strcpy_s(t.BidOrderRef, BidOrderRef.c_str());///è¡ç”Ÿä¹°æŠ¥å•å¼•ç”¨
+		//strcpy_s(t.ForQuoteSysID, "");///åº”ä»·ç¼–å·
+		//strcpy_s(t.InvestUnitID, "1");///æŠ•èµ„å•å…ƒä»£ç 
 		int a = m_pUserApi->ReqQuoteInsert(&t, 1);
-		LOG((a == 0) ? "×öÊĞÉÌ±¨¼ÛÂ¼ÈëÇëÇó......·¢ËÍ³É¹¦\n" : "×öÊĞÉÌ±¨¼ÛÂ¼ÈëÇëÇó......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", a);
+		LOG((a == 0) ? "åšå¸‚å•†æŠ¥ä»·å½•å…¥è¯·æ±‚......å‘é€æˆåŠŸ\n" : "åšå¸‚å•†æŠ¥ä»·å½•å…¥è¯·æ±‚......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", a);
 	}
 
-	///±¨¼ÛÍ¨Öª
+	///æŠ¥ä»·é€šçŸ¥
 	virtual void OnRtnQuote(CThostFtdcQuoteField *pQuote) 
 	{
 		if (pQuote && strcmp(pQuote->InvestorID, g_chInvestorID) != 0)
@@ -1638,7 +1637,7 @@ public:
 		}
 	}
 
-	//±¨¼Û³·Ïú
+	//æŠ¥ä»·æ’¤é”€
 	void ReqQuoteAction()
 	{
 		CThostFtdcInputQuoteActionField t = { 0 };
@@ -1655,7 +1654,7 @@ public:
 		printf("m_pUserApi->ReqQuoteAction = [%d]", a);
 	}
 
-	//²éÑ¯×î´ó±¨µ¥ÊıÁ¿ÇëÇó
+	//æŸ¥è¯¢æœ€å¤§æŠ¥å•æ•°é‡è¯·æ±‚
 	void ReqQueryMaxOrderVolume()
 	{
 		CThostFtdcQueryMaxOrderVolumeField a = { 0 };
@@ -1668,10 +1667,10 @@ public:
 		a.MaxVolume = 1;
 		strcpy_s(a.BrokerID, g_chBrokerID);
 		int b = m_pUserApi->ReqQueryMaxOrderVolume(&a, nRequestID++);
-		LOG((b == 0) ? "²éÑ¯×î´ó±¨µ¥ÊıÁ¿ÇëÇó......·¢ËÍ³É¹¦\n" : "²éÑ¯×î´ó±¨µ¥ÊıÁ¿ÇëÇó......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "æŸ¥è¯¢æœ€å¤§æŠ¥å•æ•°é‡è¯·æ±‚......å‘é€æˆåŠŸ\n" : "æŸ¥è¯¢æœ€å¤§æŠ¥å•æ•°é‡è¯·æ±‚......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯¼à¿ØÖĞĞÄÓÃ»§ÁîÅÆ
+	//è¯·æ±‚æŸ¥è¯¢ç›‘æ§ä¸­å¿ƒç”¨æˆ·ä»¤ç‰Œ
 	void ReqQueryCFMMCTradingAccountToken()
 	{
 		CThostFtdcQueryCFMMCTradingAccountTokenField a = { 0 };
@@ -1680,7 +1679,7 @@ public:
 
 	
 
-	///±¨µ¥²Ù×÷´íÎó»Ø±¨
+	///æŠ¥å•æ“ä½œé”™è¯¯å›æŠ¥
 	virtual void OnErrRtnOrderAction(CThostFtdcOrderActionField *pOrderAction, CThostFtdcRspInfoField *pRspInfo)
 	{
 		if (pOrderAction && strcmp(pOrderAction->InvestorID, g_chInvestorID) != 0)
@@ -1694,7 +1693,7 @@ public:
 		}
 	}
 
-	///±¨µ¥Â¼ÈëÇëÇóÏìÓ¦
+	///æŠ¥å•å½•å…¥è¯·æ±‚å“åº”
 	virtual void OnRspOrderInsert(CThostFtdcInputOrderField *pInputOrder, CThostFtdcRspInfoField *pRspInfo,
 		int nRequestID, bool bIsLast)
 	{
@@ -1708,7 +1707,7 @@ public:
 		}
 	}
 
-	///±¨µ¥Â¼Èë´íÎó»Ø±¨
+	///æŠ¥å•å½•å…¥é”™è¯¯å›æŠ¥
 	virtual void OnErrRtnOrderInsert(CThostFtdcInputOrderField *pInputOrder, CThostFtdcRspInfoField *pRspInfo)
 	{
 		if (pInputOrder && strcmp(pInputOrder->InvestorID, g_chInvestorID) != 0)
@@ -1722,7 +1721,7 @@ public:
 		}
 	}
 
-	///±¨µ¥Í¨Öª
+	///æŠ¥å•é€šçŸ¥
 	virtual void OnRtnOrder(CThostFtdcOrderField *pOrder)
 	{
 		if (pOrder && strcmp(pOrder->InvestorID, g_chInvestorID) != 0)
@@ -1737,42 +1736,42 @@ public:
 			g_chSessionID = pOrder->SessionID;
 			strcpy_s(g_chOrderRef, pOrder->OrderRef);
 			strcpy_s(g_chExchangeID, pOrder->ExchangeID);
-			if (pOrder->OrderStatus == THOST_FTDC_OST_AllTraded)///È«²¿³É½»
+			if (pOrder->OrderStatus == THOST_FTDC_OST_AllTraded)///å…¨éƒ¨æˆäº¤
 			{
-				LOG("±¨µ¥È«²¿³É½»\n\n");
+				LOG("æŠ¥å•å…¨éƒ¨æˆäº¤\n\n");
 				//SetEvent(g_hEvent);
-			}if (pOrder->OrderStatus == THOST_FTDC_OST_PartTradedQueueing)///²¿·Ö³É½»»¹ÔÚ¶ÓÁĞÖĞ
+			}if (pOrder->OrderStatus == THOST_FTDC_OST_PartTradedQueueing)///éƒ¨åˆ†æˆäº¤è¿˜åœ¨é˜Ÿåˆ—ä¸­
 			{
-				LOG("²¿·Ö³É½»»¹ÔÚ¶ÓÁĞÖĞ\n\n");
-			}if (pOrder->OrderStatus == THOST_FTDC_OST_PartTradedNotQueueing)///²¿·Ö³É½»²»ÔÚ¶ÓÁĞÖĞ
+				LOG("éƒ¨åˆ†æˆäº¤è¿˜åœ¨é˜Ÿåˆ—ä¸­\n\n");
+			}if (pOrder->OrderStatus == THOST_FTDC_OST_PartTradedNotQueueing)///éƒ¨åˆ†æˆäº¤ä¸åœ¨é˜Ÿåˆ—ä¸­
 			{
-				LOG("²¿·Ö³É½»²»ÔÚ¶ÓÁĞÖĞ\n\n");
-			}if (pOrder->OrderStatus == THOST_FTDC_OST_NoTradeQueueing)///Î´³É½»»¹ÔÚ¶ÓÁĞÖĞ
+				LOG("éƒ¨åˆ†æˆäº¤ä¸åœ¨é˜Ÿåˆ—ä¸­\n\n");
+			}if (pOrder->OrderStatus == THOST_FTDC_OST_NoTradeQueueing)///æœªæˆäº¤è¿˜åœ¨é˜Ÿåˆ—ä¸­
 			{
 				chioce_action = 0;
-				LOG("Î´³É½»»¹ÔÚ¶ÓÁĞÖĞ\n\n");
-			}if (pOrder->OrderStatus == THOST_FTDC_OST_NoTradeNotQueueing)///Î´³É½»²»ÔÚ¶ÓÁĞÖĞ
+				LOG("æœªæˆäº¤è¿˜åœ¨é˜Ÿåˆ—ä¸­\n\n");
+			}if (pOrder->OrderStatus == THOST_FTDC_OST_NoTradeNotQueueing)///æœªæˆäº¤ä¸åœ¨é˜Ÿåˆ—ä¸­
 			{
-				LOG("Î´³É½»²»ÔÚ¶ÓÁĞÖĞ\n\n");
-			}if (pOrder->OrderStatus == THOST_FTDC_OST_Canceled)///³·µ¥
+				LOG("æœªæˆäº¤ä¸åœ¨é˜Ÿåˆ—ä¸­\n\n");
+			}if (pOrder->OrderStatus == THOST_FTDC_OST_Canceled)///æ’¤å•
 			{
-				LOG("³·µ¥\n\n");
+				LOG("æ’¤å•\n\n");
 				//SetEvent(g_hEvent);
-			}if (pOrder->OrderStatus == THOST_FTDC_OST_Unknown)///Î´Öª
+			}if (pOrder->OrderStatus == THOST_FTDC_OST_Unknown)///æœªçŸ¥
 			{
-				LOG("Î´Öª\n\n");
-			}if (pOrder->OrderStatus == THOST_FTDC_OST_NotTouched)///ÉĞÎ´´¥·¢
+				LOG("æœªçŸ¥\n\n");
+			}if (pOrder->OrderStatus == THOST_FTDC_OST_NotTouched)///å°šæœªè§¦å‘
 			{
 				chioce_action = 1;
-				LOG("ÉĞÎ´´¥·¢\n\n");
-			}if (pOrder->OrderStatus == THOST_FTDC_OST_Touched)///ÒÑ´¥·¢
+				LOG("å°šæœªè§¦å‘\n\n");
+			}if (pOrder->OrderStatus == THOST_FTDC_OST_Touched)///å·²è§¦å‘
 			{
-				LOG("ÒÑ´¥·¢\n\n");
+				LOG("å·²è§¦å‘\n\n");
 			}
 		}
 	}
 
-	///É¾³ıÔ¤Âñµ¥ÏìÓ¦
+	///åˆ é™¤é¢„åŸ‹å•å“åº”
 	virtual void OnRspRemoveParkedOrder(CThostFtdcRemoveParkedOrderField *pRemoveParkedOrder, CThostFtdcRspInfoField *pRspInfo,
 		int nRequestID, bool bIsLast)
 	{
@@ -1788,7 +1787,7 @@ public:
 		}
 	}
 
-	///É¾³ıÔ¤Âñ³·µ¥ÏìÓ¦
+	///åˆ é™¤é¢„åŸ‹æ’¤å•å“åº”
 	virtual void OnRspRemoveParkedOrderAction(CThostFtdcRemoveParkedOrderActionField *pRemoveParkedOrderAction, CThostFtdcRspInfoField *pRspInfo,
 		int nRequestID, bool bIsLast)
 	{
@@ -1804,7 +1803,7 @@ public:
 		}
 	}
 
-	///Ô¤Âñµ¥Â¼ÈëÇëÇóÏìÓ¦
+	///é¢„åŸ‹å•å½•å…¥è¯·æ±‚å“åº”
 	virtual void OnRspParkedOrderInsert(CThostFtdcParkedOrderField *pParkedOrder, CThostFtdcRspInfoField *pRspInfo,
 		int nRequestID, bool bIsLast)
 	{
@@ -1820,7 +1819,7 @@ public:
 		}
 	}
 
-	///Ô¤Âñ³·µ¥Â¼ÈëÇëÇóÏìÓ¦
+	///é¢„åŸ‹æ’¤å•å½•å…¥è¯·æ±‚å“åº”
 	virtual void OnRspParkedOrderAction(CThostFtdcParkedOrderActionField *pParkedOrderAction, CThostFtdcRspInfoField *pRspInfo,
 		int nRequestID, bool bIsLast)
 	{
@@ -1836,19 +1835,19 @@ public:
 		}
 	}
 
-	///ÇëÇó²éÑ¯Ô¤Âñ³·µ¥ÏìÓ¦
+	///è¯·æ±‚æŸ¥è¯¢é¢„åŸ‹æ’¤å•å“åº”
 	virtual void OnRspQryParkedOrderAction(CThostFtdcParkedOrderActionField *pParkedOrderAction, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 	{
 		CTraderSpi::OnRspQryParkedOrderAction(pParkedOrderAction, pRspInfo, nRequestID, bIsLast);
 	}
 
-	///ÇëÇó²éÑ¯Ô¤Âñµ¥ÏìÓ¦
+	///è¯·æ±‚æŸ¥è¯¢é¢„åŸ‹å•å“åº”
 	virtual void OnRspQryParkedOrder(CThostFtdcParkedOrderField *pParkedOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 	{
 		CTraderSpi::OnRspQryParkedOrder(pParkedOrder,pRspInfo,nRequestID,bIsLast);
 	}
 
-	///ÇëÇó²éÑ¯±¨µ¥ÏìÓ¦
+	///è¯·æ±‚æŸ¥è¯¢æŠ¥å•å“åº”
 	virtual void OnRspQryOrder(CThostFtdcOrderField *pOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 	{
 		if (pOrder) {
@@ -1858,10 +1857,10 @@ public:
 		}
 		CTraderSpi::OnRspQryOrder(pOrder,pRspInfo,nRequestID,bIsLast);
 		action_number++;
-		LOG("\n²éÑ¯ĞòºÅ£º\"%d\"\n\n", action_number);
+		LOG("\næŸ¥è¯¢åºå·ï¼š\"%d\"\n\n", action_number);
 	}
 
-	///Ö´ĞĞĞû¸æÍ¨Öª
+	///æ‰§è¡Œå®£å‘Šé€šçŸ¥
 	virtual void OnRtnExecOrder(CThostFtdcExecOrderField *pExecOrder) 
 	{
 		if (pExecOrder) {
@@ -1873,161 +1872,161 @@ public:
 		CTraderSpi::OnRtnExecOrder(pExecOrder);
 	}
 
-	//ÆÚ»õ·¢Æğ²éÑ¯ÒøĞĞÓà¶îÇëÇó
+	//æœŸè´§å‘èµ·æŸ¥è¯¢é“¶è¡Œä½™é¢è¯·æ±‚
 	void ReqQueryBankAccountMoneyByFuture()
 	{
 		CThostFtdcReqQueryAccountField a = { 0 };
 		int b = m_pUserApi->ReqQueryBankAccountMoneyByFuture(&a, nRequestID++);
-		LOG((b == 0) ? "ÆÚ»õ·¢Æğ²éÑ¯ÒøĞĞÓà¶îÇëÇó......·¢ËÍ³É¹¦\n" : "ÆÚ»õ·¢Æğ²éÑ¯ÒøĞĞÓà¶îÇëÇó......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "æœŸè´§å‘èµ·æŸ¥è¯¢é“¶è¡Œä½™é¢è¯·æ±‚......å‘é€æˆåŠŸ\n" : "æœŸè´§å‘èµ·æŸ¥è¯¢é“¶è¡Œä½™é¢è¯·æ±‚......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÆÚ»õ·¢ÆğÒøĞĞ×Ê½ğ×ªÆÚ»õÇëÇó
+	//æœŸè´§å‘èµ·é“¶è¡Œèµ„é‡‘è½¬æœŸè´§è¯·æ±‚
 	void ReqFromBankToFutureByFuture()
 	{
 		int output_num;
-		LOG("ÇëÊäÈë×ªÕË½ğ¶î:");
+		LOG("è¯·è¾“å…¥è½¬è´¦é‡‘é¢:");
 		cin >> output_num;
 
 		CThostFtdcReqTransferField a = { 0 };
-		strcpy_s(a.TradeCode, "202001");///ÒµÎñ¹¦ÄÜÂë
+		strcpy_s(a.TradeCode, "202001");///ä¸šåŠ¡åŠŸèƒ½ç 
 	int bankid = 0;
 		while (bankid != 1 & 2 & 3 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16) {
-			LOG("ÇëÊäÈëÄãĞèÒªµÄ×ªÕËµÄÒøĞĞ\n");
-			LOG("1.¹¤ÉÌÒøĞĞ\n");
-			LOG("2.Å©ÒµÒøĞĞ\n");
-			LOG("3.ÖĞ¹úÒøĞĞ\n");
-			LOG("5.½»Í¨ÒøĞĞ\n");
-			LOG("6.ÕĞÉÌÒøĞĞ\n");
-			LOG("7.ĞËÒµÒøĞĞ\n");
-			LOG("8.ÆÖ·¢ÒøĞĞ\n");
-			LOG("9.ÃñÉúÒøĞĞ\n");
-			LOG("10.¹â´óÒøĞĞ\n");
-			LOG("11.ÖĞĞÅÒøĞĞ\n");
-			LOG("12.»ã·áÒøĞĞ\n");
-			LOG("13.Æ½°²ÒøĞĞ\n");
-			LOG("14.Å©·¢ÒøĞĞ\n");
-			LOG("15.ĞÇÕ¹ÒøĞĞ\n");
-			LOG("16.¹ã·¢ÒøĞĞ\n");
+			LOG("è¯·è¾“å…¥ä½ éœ€è¦çš„è½¬è´¦çš„é“¶è¡Œ\n");
+			LOG("1.å·¥å•†é“¶è¡Œ\n");
+			LOG("2.å†œä¸šé“¶è¡Œ\n");
+			LOG("3.ä¸­å›½é“¶è¡Œ\n");
+			LOG("5.äº¤é€šé“¶è¡Œ\n");
+			LOG("6.æ‹›å•†é“¶è¡Œ\n");
+			LOG("7.å…´ä¸šé“¶è¡Œ\n");
+			LOG("8.æµ¦å‘é“¶è¡Œ\n");
+			LOG("9.æ°‘ç”Ÿé“¶è¡Œ\n");
+			LOG("10.å…‰å¤§é“¶è¡Œ\n");
+			LOG("11.ä¸­ä¿¡é“¶è¡Œ\n");
+			LOG("12.æ±‡ä¸°é“¶è¡Œ\n");
+			LOG("13.å¹³å®‰é“¶è¡Œ\n");
+			LOG("14.å†œå‘é“¶è¡Œ\n");
+			LOG("15.æ˜Ÿå±•é“¶è¡Œ\n");
+			LOG("16.å¹¿å‘é“¶è¡Œ\n");
 			cin >> bankid;
 			if (bankid == 1 | 2 | 3 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16)
 			{
-				//strcpy_s(a.BankID, itoa(bankid, a.BankID, 10));///ÒøĞĞ´úÂë
+				//strcpy_s(a.BankID, itoa(bankid, a.BankID, 10));///é“¶è¡Œä»£ç 
 				itoa(bankid, a.BankID, 10);
 			}
 			else
 			{
-				LOG("ÇëÖØĞÂÊäÈëÒøĞĞ´úÂë¡£\n");
+				LOG("è¯·é‡æ–°è¾“å…¥é“¶è¡Œä»£ç ã€‚\n");
 				_getch();
 			}
 		}
 		
 		
-		strcpy_s(a.BankBranchID, "0000");///ÆÚÉÌ´úÂë
+		strcpy_s(a.BankBranchID, "0000");///æœŸå•†ä»£ç 
 		strcpy_s(a.BrokerID, g_chBrokerID);
-		strcpy_s(a.TradeDate, "20170829");///½»Ò×ÈÕÆÚ
+		strcpy_s(a.TradeDate, "20170829");///äº¤æ˜“æ—¥æœŸ
 		strcpy_s(a.TradeTime, "09:00:00");
-		strcpy_s(a.BankSerial, "6889");///ÒøĞĞÁ÷Ë®ºÅ
-		strcpy_s(a.TradingDay, "20170829");///½»Ò×ÏµÍ³ÈÕÆÚ 
-		a.PlateSerial = 5;///ÒøÆÚÆ½Ì¨ÏûÏ¢Á÷Ë®ºÅ
-		a.LastFragment = THOST_FTDC_LF_Yes;///×îºó·ÖÆ¬±êÖ¾ '0'=ÊÇ×îºó·ÖÆ¬
+		strcpy_s(a.BankSerial, "6889");///é“¶è¡Œæµæ°´å·
+		strcpy_s(a.TradingDay, "20170829");///äº¤æ˜“ç³»ç»Ÿæ—¥æœŸ 
+		a.PlateSerial = 5;///é“¶æœŸå¹³å°æ¶ˆæ¯æµæ°´å·
+		a.LastFragment = THOST_FTDC_LF_Yes;///æœ€ååˆ†ç‰‡æ ‡å¿— '0'=æ˜¯æœ€ååˆ†ç‰‡
 		a.SessionID = SessionID;
-		//strcpy_s(a.CustomerName, "");///¿Í»§ĞÕÃû
-		a.IdCardType = THOST_FTDC_ICT_IDCard;///Ö¤¼şÀàĞÍ
-		a.CustType = THOST_FTDC_CUSTT_Person;///¿Í»§ÀàĞÍ
-		//strcpy_s(a.IdentifiedCardNo, "310115198706241914");///Ö¤¼şºÅÂë
+		//strcpy_s(a.CustomerName, "");///å®¢æˆ·å§“å
+		a.IdCardType = THOST_FTDC_ICT_IDCard;///è¯ä»¶ç±»å‹
+		a.CustType = THOST_FTDC_CUSTT_Person;///å®¢æˆ·ç±»å‹
+		//strcpy_s(a.IdentifiedCardNo, "310115198706241914");///è¯ä»¶å·ç 
 		/*strcpy_s(a.BankAccount, "123456789");
-		strcpy_s(a.BankPassWord, "123456");///ÒøĞĞÃÜÂë*/
+		strcpy_s(a.BankPassWord, "123456");///é“¶è¡Œå¯†ç */
 		strcpy_s(a.BankAccount, "621485212110187");
-		//strcpy_s(a.BankPassWord, "092812");///ÒøĞĞÃÜÂë--²»ĞèÒªÒøĞĞ¿¨ÃÜÂë
-		strcpy_s(a.AccountID, g_chInvestorID);///Í¶×ÊÕßÕÊºÅ
-		//strcpy_s(a.Password, "092812");///ÆÚ»õÃÜÂë--×Ê½ğÃÜÂë
-		strcpy_s(a.Password, "123456");///ÆÚ»õÃÜÂë--×Ê½ğÃÜÂë
-		a.InstallID = 1;///°²×°±àºÅ
-		a.FutureSerial = 0;///ÆÚ»õ¹«Ë¾Á÷Ë®ºÅ
-		a.VerifyCertNoFlag = THOST_FTDC_YNI_No;///ÑéÖ¤¿Í»§Ö¤¼şºÅÂë±êÖ¾
-		strcpy_s(a.CurrencyID, "CNY");///±ÒÖÖ´úÂë
-		a.TradeAmount = output_num;///×ªÕÊ½ğ¶î
-		a.FutureFetchAmount = 0;///ÆÚ»õ¿ÉÈ¡½ğ¶î
-		a.CustFee = 0;///Ó¦ÊÕ¿Í»§·ÑÓÃ
-		a.BrokerFee = 0;///Ó¦ÊÕÆÚ»õ¹«Ë¾·ÑÓÃ
-		a.SecuPwdFlag = THOST_FTDC_BPWDF_BlankCheck;///ÆÚ»õ×Ê½ğÃÜÂëºË¶Ô±êÖ¾
-		a.RequestID = 0;///ÇëÇó±àºÅ
-		a.TID = 0;///½»Ò×ID
+		//strcpy_s(a.BankPassWord, "092812");///é“¶è¡Œå¯†ç --ä¸éœ€è¦é“¶è¡Œå¡å¯†ç 
+		strcpy_s(a.AccountID, g_chInvestorID);///æŠ•èµ„è€…å¸å·
+		//strcpy_s(a.Password, "092812");///æœŸè´§å¯†ç --èµ„é‡‘å¯†ç 
+		strcpy_s(a.Password, "123456");///æœŸè´§å¯†ç --èµ„é‡‘å¯†ç 
+		a.InstallID = 1;///å®‰è£…ç¼–å·
+		a.FutureSerial = 0;///æœŸè´§å…¬å¸æµæ°´å·
+		a.VerifyCertNoFlag = THOST_FTDC_YNI_No;///éªŒè¯å®¢æˆ·è¯ä»¶å·ç æ ‡å¿—
+		strcpy_s(a.CurrencyID, "CNY");///å¸ç§ä»£ç 
+		a.TradeAmount = output_num;///è½¬å¸é‡‘é¢
+		a.FutureFetchAmount = 0;///æœŸè´§å¯å–é‡‘é¢
+		a.CustFee = 0;///åº”æ”¶å®¢æˆ·è´¹ç”¨
+		a.BrokerFee = 0;///åº”æ”¶æœŸè´§å…¬å¸è´¹ç”¨
+		a.SecuPwdFlag = THOST_FTDC_BPWDF_BlankCheck;///æœŸè´§èµ„é‡‘å¯†ç æ ¸å¯¹æ ‡å¿—
+		a.RequestID = 0;///è¯·æ±‚ç¼–å·
+		a.TID = 0;///äº¤æ˜“ID
 		int b = m_pUserApi->ReqFromBankToFutureByFuture(&a, 1);
-		LOG((b == 0) ? "ÆÚ»õ·¢ÆğÒøĞĞ×Ê½ğ×ªÆÚ»õÇëÇó......·¢ËÍ³É¹¦\n" : "ÆÚ»õ·¢ÆğÒøĞĞ×Ê½ğ×ªÆÚ»õÇëÇó......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "æœŸè´§å‘èµ·é“¶è¡Œèµ„é‡‘è½¬æœŸè´§è¯·æ±‚......å‘é€æˆåŠŸ\n" : "æœŸè´§å‘èµ·é“¶è¡Œèµ„é‡‘è½¬æœŸè´§è¯·æ±‚......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÆÚ»õ·¢ÆğÆÚ»õ×Ê½ğ×ªÒøĞĞÇëÇó
+	//æœŸè´§å‘èµ·æœŸè´§èµ„é‡‘è½¬é“¶è¡Œè¯·æ±‚
 	void ReqFromFutureToBankByFuture()
 	{
 		int output_num;
-		LOG("ÇëÊäÈë×ªÕË½ğ¶î:");
+		LOG("è¯·è¾“å…¥è½¬è´¦é‡‘é¢:");
 		cin >> output_num;
 
 		CThostFtdcReqTransferField a = { 0 };
-		strcpy_s(a.TradeCode, "202002");///ÒµÎñ¹¦ÄÜÂë
+		strcpy_s(a.TradeCode, "202002");///ä¸šåŠ¡åŠŸèƒ½ç 
 		bankid_new:int bankid = 0;
-		LOG("ÇëÊäÈëÄãĞèÒªµÄ×ªÕËµÄÒøĞĞ\n");
-		LOG("1.¹¤ÉÌÒøĞĞ\n");
-		LOG("2.Å©ÒµÒøĞĞ\n");
-		LOG("3.ÖĞ¹úÒøĞĞ\n");
-		LOG("5.½»Í¨ÒøĞĞ\n");
-		LOG("6.ÕĞÉÌÒøĞĞ\n");
-		LOG("7.ĞËÒµÒøĞĞ\n");
-		LOG("8.ÆÖ·¢ÒøĞĞ\n");
-		LOG("9.ÃñÉúÒøĞĞ\n");
-		LOG("10.¹â´óÒøĞĞ\n");
-		LOG("11.ÖĞĞÅÒøĞĞ\n");
-		LOG("12.»ã·áÒøĞĞ\n");
-		LOG("13.Æ½°²ÒøĞĞ\n");
-		LOG("14.Å©·¢ÒøĞĞ\n");
-		LOG("15.ĞÇÕ¹ÒøĞĞ\n");
-		LOG("16.¹ã·¢ÒøĞĞ\n");
+		LOG("è¯·è¾“å…¥ä½ éœ€è¦çš„è½¬è´¦çš„é“¶è¡Œ\n");
+		LOG("1.å·¥å•†é“¶è¡Œ\n");
+		LOG("2.å†œä¸šé“¶è¡Œ\n");
+		LOG("3.ä¸­å›½é“¶è¡Œ\n");
+		LOG("5.äº¤é€šé“¶è¡Œ\n");
+		LOG("6.æ‹›å•†é“¶è¡Œ\n");
+		LOG("7.å…´ä¸šé“¶è¡Œ\n");
+		LOG("8.æµ¦å‘é“¶è¡Œ\n");
+		LOG("9.æ°‘ç”Ÿé“¶è¡Œ\n");
+		LOG("10.å…‰å¤§é“¶è¡Œ\n");
+		LOG("11.ä¸­ä¿¡é“¶è¡Œ\n");
+		LOG("12.æ±‡ä¸°é“¶è¡Œ\n");
+		LOG("13.å¹³å®‰é“¶è¡Œ\n");
+		LOG("14.å†œå‘é“¶è¡Œ\n");
+		LOG("15.æ˜Ÿå±•é“¶è¡Œ\n");
+		LOG("16.å¹¿å‘é“¶è¡Œ\n");
 		cin >> bankid;
 		if (bankid == 1 | 2 | 3 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16)
 		{
-			//strcpy_s(a.BankID, itoa(bankid, a.BankID, 10));///ÒøĞĞ´úÂë
+			//strcpy_s(a.BankID, itoa(bankid, a.BankID, 10));///é“¶è¡Œä»£ç 
 			itoa(bankid, a.BankID, 10);
 		}
 		else {
-			LOG("ÇëÊäÈëÕıÈ·µÄ±àºÅ\n");
+			LOG("è¯·è¾“å…¥æ­£ç¡®çš„ç¼–å·\n");
 			_getch();
 			goto bankid_new;
 		}
-		strcpy_s(a.BankBranchID, "0000");///ÆÚÉÌ´úÂë
+		strcpy_s(a.BankBranchID, "0000");///æœŸå•†ä»£ç 
 		strcpy_s(a.BrokerID, g_chBrokerID);
-		//strcpy_s(a.BankBranchID, "0000");///ÒøĞĞ·ÖÖ§»ú¹¹´úÂë
-		//strcpy_s(a.TradeDate, "20170829");///½»Ò×ÈÕÆÚ
+		//strcpy_s(a.BankBranchID, "0000");///é“¶è¡Œåˆ†æ”¯æœºæ„ä»£ç 
+		//strcpy_s(a.TradeDate, "20170829");///äº¤æ˜“æ—¥æœŸ
 		//strcpy_s(a.TradeTime, "09:00:00");
-		//strcpy_s(a.BankSerial, "");///ÒøĞĞÁ÷Ë®ºÅ
-		//strcpy_s(a.TradingDay, "20170829");///½»Ò×ÏµÍ³ÈÕÆÚ 
-		//a.PlateSerial= 0;///ÒøÆÚÆ½Ì¨ÏûÏ¢Á÷Ë®ºÅ
-		a.LastFragment = THOST_FTDC_LF_Yes;///×îºó·ÖÆ¬±êÖ¾ '0'=ÊÇ×îºó·ÖÆ¬
+		//strcpy_s(a.BankSerial, "");///é“¶è¡Œæµæ°´å·
+		//strcpy_s(a.TradingDay, "20170829");///äº¤æ˜“ç³»ç»Ÿæ—¥æœŸ 
+		//a.PlateSerial= 0;///é“¶æœŸå¹³å°æ¶ˆæ¯æµæ°´å·
+		a.LastFragment = THOST_FTDC_LF_Yes;///æœ€ååˆ†ç‰‡æ ‡å¿— '0'=æ˜¯æœ€ååˆ†ç‰‡
 		a.SessionID = SessionID;
-		//strcpy_s(a.CustomerName, "");///¿Í»§ĞÕÃû
-		a.IdCardType = THOST_FTDC_ICT_IDCard;///Ö¤¼şÀàĞÍ
-		strcpy_s(a.IdentifiedCardNo, "310115198706241914");///Ö¤¼şºÅÂë
-		strcpy_s(a.BankAccount, "123456789");///ÒøĞĞÕÊºÅ
-		//strcpy_s(a.BankPassWord, "123456");///ÒøĞĞÃÜÂë
-		strcpy_s(a.AccountID, g_chInvestorID);///Í¶×ÊÕßÕÊºÅ
-		strcpy_s(a.Password, "123456");///ÆÚ»õÃÜÂë
-		a.InstallID = 1;///°²×°±àºÅ
+		//strcpy_s(a.CustomerName, "");///å®¢æˆ·å§“å
+		a.IdCardType = THOST_FTDC_ICT_IDCard;///è¯ä»¶ç±»å‹
+		strcpy_s(a.IdentifiedCardNo, "310115198706241914");///è¯ä»¶å·ç 
+		strcpy_s(a.BankAccount, "123456789");///é“¶è¡Œå¸å·
+		//strcpy_s(a.BankPassWord, "123456");///é“¶è¡Œå¯†ç 
+		strcpy_s(a.AccountID, g_chInvestorID);///æŠ•èµ„è€…å¸å·
+		strcpy_s(a.Password, "123456");///æœŸè´§å¯†ç 
+		a.InstallID = 1;///å®‰è£…ç¼–å·
 		a.CustType = THOST_FTDC_CUSTT_Person;
-		//a.FutureSerial = 0;///ÆÚ»õ¹«Ë¾Á÷Ë®ºÅ
-		a.VerifyCertNoFlag = THOST_FTDC_YNI_No;///ÑéÖ¤¿Í»§Ö¤¼şºÅÂë±êÖ¾
-		strcpy_s(a.CurrencyID, "CNY");///±ÒÖÖ´úÂë
-		a.TradeAmount = output_num;///×ªÕÊ½ğ¶î
-		a.FutureFetchAmount = 0;///ÆÚ»õ¿ÉÈ¡½ğ¶î
-		a.CustFee = 0;///Ó¦ÊÕ¿Í»§·ÑÓÃ
-		a.BrokerFee = 0;///Ó¦ÊÕÆÚ»õ¹«Ë¾·ÑÓÃ
-		//a.SecuPwdFlag = THOST_FTDC_BPWDF_BlankCheck;///ÆÚ»õ×Ê½ğÃÜÂëºË¶Ô±êÖ¾
-		a.RequestID = 0;///ÇëÇó±àºÅ
-		a.TID = 0;///½»Ò×ID
+		//a.FutureSerial = 0;///æœŸè´§å…¬å¸æµæ°´å·
+		a.VerifyCertNoFlag = THOST_FTDC_YNI_No;///éªŒè¯å®¢æˆ·è¯ä»¶å·ç æ ‡å¿—
+		strcpy_s(a.CurrencyID, "CNY");///å¸ç§ä»£ç 
+		a.TradeAmount = output_num;///è½¬å¸é‡‘é¢
+		a.FutureFetchAmount = 0;///æœŸè´§å¯å–é‡‘é¢
+		a.CustFee = 0;///åº”æ”¶å®¢æˆ·è´¹ç”¨
+		a.BrokerFee = 0;///åº”æ”¶æœŸè´§å…¬å¸è´¹ç”¨
+		//a.SecuPwdFlag = THOST_FTDC_BPWDF_BlankCheck;///æœŸè´§èµ„é‡‘å¯†ç æ ¸å¯¹æ ‡å¿—
+		a.RequestID = 0;///è¯·æ±‚ç¼–å·
+		a.TID = 0;///äº¤æ˜“ID
 		int b = m_pUserApi->ReqFromFutureToBankByFuture(&a, 1);
-		LOG((b == 0) ? "ÆÚ»õ·¢ÆğÆÚ»õ×Ê½ğ×ªÒøĞĞÇëÇó......·¢ËÍ³É¹¦\n" : "ÆÚ»õ·¢ÆğÆÚ»õ×Ê½ğ×ªÒøĞĞÇëÇó......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "æœŸè´§å‘èµ·æœŸè´§èµ„é‡‘è½¬é“¶è¡Œè¯·æ±‚......å‘é€æˆåŠŸ\n" : "æœŸè´§å‘èµ·æœŸè´§èµ„é‡‘è½¬é“¶è¡Œè¯·æ±‚......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÆÚÈ¨×Ô¶Ô³åÂ¼ÈëÇëÇó
+	//æœŸæƒè‡ªå¯¹å†²å½•å…¥è¯·æ±‚
 	void ReqOptionSelfCloseInsert()
 	{
 		CThostFtdcInputOptionSelfCloseField a = { 0 };
@@ -2040,27 +2039,27 @@ public:
 		
 		int choose_1 = 0;
 		while (choose_1 != 1 && choose_1 != 2 && choose_1 != 3 && choose_1 != 4) {
-			LOG("ÇëÑ¡ÔñÍ¶»úÌ×±£±êÖ¾\n1.Í¶»ú\t2.Ì×Àû\t3.Ì×±£\t4.×öÊĞÉÌ\n");
+			LOG("è¯·é€‰æ‹©æŠ•æœºå¥—ä¿æ ‡å¿—\n1.æŠ•æœº\t2.å¥—åˆ©\t3.å¥—ä¿\t4.åšå¸‚å•†\n");
 			cin >> choose_1;
 			if (choose_1 == 1) { a.HedgeFlag = THOST_FTDC_HF_Speculation; }
 			else if (choose_1 == 2) { a.HedgeFlag = THOST_FTDC_HF_Arbitrage; }
 			else if (choose_1 == 3) { a.HedgeFlag = THOST_FTDC_HF_Hedge; }
 			else if (choose_1 == 4) { a.HedgeFlag = THOST_FTDC_HF_MarketMaker; }
 			else {
-				LOG("Ñ¡Ïî´íÎó£¬ÇëÖØĞÂÑ¡Ôñ¡£\n");
+				LOG("é€‰é¡¹é”™è¯¯ï¼Œè¯·é‡æ–°é€‰æ‹©ã€‚\n");
 				_getch();
 			}
 		}
 		
 		int choose_2 = 0;
 		while (choose_2 != 1 && choose_2 != 2 && choose_2 != 3) {
-			LOG("ÇëÑ¡ÔñÆÚÈ¨ĞĞÈ¨µÄÍ·´çÊÇ·ñ×Ô¶Ô³å±êÖ¾\n1.×Ô¶Ô³åÆÚÈ¨²ÖÎ»\t2.±£ÁôÆÚÈ¨²ÖÎ»\t3.×Ô¶Ô³åÂô·½ÂÄÔ¼ºóµÄÆÚ»õ²ÖÎ»\n");
+			LOG("è¯·é€‰æ‹©æœŸæƒè¡Œæƒçš„å¤´å¯¸æ˜¯å¦è‡ªå¯¹å†²æ ‡å¿—\n1.è‡ªå¯¹å†²æœŸæƒä»“ä½\t2.ä¿ç•™æœŸæƒä»“ä½\t3.è‡ªå¯¹å†²å–æ–¹å±¥çº¦åçš„æœŸè´§ä»“ä½\n");
 			cin >> choose_2;
 			if (choose_2 == 1) { a.OptSelfCloseFlag = THOST_FTDC_OSCF_CloseSelfOptionPosition; }
 			else if (choose_2 == 2) { a.OptSelfCloseFlag = THOST_FTDC_OSCF_ReserveOptionPosition; }
 			else if (choose_2 == 3) { a.OptSelfCloseFlag = THOST_FTDC_OSCF_SellCloseSelfFuturePosition; }
 			else {
-				LOG("Ñ¡Ïî´íÎó£¬ÇëÖØĞÂÑ¡Ôñ¡£\n");
+				LOG("é€‰é¡¹é”™è¯¯ï¼Œè¯·é‡æ–°é€‰æ‹©ã€‚\n");
 				_getch();
 				continue;
 			}
@@ -2068,34 +2067,34 @@ public:
 
 		strcpy_s(a.ExchangeID, g_chExchangeID);
 		string accountid_new;
-		LOG("ÇëÊäÈë×Ê½ğÕËºÅ:\n");
+		LOG("è¯·è¾“å…¥èµ„é‡‘è´¦å·:\n");
 		cin >> accountid_new;
 		strcpy_s(a.AccountID, accountid_new.c_str());
 		strcpy_s(a.CurrencyID, "CNY");
 		int b = m_pUserApi->ReqOptionSelfCloseInsert(&a, 1);
-		LOG((b == 0) ? "ÆÚÈ¨×Ô¶Ô³åÂ¼ÈëÇëÇó......·¢ËÍ³É¹¦\n" : "ÆÚÈ¨×Ô¶Ô³åÂ¼ÈëÇëÇó......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "æœŸæƒè‡ªå¯¹å†²å½•å…¥è¯·æ±‚......å‘é€æˆåŠŸ\n" : "æœŸæƒè‡ªå¯¹å†²å½•å…¥è¯·æ±‚......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///ÆÚÈ¨×Ô¶Ô³åÍ¨Öª
+	///æœŸæƒè‡ªå¯¹å†²é€šçŸ¥
 	virtual void OnRtnOptionSelfClose(CThostFtdcOptionSelfCloseField *pOptionSelfClose)
 	{
 		if (pOptionSelfClose) {
 			g_chFrontID = pOptionSelfClose->FrontID;
 			g_chSessionID = pOptionSelfClose->SessionID;
-			strcpy_s(g_chOptionSelfCloseSysID, pOptionSelfClose->OptionSelfCloseSysID);//ÆÚÈ¨×Ô¶Ô³å±àºÅ
-			strcpy_s(g_chOptionSelfCloseRef, pOptionSelfClose->OptionSelfCloseRef);//ÆÚÈ¨×Ô¶Ô³åÒıÓÃ
+			strcpy_s(g_chOptionSelfCloseSysID, pOptionSelfClose->OptionSelfCloseSysID);//æœŸæƒè‡ªå¯¹å†²ç¼–å·
+			strcpy_s(g_chOptionSelfCloseRef, pOptionSelfClose->OptionSelfCloseRef);//æœŸæƒè‡ªå¯¹å†²å¼•ç”¨
 		}
 		CTraderSpi::OnRtnOptionSelfClose(pOptionSelfClose);
 	}
 
-	//ÆÚÈ¨×Ô¶Ô³å²Ù×÷ÇëÇó
+	//æœŸæƒè‡ªå¯¹å†²æ“ä½œè¯·æ±‚
 	void ReqOptionSelfCloseAction()
 	{
 		CThostFtdcInputOptionSelfCloseActionField a = { 0 };
 		strcpy_s(a.BrokerID, g_chBrokerID);
 		strcpy_s(a.InvestorID, g_chInvestorID);
-		//strcpy_s(a.OptionSelfCloseSysID, g_chOptionSelfCloseSysID);//ÆÚÈ¨×Ô¶Ô³å±àºÅ
-		strcpy_s(a.OptionSelfCloseRef, g_chOptionSelfCloseRef);//ÆÚÈ¨×Ô¶Ô³åÒıÓÃ
+		//strcpy_s(a.OptionSelfCloseSysID, g_chOptionSelfCloseSysID);//æœŸæƒè‡ªå¯¹å†²ç¼–å·
+		strcpy_s(a.OptionSelfCloseRef, g_chOptionSelfCloseRef);//æœŸæƒè‡ªå¯¹å†²å¼•ç”¨
 		//a.FrontID = g_chFrontID;
 		//a.SessionID = g_chSessionID;
 		strcpy_s(a.ExchangeID, g_chExchangeID);
@@ -2103,10 +2102,10 @@ public:
 		strcpy_s(a.UserID, g_chUserID);
 		strcpy_s(a.InstrumentID, g_chInstrumentID);
 		int b = m_pUserApi->ReqOptionSelfCloseAction(&a, 1);
-		LOG((b == 0) ? "ÆÚÈ¨×Ô¶Ô³å²Ù×÷ÇëÇó......·¢ËÍ³É¹¦\n" : "ÆÚÈ¨×Ô¶Ô³å²Ù×÷ÇëÇó......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "æœŸæƒè‡ªå¯¹å†²æ“ä½œè¯·æ±‚......å‘é€æˆåŠŸ\n" : "æœŸæƒè‡ªå¯¹å†²æ“ä½œè¯·æ±‚......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	//ÇëÇó²éÑ¯ÆÚÈ¨×Ô¶Ô³å
+	//è¯·æ±‚æŸ¥è¯¢æœŸæƒè‡ªå¯¹å†²
 	void ReqQryOptionSelfClose()
 	{
 		CThostFtdcQryOptionSelfCloseField a = { 0 };
@@ -2115,22 +2114,22 @@ public:
 		strcpy_s(a.InstrumentID, g_chInstrumentID);
 		strcpy_s(a.ExchangeID, g_chExchangeID);
 		int b = m_pUserApi->ReqQryOptionSelfClose(&a, 1);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯ÆÚÈ¨×Ô¶Ô³å......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯ÆÚÈ¨×Ô¶Ô³å......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢æœŸæƒè‡ªå¯¹å†²......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢æœŸæƒè‡ªå¯¹å†²......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///ÇëÇó²éÑ¯ÆÚÈ¨×Ô¶Ô³åÏìÓ¦
+	///è¯·æ±‚æŸ¥è¯¢æœŸæƒè‡ªå¯¹å†²å“åº”
 	virtual void OnRspQryOptionSelfClose(CThostFtdcOptionSelfCloseField *pOptionSelfClose, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 	{
 		if (pOptionSelfClose) {
 			g_chFrontID = pOptionSelfClose->FrontID;
 			g_chSessionID = pOptionSelfClose->SessionID;
-			strcpy_s(g_chOptionSelfCloseSysID, pOptionSelfClose->OptionSelfCloseSysID);//ÆÚÈ¨×Ô¶Ô³å±àºÅ
-			strcpy_s(g_chOptionSelfCloseRef, pOptionSelfClose->OptionSelfCloseRef);//ÆÚÈ¨×Ô¶Ô³åÒıÓÃ
+			strcpy_s(g_chOptionSelfCloseSysID, pOptionSelfClose->OptionSelfCloseSysID);//æœŸæƒè‡ªå¯¹å†²ç¼–å·
+			strcpy_s(g_chOptionSelfCloseRef, pOptionSelfClose->OptionSelfCloseRef);//æœŸæƒè‡ªå¯¹å†²å¼•ç”¨
 		}
 		CTraderSpi::OnRspQryOptionSelfClose(pOptionSelfClose, pRspInfo, nRequestID, bIsLast);
 	}
 
-	///ÇëÇó²éÑ¯Ö´ĞĞĞû¸æ
+	///è¯·æ±‚æŸ¥è¯¢æ‰§è¡Œå®£å‘Š
 	void ReqQryExecOrder()
 	{
 		CThostFtdcQryExecOrderField a = { 0 }; 
@@ -2142,10 +2141,10 @@ public:
 		strcpy_s(a.InsertTimeStart, "");
 		strcpy_s(a.InsertTimeEnd, "");
 		int b = m_pUserApi->ReqQryExecOrder(&a, 1);
-		LOG((b == 0) ? "Ö´ĞĞĞû¸æ²éÑ¯......·¢ËÍ³É¹¦\n" : "Ö´ĞĞĞû¸æ²éÑ¯......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "æ‰§è¡Œå®£å‘ŠæŸ¥è¯¢......å‘é€æˆåŠŸ\n" : "æ‰§è¡Œå®£å‘ŠæŸ¥è¯¢......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///²éÑ¯¶ş´ú×Ê½ğÕË»§
+	///æŸ¥è¯¢äºŒä»£èµ„é‡‘è´¦æˆ·
 	void ReqQrySecAgentTradingAccount()
 	{
 		CThostFtdcQryTradingAccountField a = { 0 };
@@ -2155,21 +2154,21 @@ public:
 		a.BizType = THOST_FTDC_BZTP_Future;
 		strcpy_s(a.AccountID, g_chInvestorID);
 		int b = m_pUserApi->ReqQrySecAgentTradingAccount(&a, 1);
-		LOG((b == 0) ? "²éÑ¯¶ş´ú×Ê½ğÕË»§......·¢ËÍ³É¹¦\n" : "²éÑ¯¶ş´ú×Ê½ğÕË»§......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "æŸ¥è¯¢äºŒä»£èµ„é‡‘è´¦æˆ·......å‘é€æˆåŠŸ\n" : "æŸ¥è¯¢äºŒä»£èµ„é‡‘è´¦æˆ·......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///ÇëÇó²éÑ¯¶ş¼¶´úÀíÉÌ×Ê½ğĞ£ÑéÄ£Ê½
+	///è¯·æ±‚æŸ¥è¯¢äºŒçº§ä»£ç†å•†èµ„é‡‘æ ¡éªŒæ¨¡å¼
 	void ReqQrySecAgentCheckMode()
 	{
 		CThostFtdcQrySecAgentCheckModeField a = { 0 };
 		strcpy_s(a.BrokerID, g_chBrokerID);
 		strcpy_s(a.InvestorID, g_chInvestorID);
 		int b = m_pUserApi->ReqQrySecAgentCheckMode(&a, 1);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯¶ş¼¶´úÀíÉÌ×Ê½ğĞ£ÑéÄ£Ê½......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯¶ş¼¶´úÀíÉÌ×Ê½ğĞ£ÑéÄ£Ê½......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢äºŒçº§ä»£ç†å•†èµ„é‡‘æ ¡éªŒæ¨¡å¼......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢äºŒçº§ä»£ç†å•†èµ„é‡‘æ ¡éªŒæ¨¡å¼......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///×¢²áÓÃ»§ÖÕ¶ËĞÅÏ¢£¬ÓÃÓÚÖĞ¼Ì·şÎñÆ÷¶àÁ¬½ÓÄ£Ê½
-	///ĞèÒªÔÚÖÕ¶ËÈÏÖ¤³É¹¦ºó£¬ÓÃ»§µÇÂ¼Ç°µ÷ÓÃ¸Ã½Ó¿Ú
+	///æ³¨å†Œç”¨æˆ·ç»ˆç«¯ä¿¡æ¯ï¼Œç”¨äºä¸­ç»§æœåŠ¡å™¨å¤šè¿æ¥æ¨¡å¼
+	///éœ€è¦åœ¨ç»ˆç«¯è®¤è¯æˆåŠŸåï¼Œç”¨æˆ·ç™»å½•å‰è°ƒç”¨è¯¥æ¥å£
 	void RegisterUserSystemInfo()
 	{
 		char pSystemInfo[344];
@@ -2185,33 +2184,33 @@ public:
 		/*string ip;
 		ip.clear();
 		cin.ignore();
-		LOG("ÇëÊäÈëipµØÖ·(²»ÊäÈëÔòÎª¿Õ)\n");
+		LOG("è¯·è¾“å…¥ipåœ°å€(ä¸è¾“å…¥åˆ™ä¸ºç©º)\n");
 		getline(cin, ip);
 		strcpy_s(a.ClientPublicIP, ip.c_str());*/
-		strcpy_s(a.ClientPublicIP, "192.168.0.1");//ipµØÖ·
+		strcpy_s(a.ClientPublicIP, "192.168.0.1");//ipåœ°å€
 
 		//int Port;
 		//Port = 0;
 		//cin.ignore();
-		//LOG("ÇëÊäÈë¶Ë¿ÚºÅ\n");
+		//LOG("è¯·è¾“å…¥ç«¯å£å·\n");
 		//cin >> Port;
-		//a.ClientIPPort = Port;//¶Ë¿ÚºÅ
-		a.ClientIPPort = 51305;//¶Ë¿ÚºÅ
+		//a.ClientIPPort = Port;//ç«¯å£å·
+		a.ClientIPPort = 51305;//ç«¯å£å·
 
 		/*string LoginTime;
 		LoginTime.clear();
 		cin.ignore();
-		LOG("ÇëÊäÈëµÇÂ¼Ê±¼ä(²»ÊäÈëÔòÎª¿Õ)\n");
+		LOG("è¯·è¾“å…¥ç™»å½•æ—¶é—´(ä¸è¾“å…¥åˆ™ä¸ºç©º)\n");
 		getline(cin, LoginTime);
 		strcpy_s(a.ClientPublicIP, LoginTime.c_str());*/
 		strcpy_s(a.ClientLoginTime, "20190121");
 		strcpy_s(a.ClientAppID, g_chAppID);
 		int b = m_pUserApi->RegisterUserSystemInfo(&a);
-		LOG((b == 0) ? "×¢²áÓÃ»§ÖÕ¶ËĞÅÏ¢......·¢ËÍ³É¹¦\n" : "×¢²áÓÃ»§ÖÕ¶ËĞÅÏ¢......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "æ³¨å†Œç”¨æˆ·ç»ˆç«¯ä¿¡æ¯......å‘é€æˆåŠŸ\n" : "æ³¨å†Œç”¨æˆ·ç»ˆç«¯ä¿¡æ¯......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///ÉÏ±¨ÓÃ»§ÖÕ¶ËĞÅÏ¢£¬ÓÃÓÚÖĞ¼Ì·şÎñÆ÷²Ù×÷Ô±µÇÂ¼Ä£Ê½
-	///²Ù×÷Ô±µÇÂ¼ºó£¬¿ÉÒÔ¶à´Îµ÷ÓÃ¸Ã½Ó¿ÚÉÏ±¨¿Í»§ĞÅÏ¢
+	///ä¸ŠæŠ¥ç”¨æˆ·ç»ˆç«¯ä¿¡æ¯ï¼Œç”¨äºä¸­ç»§æœåŠ¡å™¨æ“ä½œå‘˜ç™»å½•æ¨¡å¼
+	///æ“ä½œå‘˜ç™»å½•åï¼Œå¯ä»¥å¤šæ¬¡è°ƒç”¨è¯¥æ¥å£ä¸ŠæŠ¥å®¢æˆ·ä¿¡æ¯
 	void SubmitUserSystemInfo()
 	{
 		char pSystemInfo[344];
@@ -2227,32 +2226,32 @@ public:
 		/*string ip;
 		ip.clear();
 		cin.ignore();
-		LOG("ÇëÊäÈëipµØÖ·(²»ÊäÈëÔòÎª¿Õ)\n");
+		LOG("è¯·è¾“å…¥ipåœ°å€(ä¸è¾“å…¥åˆ™ä¸ºç©º)\n");
 		getline(cin, ip);
 		strcpy_s(a.ClientPublicIP, ip.c_str());*/
-		strcpy_s(a.ClientPublicIP, "192.168.0.1");//ipµØÖ·
+		strcpy_s(a.ClientPublicIP, "192.168.0.1");//ipåœ°å€
 
 		//int Port;
 		//Port = 0;
 		//cin.ignore();
-		//LOG("ÇëÊäÈë¶Ë¿ÚºÅ\n");
+		//LOG("è¯·è¾“å…¥ç«¯å£å·\n");
 		//cin >> Port;
-		//a.ClientIPPort = Port;//¶Ë¿ÚºÅ
-		a.ClientIPPort = 51305;//¶Ë¿ÚºÅ
+		//a.ClientIPPort = Port;//ç«¯å£å·
+		a.ClientIPPort = 51305;//ç«¯å£å·
 
 		/*string LoginTime;
 		LoginTime.clear();
 		cin.ignore();
-		LOG("ÇëÊäÈëµÇÂ¼Ê±¼ä(²»ÊäÈëÔòÎª¿Õ)\n");
+		LOG("è¯·è¾“å…¥ç™»å½•æ—¶é—´(ä¸è¾“å…¥åˆ™ä¸ºç©º)\n");
 		getline(cin, LoginTime);
 		strcpy_s(a.ClientPublicIP, LoginTime.c_str());*/
 		strcpy_s(a.ClientLoginTime, "20190121");
 		strcpy_s(a.ClientAppID, g_chAppID);
 		int b = m_pUserApi->SubmitUserSystemInfo(&a);
-		LOG((b == 0) ? "×¢²áÓÃ»§ÖÕ¶ËĞÅÏ¢......·¢ËÍ³É¹¦\n" : "×¢²áÓÃ»§ÖÕ¶ËĞÅÏ¢......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "æ³¨å†Œç”¨æˆ·ç»ˆç«¯ä¿¡æ¯......å‘é€æˆåŠŸ\n" : "æ³¨å†Œç”¨æˆ·ç»ˆç«¯ä¿¡æ¯......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///²éÑ¯ÓÃ»§µ±Ç°Ö§³ÖµÄÈÏÖ¤Ä£Ê½
+	///æŸ¥è¯¢ç”¨æˆ·å½“å‰æ”¯æŒçš„è®¤è¯æ¨¡å¼
 	void ReqUserAuthMethod()
 	{
 		CThostFtdcReqUserAuthMethodField a = { 0 };
@@ -2260,10 +2259,10 @@ public:
 		strcpy_s(a.BrokerID, g_chBrokerID);
 		strcpy_s(a.UserID, g_chUserID);
 		int b = m_pUserApi->ReqUserAuthMethod(&a, nRequestID++);
-		LOG((b == 0) ? "²éÑ¯ÓÃ»§µ±Ç°Ö§³ÖµÄÈÏÖ¤Ä£Ê½......·¢ËÍ³É¹¦\n" : "²éÑ¯ÓÃ»§µ±Ç°Ö§³ÖµÄÈÏÖ¤Ä£Ê½......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "æŸ¥è¯¢ç”¨æˆ·å½“å‰æ”¯æŒçš„è®¤è¯æ¨¡å¼......å‘é€æˆåŠŸ\n" : "æŸ¥è¯¢ç”¨æˆ·å½“å‰æ”¯æŒçš„è®¤è¯æ¨¡å¼......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///ÓÃ»§·¢³ö»ñÈ¡Í¼ĞÎÑéÖ¤ÂëÇëÇó
+	///ç”¨æˆ·å‘å‡ºè·å–å›¾å½¢éªŒè¯ç è¯·æ±‚
 	void ReqGenUserCaptcha()
 	{
 		CThostFtdcReqGenUserCaptchaField a = { 0 };
@@ -2271,10 +2270,10 @@ public:
 		strcpy_s(a.BrokerID, g_chBrokerID);
 		strcpy_s(a.UserID, g_chUserID);
 		int b = m_pUserApi->ReqGenUserCaptcha(&a, nRequestID++);
-		LOG((b == 0) ? "ÓÃ»§·¢³ö»ñÈ¡Í¼ĞÎÑéÖ¤ÂëÇëÇó......·¢ËÍ³É¹¦\n" : "ÓÃ»§·¢³ö»ñÈ¡Í¼ĞÎÑéÖ¤ÂëÇëÇó......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "ç”¨æˆ·å‘å‡ºè·å–å›¾å½¢éªŒè¯ç è¯·æ±‚......å‘é€æˆåŠŸ\n" : "ç”¨æˆ·å‘å‡ºè·å–å›¾å½¢éªŒè¯ç è¯·æ±‚......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///ÓÃ»§·¢³ö»ñÈ¡¶ÌĞÅÑéÖ¤ÂëÇëÇó
+	///ç”¨æˆ·å‘å‡ºè·å–çŸ­ä¿¡éªŒè¯ç è¯·æ±‚
 	void ReqGenUserText()
 	{
 		CThostFtdcReqGenUserTextField a = { 0 };
@@ -2282,10 +2281,10 @@ public:
 		strcpy_s(a.BrokerID, g_chBrokerID);
 		strcpy_s(a.UserID, g_chUserID);
 		int b = m_pUserApi->ReqGenUserText(&a, nRequestID++);
-		LOG((b == 0) ? "ÓÃ»§·¢³ö»ñÈ¡¶ÌĞÅÑéÖ¤ÂëÇëÇó......·¢ËÍ³É¹¦\n" : "ÓÃ»§·¢³ö»ñÈ¡¶ÌĞÅÑéÖ¤ÂëÇëÇó......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "ç”¨æˆ·å‘å‡ºè·å–çŸ­ä¿¡éªŒè¯ç è¯·æ±‚......å‘é€æˆåŠŸ\n" : "ç”¨æˆ·å‘å‡ºè·å–çŸ­ä¿¡éªŒè¯ç è¯·æ±‚......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///ÓÃ»§·¢³ö´øÓĞÍ¼Æ¬ÑéÖ¤ÂëµÄµÇÂ½ÇëÇó
+	///ç”¨æˆ·å‘å‡ºå¸¦æœ‰å›¾ç‰‡éªŒè¯ç çš„ç™»é™†è¯·æ±‚
 	void ReqUserLoginWithCaptcha()
 	{
 		CThostFtdcReqUserLoginWithCaptchaField a = { 0 };
@@ -2295,17 +2294,17 @@ public:
 		strcpy_s(a.Password, g_chPassword);
 		strcpy_s(a.UserProductInfo, "");
 		strcpy_s(a.InterfaceProductInfo, "");
-		strcpy_s(a.ProtocolInfo, "");//Ğ­ÒéĞÅÏ¢
-		strcpy_s(a.MacAddress, "");//MacµØÖ·
-		strcpy_s(a.ClientIPAddress, "");//ÖÕ¶ËIPµØÖ·
-		strcpy_s(a.LoginRemark, "");//µÇÂ¼Ö÷±¸
-		strcpy_s(a.Captcha, "");//Í¼ĞÎÑéÖ¤ÂëµÄÎÄ×ÖÄÚÈİ
+		strcpy_s(a.ProtocolInfo, "");//åè®®ä¿¡æ¯
+		strcpy_s(a.MacAddress, "");//Macåœ°å€
+		strcpy_s(a.ClientIPAddress, "");//ç»ˆç«¯IPåœ°å€
+		strcpy_s(a.LoginRemark, "");//ç™»å½•ä¸»å¤‡
+		strcpy_s(a.Captcha, "");//å›¾å½¢éªŒè¯ç çš„æ–‡å­—å†…å®¹
 		a.ClientIPPort = 10203;
 		int b = m_pUserApi->ReqUserLoginWithCaptcha(&a, nRequestID++);
-		LOG((b == 0) ? "ÓÃ»§·¢³ö´øÓĞÍ¼Æ¬ÑéÖ¤ÂëµÄµÇÂ½ÇëÇó......·¢ËÍ³É¹¦\n" : "ÓÃ»§·¢³ö´øÓĞÍ¼Æ¬ÑéÖ¤ÂëµÄµÇÂ½ÇëÇó......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "ç”¨æˆ·å‘å‡ºå¸¦æœ‰å›¾ç‰‡éªŒè¯ç çš„ç™»é™†è¯·æ±‚......å‘é€æˆåŠŸ\n" : "ç”¨æˆ·å‘å‡ºå¸¦æœ‰å›¾ç‰‡éªŒè¯ç çš„ç™»é™†è¯·æ±‚......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///ÓÃ»§·¢³ö´øÓĞ¶ÌĞÅÑéÖ¤ÂëµÄµÇÂ½ÇëÇó
+	///ç”¨æˆ·å‘å‡ºå¸¦æœ‰çŸ­ä¿¡éªŒè¯ç çš„ç™»é™†è¯·æ±‚
 	void ReqUserLoginWithText()
 	{
 		CThostFtdcReqUserLoginWithTextField a = { 0 };
@@ -2321,11 +2320,11 @@ public:
 		strcpy_s(a.Text, "");
 		a.ClientIPPort = 10000;
 		int b = m_pUserApi->ReqUserLoginWithText(&a, nRequestID++);
-		LOG((b == 0) ? "ÓÃ»§·¢³ö´øÓĞ¶ÌĞÅÑéÖ¤ÂëµÄµÇÂ½ÇëÇó......·¢ËÍ³É¹¦\n" : 
-			"ÓÃ»§·¢³ö´øÓĞ¶ÌĞÅÑéÖ¤ÂëµÄµÇÂ½ÇëÇó......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "ç”¨æˆ·å‘å‡ºå¸¦æœ‰çŸ­ä¿¡éªŒè¯ç çš„ç™»é™†è¯·æ±‚......å‘é€æˆåŠŸ\n" : 
+			"ç”¨æˆ·å‘å‡ºå¸¦æœ‰çŸ­ä¿¡éªŒè¯ç çš„ç™»é™†è¯·æ±‚......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///ÓÃ»§·¢³ö´øÓĞ¶¯Ì¬¿ÚÁîµÄµÇÂ½ÇëÇó
+	///ç”¨æˆ·å‘å‡ºå¸¦æœ‰åŠ¨æ€å£ä»¤çš„ç™»é™†è¯·æ±‚
 	void ReqUserLoginWithOTP()
 	{
 		CThostFtdcReqUserLoginWithOTPField a = { 0 };
@@ -2341,17 +2340,17 @@ public:
 		strcpy_s(a.OTPPassword, "");
 		a.ClientIPPort = 10000;
 		int b = m_pUserApi->ReqUserLoginWithOTP(&a, nRequestID++);
-		LOG((b == 0) ? "ÓÃ»§·¢³ö´øÓĞ¶¯Ì¬¿ÚÁîµÄµÇÂ½ÇëÇó......·¢ËÍ³É¹¦\n" : "ÓÃ»§·¢³ö´øÓĞ¶¯Ì¬¿ÚÁîµÄµÇÂ½ÇëÇó......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "ç”¨æˆ·å‘å‡ºå¸¦æœ‰åŠ¨æ€å£ä»¤çš„ç™»é™†è¯·æ±‚......å‘é€æˆåŠŸ\n" : "ç”¨æˆ·å‘å‡ºå¸¦æœ‰åŠ¨æ€å£ä»¤çš„ç™»é™†è¯·æ±‚......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
-	///ÇëÇó²éÑ¯¶ş¼¶´úÀíÉÌĞÅÏ¢
+	///è¯·æ±‚æŸ¥è¯¢äºŒçº§ä»£ç†å•†ä¿¡æ¯
 	void ReqQrySecAgentTradeInfo()
 	{
 		CThostFtdcQrySecAgentTradeInfoField a = { 0 };
 		strcpy_s(a.BrokerID, "");
 		strcpy_s(a.BrokerSecAgentID, "");
 		int b = m_pUserApi->ReqQrySecAgentTradeInfo(&a, nRequestID++);
-		LOG((b == 0) ? "ÇëÇó²éÑ¯¶ş¼¶´úÀíÉÌĞÅÏ¢......·¢ËÍ³É¹¦\n" : "ÇëÇó²éÑ¯¶ş¼¶´úÀíÉÌĞÅÏ¢......·¢ËÍÊ§°Ü£¬´íÎóĞòºÅ=[%d]\n", b);
+		LOG((b == 0) ? "è¯·æ±‚æŸ¥è¯¢äºŒçº§ä»£ç†å•†ä¿¡æ¯......å‘é€æˆåŠŸ\n" : "è¯·æ±‚æŸ¥è¯¢äºŒçº§ä»£ç†å•†ä¿¡æ¯......å‘é€å¤±è´¥ï¼Œé”™è¯¯åºå·=[%d]\n", b);
 	}
 
 

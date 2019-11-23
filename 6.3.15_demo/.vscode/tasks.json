@@ -1,0 +1,28 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "build single ma strategy",
+        "type": "shell",
+        "command": "g++",
+        "args": [
+          "-g",
+          "-o",
+          "single_ma_strategy",
+          "getconfig.cpp",
+          "traderApi.cpp",
+          "traderSpi.cpp",
+          "readfile.cpp",
+          "Bar.cpp",
+          "BarManager.cpp",
+          "Strategy.cpp",
+          "MarketDataWriter.cpp",
+          "main.cpp"
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+      }
+    ]
+  }

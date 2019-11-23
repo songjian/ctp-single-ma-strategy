@@ -1,9 +1,9 @@
 #pragma once
 #include "define.h"
-#include "strategy.h"
-#include "Indicators.h"
-#include "ThostFtdcUserApiStruct.h"
 #include "getconfig.h"
+#include "ThostFtdcUserApiStruct.h"
+#include "strategy_class.h"
+#include "indicators_class.h"
 
 class SingleMaStrategy : public Strategy
 {

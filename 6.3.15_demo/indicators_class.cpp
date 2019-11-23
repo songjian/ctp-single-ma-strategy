@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "Indicators.h"
 #include <numeric>
+#include "indicators_class.h"
 
 double Indicators::ma(string chInstrumentId, int nPeriod, int nTimePeriod, int nShift)
 {

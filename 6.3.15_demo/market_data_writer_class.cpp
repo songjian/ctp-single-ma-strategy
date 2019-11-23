@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "MarketDataWriter.h"
+#include "market_data_writer_class.h"
 
 void MarketDataWriter::OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData)
 {

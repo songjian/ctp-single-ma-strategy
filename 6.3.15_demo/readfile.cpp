@@ -13,7 +13,7 @@ int readFileTail(vector<string>* buffLine, string filePath, int rows, int shift 
 
 	if (!fin) 
 	{
-		cerr << "´ò¿ªÈÕÖ¾ÎÄ¼þÊ§°Ü£¡" << endl;
+		cerr << "æ‰“å¼€æ—¥å¿—æ–‡ä»¶å¤±è´¥ï¼" << endl;
 		return -1;
 	}
 	int nRows = rows + shift + 1;
@@ -39,7 +39,7 @@ int readFileTail(vector<string>* buffLine, string filePath, int rows, int shift 
 
 	if (c == EOF)
 	{
-		printf("ÕÒµ½EOF\n");
+		printf("æ‰¾åˆ°EOF\n");
 		return -2;
 	}
 
