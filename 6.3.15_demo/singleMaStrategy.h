@@ -3,6 +3,7 @@
 #include "strategy.h"
 #include "Indicators.h"
 #include "ThostFtdcUserApiStruct.h"
+#include "getconfig.h"
 
 class SingleMaStrategy : public Strategy
 {
@@ -10,12 +11,18 @@ public:
 	virtual void OnStart();
 	virtual void OnStop();
 	virtual void OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData);
-	virtual void OnBar();
-	SingleMaStrategy(TThostFtdcInstrumentIDType instrumentId);
+	virtual void OnBar(CThostFtdcDepthMarketDataField* pDepthMarketData, size_t nTimePeriod);
+	SingleMaStrategy(TThostFtdcInstrumentIDType chInstrumentID, CThostFtdcTraderApi* pUserApi) : m_InstrumentId(chInstrumentID), m_pUserApi(pUserApi) {}
 private:
-	int period=10;
-	int timePeriod=15;
-	Indicators indicators;
-	TThostFtdcInstrumentIDType instrumentId;
+	int OpenPosition(TThostFtdcDirectionType cDirection, double fLimitPrice);
+	int ClosePosition();
+	int ReversePosition();
+	int m_nPeriod=10;
+	int m_nTimePeriod=15;
+	int m_nRequestID = 0;
+	Indicators m_Indicators;
+	string m_InstrumentId;
+	CThostFtdcOrderField m_Order;
+	CThostFtdcTraderApi* m_pUserApi;
 };
 

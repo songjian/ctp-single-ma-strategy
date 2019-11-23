@@ -29,9 +29,10 @@ int main()
 	string g_chFrontMdaddr = getConfig("config", "FrontMdAddr");
 	CThostFtdcMdApi* pUserMdApi = CThostFtdcMdApi::CreateFtdcMdApi(".\\flow\\md\\");
 	CSimpleMdHandler ash(pUserMdApi);
-	MarketData marketData;
-	ash.RegisterMarketData(&marketData);
-	SingleMaStrategy smaStrategy(g_chInstrumentID);
+	SingleMaStrategy smaStrategy(g_chInstrumentID, pUserApi);
+	BarManager barManager(&smaStrategy);
+	MarketDataWriter marketDataWriter(&barManager);
+	ash.RegisterMarketData(&marketDataWriter);
 	ash.RegisterStrategy(&smaStrategy);
 	pUserMdApi->RegisterSpi(&ash);
 	pUserMdApi->RegisterFront(const_cast<char*>(g_chFrontMdaddr.c_str()));

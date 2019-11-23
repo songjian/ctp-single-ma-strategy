@@ -3,7 +3,7 @@
 
 using namespace std;
 
-int Bar::getBars(vector<Bar>* pBuffBars, string chInstrumentId, int nPeriod, int nTimePeriod, int nShift = 0)
+int Bar::getBars(vector<Bar>* pBarVector, string chInstrumentId, int nPeriod, int nTimePeriod, int nShift = 0)
 {
 	vector<string> buffLine;
 	string filePath = ".\\bars\\" + chInstrumentId + "_" + to_string(nTimePeriod) + ".csv";
@@ -17,7 +17,7 @@ int Bar::getBars(vector<Bar>* pBuffBars, string chInstrumentId, int nPeriod, int
 	for (size_t i = 0; i < buffLine.size(); i++)
 	{
 		Bar bar = Bar::GetBarFromCsv(buffLine[i]);
-		pBuffBars->push_back(bar);
+		pBarVector->push_back(bar);
 	}
 
 	return 0;

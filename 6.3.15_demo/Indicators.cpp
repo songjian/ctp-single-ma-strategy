@@ -4,7 +4,7 @@
 
 double Indicators::ma(string chInstrumentId, int nPeriod, int nTimePeriod, int nShift)
 {
-	vector<Bar> bars(nPeriod);
+	vector<Bar> bars;
 	vector<double> closeVec(nPeriod);
 	int r = Bar::getBars(&bars, chInstrumentId, nPeriod, nTimePeriod, nShift);
 

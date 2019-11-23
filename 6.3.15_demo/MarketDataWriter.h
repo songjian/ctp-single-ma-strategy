@@ -5,12 +5,12 @@
 
 using namespace std;
 
-class MarketData
+class MarketDataWriter
 {
 public:
 	void OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData);
-	MarketData();
-	~MarketData();
+	MarketDataWriter(BarManager* barManager) : m_pBarManager(barManager) {}
+	~MarketDataWriter();
 private:
 	void MdToFile(CThostFtdcDepthMarketDataField* pDepthMarketData);
 	string FileName(CThostFtdcDepthMarketDataField* pDepthMarketData);

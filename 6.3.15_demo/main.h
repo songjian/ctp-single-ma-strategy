@@ -259,7 +259,7 @@ public:
 		SetEvent(xinhao);
 	}
 
-	virtual void RegisterMarketData(MarketData* pMarketData)
+	virtual void RegisterMarketData(MarketDataWriter* pMarketData)
 	{
 		m_pMarketData = pMarketData;
 	}
@@ -272,7 +272,7 @@ public:
 private:
 	// 指向CThostFtdcMduserApi实例的指针
 	CThostFtdcMdApi *m_pUserMdApi;
-	MarketData* m_pMarketData;
+	MarketDataWriter* m_pMarketData;
 	Strategy* m_pStrategy;
 };
 

@@ -8,7 +8,7 @@
 #include <map>
 #include <iostream>
 #include "strategy.h"
-#include "MarketData.h"
+#include "MarketDataWriter.h"
 
 using namespace std;
 

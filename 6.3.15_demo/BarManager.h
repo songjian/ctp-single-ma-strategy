@@ -3,15 +3,20 @@
 #include <algorithm>
 #include <fstream>
 #include "Bar.h"
+#include "strategy.h"
 
 using namespace std;
 
 class BarManager
 {
 public:
-	static BarManager* CreateBarManager();
 	void OnTick(CThostFtdcDepthMarketDataField*);
-	BarManager();
+	BarManager(Strategy* pStrategy) : m_pStrategy(pStrategy)
+	{
+		string instrumentIds = getConfig("config", "InstrumentID");
+		m_gchInstrumentIds.push_back(instrumentIds);
+		m_gDepthMarketData.resize(m_gchInstrumentIds.size());
+	}
 private:
 	string FileName(string chInstrumentId, int nTimePeriod);
 	void BarToFile(string chFileName, Bar* pBar);
@@ -26,4 +31,5 @@ private:
 	vector<vector<CThostFtdcDepthMarketDataField> > m_gDepthMarketData;
 	ofstream m_Outfile;
 	const int m_nTimePeriods[4] = { 5,15,30,60 };
+	Strategy* m_pStrategy;
 };

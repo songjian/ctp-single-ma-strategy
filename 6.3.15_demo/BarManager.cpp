@@ -4,13 +4,6 @@
 
 using namespace std;
 
-
-BarManager* BarManager::CreateBarManager()
-{
-	static BarManager bm;
-	return &bm;
-}
-
 void BarManager::OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData)
 {
 	string chInstrumentId = pDepthMarketData->InstrumentID;
@@ -33,13 +26,6 @@ void BarManager::OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData)
 	}
 
 	m_gDepthMarketData[nIndex].push_back(*pDepthMarketData);
-}
-
-BarManager::BarManager()
-{
-	string instrumentIds = getConfig("config", "InstrumentID");
-	m_gchInstrumentIds.push_back(instrumentIds);
-	m_gDepthMarketData.resize(m_gchInstrumentIds.size());
 }
 
 string BarManager::FileName(string chInstrumentId, int nTimePeriod = 1)
@@ -159,6 +145,10 @@ void BarManager::PeriodConverter(string chInstrumentId, size_t nTimePeriod)
 
 	string outFileName = FileName(chInstrumentId, nTimePeriod);
 	BarToFile(outFileName, &bar);
+
+	//通知Strategy新柱生成
+	int nIndex = FindIndex(chInstrumentId);
+	m_pStrategy->OnBar(&m_gDepthMarketData[nIndex].back(), nTimePeriod);
 }
 
 void BarManager::ExecutionPeriodConverter(string chInstrumentId)

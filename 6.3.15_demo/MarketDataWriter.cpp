@@ -1,18 +1,13 @@
 #include "stdafx.h"
-#include "MarketData.h"
+#include "MarketDataWriter.h"
 
-void MarketData::OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData)
+void MarketDataWriter::OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData)
 {
 	MdToFile(pDepthMarketData);
 	m_pBarManager->OnTick(pDepthMarketData);
 }
 
-MarketData::MarketData()
-{
-	m_pBarManager = BarManager::CreateBarManager();
-}
-
-MarketData::~MarketData()
+MarketDataWriter::~MarketDataWriter()
 {
 	if (outfile.is_open())
 	{
@@ -20,7 +15,7 @@ MarketData::~MarketData()
 	}
 }
 
-void MarketData::MdToFile(CThostFtdcDepthMarketDataField* pDepthMarketData)
+void MarketDataWriter::MdToFile(CThostFtdcDepthMarketDataField* pDepthMarketData)
 {
 	string fileName = FileName(pDepthMarketData);
 	if (fileName != lastFileName)
@@ -47,7 +42,7 @@ void MarketData::MdToFile(CThostFtdcDepthMarketDataField* pDepthMarketData)
 	outfile << pDepthMarketData->Turnover << endl;
 }
 
-string MarketData::FileName(CThostFtdcDepthMarketDataField* pDepthMarketData)
+string MarketDataWriter::FileName(CThostFtdcDepthMarketDataField* pDepthMarketData)
 {
 	string filePath = ".\\md\\";
 	string day = pDepthMarketData->ActionDay;
