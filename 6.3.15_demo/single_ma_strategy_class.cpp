@@ -1,3 +1,4 @@
+#include <string.h>
 #include "stdafx.h"
 #include "single_ma_strategy_class.h"
 
@@ -24,6 +25,9 @@ void SingleMaStrategy::OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData)
 
 	}
 };
+
+void SingleMaStrategy::OnMessage(){};
+void SingleMaStrategy::OnAccount(){};
 
 void SingleMaStrategy::OnBar(CThostFtdcDepthMarketDataField* pDepthMarketData, size_t nTimePeriod)
 {

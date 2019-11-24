@@ -12,7 +12,11 @@ public:
 	virtual void OnStop();
 	virtual void OnTick(CThostFtdcDepthMarketDataField* pDepthMarketData);
 	virtual void OnBar(CThostFtdcDepthMarketDataField* pDepthMarketData, size_t nTimePeriod);
+	virtual void OnMessage();
+	virtual void OnAccount();
+	SingleMaStrategy():Strategy(){};
 	SingleMaStrategy(TThostFtdcInstrumentIDType chInstrumentID, CThostFtdcTraderApi* pUserApi) : m_InstrumentId(chInstrumentID), m_pUserApi(pUserApi) {}
+	~SingleMaStrategy(){};
 private:
 	int OpenPosition(TThostFtdcDirectionType cDirection, double fLimitPrice);
 	int ClosePosition();
