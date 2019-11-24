@@ -10,13 +10,13 @@
           "-o",
           "single_ma_strategy",
           "getconfig.cpp",
+          "readfile.cpp",
+          "market_data_writer_class.cpp",
+          "bar_class.cpp",
+          "bar_manager_class.cpp",
+          "strategy_class.cpp",
           "traderApi.cpp",
           "traderSpi.cpp",
-          "readfile.cpp",
-          "Bar.cpp",
-          "BarManager.cpp",
-          "Strategy.cpp",
-          "MarketDataWriter.cpp",
           "main.cpp"
         ],
         "group": {

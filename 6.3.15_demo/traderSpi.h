@@ -7,8 +7,8 @@
 #include "getconfig.h"
 #include <map>
 #include <iostream>
-#include "strategy.h"
-#include "MarketDataWriter.h"
+#include "strategy_class.h"
+#include "market_data_writer_class.h"
 
 using namespace std;
 

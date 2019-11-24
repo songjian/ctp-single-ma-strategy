@@ -16,8 +16,8 @@
 #include "traderSpi.h"
 #include <vector>
 #include <map>
-#include "singleMaStrategy.h"
-#include "Bar.h"
+#include "bar_class.h"
+#include "single_ma_strategy_class.h"
 
 using namespace std;
 FILE *logfile;

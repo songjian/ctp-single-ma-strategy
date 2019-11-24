@@ -1,4 +1,3 @@
-#pragma  once
 #include "stdafx.h"
 #include "getconfig.h"
 #include <wtypes.h>
