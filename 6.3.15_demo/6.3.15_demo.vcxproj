@@ -23,7 +23,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>6.3.13_demo</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>single_ma_strategy</ProjectName>
+    <ProjectName>6.3.15_demo</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -48,10 +48,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>true</CLRSupport>
-    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -82,7 +81,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -136,29 +134,18 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <CompileAsManaged>true</CompileAsManaged>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
-      <ShowProgress>LinkVerbose</ShowProgress>
-      <AdditionalLibraryDirectories>C:\Windows\System32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>mscoree.dll;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bar.h" />
-    <ClInclude Include="BarManager.h" />
-    <ClInclude Include="Indicators.h" />
-    <ClInclude Include="MarketDataWriter.h" />
-    <ClInclude Include="readfile.h" />
-    <ClInclude Include="singleMaStrategy.h" />
-    <ClInclude Include="strategy.h" />
     <ClInclude Include="ThostFtdcMdApi.h" />
     <ClInclude Include="ThostFtdcTraderApi.h" />
     <ClInclude Include="ThostFtdcUserApiDataType.h" />
@@ -173,14 +160,6 @@
     <ClInclude Include="traderApi.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Bar.cpp" />
-    <ClCompile Include="BarManager.cpp" />
-    <ClCompile Include="Indicators.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="MarketDataWriter.cpp" />
-    <ClCompile Include="readfile.cpp" />
-    <ClCompile Include="singleMaStrategy.cpp" />
-    <ClCompile Include="Strategy.cpp" />
     <ClCompile Include="traderApi.cpp" />
     <ClCompile Include="traderSpi.cpp" />
     <ClCompile Include="getconfig.cpp" />
@@ -188,6 +167,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config.ini" />

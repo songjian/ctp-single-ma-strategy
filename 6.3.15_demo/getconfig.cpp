@@ -1,3 +1,4 @@
+#pragma  once
 #include "stdafx.h"
 #include "getconfig.h"
 #include <wtypes.h>
@@ -13,11 +14,11 @@
 #include <locale.h>
 #include <vector>
 
-/*å‡½æ•°åç§°ï¼šgetConfig()
-å‡½æ•°åŠŸèƒ½ï¼šè·å–é…ç½®æ–‡ä»¶iniä¸­ç›¸åº”å¤§æ ‡é¢˜titleä¸‹æŒ‡å®šé…ç½®å­—æ®µcfgnameçš„å€¼
-å‚æ•°1ï¼šstring title		å¤§æ ‡é¢˜[***]
-å‚æ•°2ï¼šstring cfgName		å¤§æ ‡é¢˜ä¸‹çš„é…ç½®å­—æ®µ
-è¿”å›å€¼ï¼šé…ç½®æ–‡ä»¶iniä¸­ç›¸åº”å¤§æ ‡é¢˜titleä¸‹æŒ‡å®šé…ç½®å­—æ®µcfgnameçš„å€¼
+/*º¯ÊıÃû³Æ£ºgetConfig()
+º¯Êı¹¦ÄÜ£º»ñÈ¡ÅäÖÃÎÄ¼şiniÖĞÏàÓ¦´ó±êÌâtitleÏÂÖ¸¶¨ÅäÖÃ×Ö¶ÎcfgnameµÄÖµ
+²ÎÊı1£ºstring title		´ó±êÌâ[***]
+²ÎÊı2£ºstring cfgName		´ó±êÌâÏÂµÄÅäÖÃ×Ö¶Î
+·µ»ØÖµ£ºÅäÖÃÎÄ¼şiniÖĞÏàÓ¦´ó±êÌâtitleÏÂÖ¸¶¨ÅäÖÃ×Ö¶ÎcfgnameµÄÖµ
 */
 string getConfig(string title, string cfgName)
 {
@@ -34,17 +35,17 @@ string getConfig(string title, string cfgName)
 	int flag = 0;
 	while (getline(inifile, strtmp, '\n'))
 	{
-		if (strtmp.substr(0, 1) == "#")	continue;	//è¿‡æ»¤æ³¨é‡Š		
+		if (strtmp.substr(0, 1) == "#")	continue;	//¹ıÂË×¢ÊÍ		
 		if (flag == 0)
 		{
 			if (strtmp.find(title) != string::npos)
 			{
 				if (strtmp.substr(0, 1) == "[")
 				{
-					if (strtmp.find("]") == string::npos) 	break;	//ç¼ºå¤±â€œ]â€é€€å‡º
+					if (strtmp.find("]") == string::npos) 	break;	//È±Ê§¡°]¡±ÍË³ö
 					strtitle = strtmp.substr(1);
 					strtitle = strtitle.erase(strtitle.find("]"));
-					if (strtitle == title)		//æ‰¾åˆ°å¤§æ ‡é¢˜è®¾ç½®æ ‡å¿—ä½ä¸º1ï¼Œè¿™æ ·å°±ä¸å†æ‰¾ä¸‹ä¸€ä¸ªå¤§æ ‡é¢˜äº†
+					if (strtitle == title)		//ÕÒµ½´ó±êÌâÉèÖÃ±êÖ¾Î»Îª1£¬ÕâÑù¾Í²»ÔÙÕÒÏÂÒ»¸ö´ó±êÌâÁË
 					{
 						flag = 1;
 						continue;
@@ -54,13 +55,13 @@ string getConfig(string title, string cfgName)
 		}
 		if (flag == 1)
 		{
-			if (strtmp.substr(0, 1) == "[")	break;	//å¦‚æœé‡åˆ°ä¸‹ä¸€ä¸ª[]å·è¯´æ˜å½“å‰å¤§æ ‡é¢˜å¯¹åº”çš„é…ç½®å­—æ®µæœç´¢å®Œæ¯•ï¼Œç»“æŸæœç´¢ã€‚
+			if (strtmp.substr(0, 1) == "[")	break;	//Èç¹ûÓöµ½ÏÂÒ»¸ö[]ºÅËµÃ÷µ±Ç°´ó±êÌâ¶ÔÓ¦µÄÅäÖÃ×Ö¶ÎËÑË÷Íê±Ï£¬½áÊøËÑË÷¡£
 			if (strtmp.find(cfgName) != string::npos)
 			{
-				if (strtmp.find("=") == string::npos)	break;	//ç¼ºå¤±â€œ=â€é€€å‡º
+				if (strtmp.find("=") == string::npos)	break;	//È±Ê§¡°=¡±ÍË³ö
 				strcfgname = strtmp;
 				strcfgname = strcfgname.erase(strcfgname.find("="));
-				if (strcfgname == cfgName)		//æ‰¾åˆ°å¤§æ ‡é¢˜ç›¸åº”çš„å­—æ®µåï¼Œè¿”å›å€¼
+				if (strcfgname == cfgName)		//ÕÒµ½´ó±êÌâÏàÓ¦µÄ×Ö¶Îºó£¬·µ»ØÖµ
 				{
 					returnValue = strtmp.substr(strtmp.find("=") + 1);
 					return returnValue;
@@ -69,7 +70,7 @@ string getConfig(string title, string cfgName)
 			}
 		}
 	}
-	cout << "é…ç½®æ–‡ä»¶é”™è¯¯ï¼šæ²¡æ‰¾åˆ°" << title << "å¯¹åº”é…ç½®é¡¹" << cfgName << "ï¼" << endl;
+	cout << "ÅäÖÃÎÄ¼ş´íÎó£ºÃ»ÕÒµ½" << title << "¶ÔÓ¦ÅäÖÃÏî" << cfgName << "£¡" << endl;
 	_getch();
 	exit(-1);
 }

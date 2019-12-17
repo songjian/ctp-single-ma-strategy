@@ -1,7 +1,8 @@
+#pragma  once
 #include "stdafx.h"
+#include "traderApi.h"
 #include <stdio.h>
 #include "define.h"
-#include "traderApi.h"
 
 CThostFtdcTraderApi* CTraderApi::CreateFtdcTraderApi(const char *pszFlowPath /*= ""*/)
 {
@@ -13,7 +14,7 @@ const char * CTraderApi::GetApiVersion()
 	return m_pApi->GetApiVersion();
 }
 
-/////////////////////////////////////////////////////////////////////////////Д╩╔Д╦▀Е▐╞Ф⌡©Ф█╒Ф╗║Ф²©
+/////////////////////////////////////////////////////////////////////////////ртоб©илФ╩╩дё╟Е
 
 void CTraderApi::Release()
 {

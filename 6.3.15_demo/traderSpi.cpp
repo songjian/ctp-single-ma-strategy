@@ -1,7 +1,8 @@
+#pragma  once
 #include "stdafx.h"
+#include "traderSpi.h"
 #include <stdio.h>
 #include "define.h"
-#include "traderSpi.h"
 
 void CTraderSpi::OnFrontConnected()
 {

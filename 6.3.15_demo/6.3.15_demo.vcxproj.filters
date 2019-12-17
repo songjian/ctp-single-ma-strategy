@@ -54,30 +54,12 @@
     <ClInclude Include="ThostFtdcUserApiStruct.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="singleMaStrategy.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="strategy.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Indicators.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Bar.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="readfile.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="BarManager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="MarketDataWriter.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="getconfig.cpp">
@@ -87,30 +69,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="traderApi.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="singleMaStrategy.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Strategy.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Indicators.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Bar.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="readfile.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="BarManager.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="MarketDataWriter.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

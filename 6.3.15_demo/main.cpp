@@ -3,52 +3,773 @@
 
 int main()
 {
+	system("COLOR 0A");
 	logfile = fopen("syslog.txt", "w");
-	string InstrumentID = getConfig("config", "InstrumentID");
-	strcpy_s(g_chInstrumentID, const_cast<char*>(InstrumentID.c_str()));
+
 	string g_chFrontaddr = getConfig("config", "FrontAddr");
-	CTraderApi* pUserApi = new CTraderApi();
+	cout << "g_chFrontaddr = " << g_chFrontaddr << "\n" << endl;
+	CTraderApi *pUserApi = new CTraderApi;//--------------------------
 	pUserApi->CreateFtdcTraderApi(".\\flow\\");
+	LOG(pUserApi->GetApiVersion());
+	cout << endl;
 	CSimpleHandler sh(pUserApi);
-	pUserApi->RegisterSpi(&sh);
-	pUserApi->SubscribePublicTopic(THOST_TERT_QUICK);
+cir:pUserApi->RegisterSpi(&sh);
 	pUserApi->SubscribePrivateTopic(THOST_TERT_QUICK);
-	pUserApi->RegisterFront(const_cast<char*>(g_chFrontaddr.c_str()));
+	pUserApi->SubscribePublicTopic(THOST_TERT_QUICK);
+	pUserApi->RegisterFront(const_cast<char *>(g_chFrontaddr.c_str()));
 	pUserApi->Init();
 	WaitForSingleObject(g_hEvent, INFINITE);
+	//_getch();
+	while (true)
+	{
+		LOG("ÇëÈ·¶¨Á¬½ÓÄ£Ê½:\n");
+		LOG("1.Ö±Á¬Ä£Ê½\n");
+		LOG("2.ÖÐ¼Ì·þÎñÆ÷²Ù×÷Ô±Ä£Ê½(Ò»¶Ô¶àÄ£Ê½)\n");
+		LOG("3.ÖÐ¼Ì·þÎñÆ÷·Ç²Ù×÷Ô±Ä£Ê½(¶à¶Ô¶àÄ£Ê½)\n");
+		int mode_num;
+		cin >> mode_num;
+		switch (mode_num)
+		{
+		case 1://Ö±Á¬Ä£Ê½
+		{
+			sh.ReqAuthenticate();
+			WaitForSingleObject(g_hEvent, INFINITE);
+			sh.ReqUserLogin();
+			WaitForSingleObject(g_hEvent, INFINITE);
+			break;
+		}
+		case 2://²Ù×÷Ô±Ä£Ê½
+		{
+			sh.ReqAuthenticate();
+			WaitForSingleObject(g_hEvent, INFINITE);
+			sh.ReqUserLogin();
+			WaitForSingleObject(g_hEvent, INFINITE);
+			sh.SubmitUserSystemInfo();
+			break;
+		}
+		case 3://·Ç²Ù×÷Ô±Ä£Ê½
+		{
+			sh.ReqAuthenticate();
+			WaitForSingleObject(g_hEvent, INFINITE);
+			sh.RegisterUserSystemInfo();
+			sh.ReqUserLogin();
+			WaitForSingleObject(g_hEvent, INFINITE);
+			break;
+		}
+		default:
+			LOG("Ñ¡ÔñµÄÄ£Ê½ÓÐÎó£¬ÇëÖØÐÂÊäÈë£¡\n");
+			_getch();
+			system("cls");
+		}
+		break;
+	}
+	
+	_getch();
+	
+	LOG("ÈÕÆÚ:");
+	LOG(pUserApi->GetTradingDay());
+	cout << endl;
+	while (true)
+	{
+	loop:int input1;
+		system("cls");
+		LOG("201.ÉÏ±¨ÓÃ»§ÖÕ¶ËÐÅÏ¢\n");
+		LOG("110,½»Ò×²éÑ¯ºÏÔ¼ÐÐÇéÊÕÐÐÇé\n");
+		LOG("101.ÓÃ»§µÇÂ¼ÇëÇó\n");
+		LOG("102.¿Í»§¶ËÈÏÖ¤\n");
+		LOG("103.ÇëÇóµÇ³ö\n");
+		LOG("1.½áËãµ¥È·ÈÏÇëÇó\n");
+		LOG("2.ÓÃ»§¿ÚÁî¸üÐÂÇëÇó\n");
+		LOG("3.×Ê½ðÕË»§¿ÚÁî¸üÐÂÇëÇó\n");
+		LOG("/////////////±¨µ¥////////////\n");
+		LOG("4.±¨µ¥Ä£¿é\n");
+		LOG("////////////²éÑ¯/////////////\n");
+		LOG("5.²éÑ¯Ä£¿é\n");
+		LOG("/////////////ÐÐÈ¨&×öÊÐÉÌ////////////\n");
+		LOG("6.ÐÐÈ¨&×öÊÐÉÌ\n");
+		LOG("///////////³öÈë½ð/////////////\n");
+		LOG("7.×ªÕËÖ¸Áî\n");
+		LOG("///////////Í­ÆÚÈ¨²âÊÔ////////////\n");
+		LOG("8.Í­ÆÚÈ¨²âÊÔ\n");
+		LOG("9.°æ±¾6.3.13ÐÂ¼Ó½Ó¿Ú\n");
+		LOG("0.Çå¿Õ½çÃæ\n");
+		LOG("100.ÍË³ö³ÌÐò\n");
+		LOG("ÇëÊäÈëÄãÐèÒªµÄ²Ù×÷ÐòºÅ£º");
+		cin >> input1;
+		switch (input1)
+		{
+		case 201:
+		{
+			sh.SubmitUserSystemInfo();
+			_getch();
+			break;
+		}
+		case 110:
+		{
+			string g_chFrontMdaddr = getConfig("config", "FrontMdAddr");
+			cout << "g_chFrontMdaddr = " << g_chFrontMdaddr << "\n" << endl;
+			CThostFtdcMdApi  *pUserMdApi = 
+				CThostFtdcMdApi::CreateFtdcMdApi(".\\flow\\md");
+			CSimpleMdHandler ash(pUserMdApi);
+			pUserMdApi->RegisterSpi(&ash);
+			pUserMdApi->RegisterFront(const_cast<char *>(g_chFrontMdaddr.c_str()));
+			pUserMdApi->Init();
+			WaitForSingleObject(xinhao, INFINITE);
+			sh.ReqQryInstrument();//²éÑ¯ºÏÔ¼
+			WaitForSingleObject(xinhao, INFINITE);
+			ash.SubscribeMarketData();//¶©ÔÄÐÐÇé
+			_getch();
+			pUserMdApi->Release();
+			break;
+		}
+		case 101:
+		{
+			sh.ReqUserLogin();
+			_getch();
+			break;
+		}
+		case 102:
+		{
+			sh.ReqAuthenticate();
+			_getch();
+			break;
+		}
+		case 103:
+		{
+			sh.ReqUserLogout();
+			_getch();
+			goto cir;
+		}
+		case 1://½áËãµ¥È·ÈÏÇëÇó
+		{
+			sh.ReqSettlementInfoConfirm();//½áËãµ¥È·ÈÏÇëÇó
+			WaitForSingleObject(g_hEvent, INFINITE);
+			_getch();
+			system("cls");
+			break;
+		}
+		case 2://ÓÃ»§¿ÚÁî¸üÐÂÇëÇó
+		{
+			sh.ReqUserPasswordUpdate();//ÓÃ»§¿ÚÁî¸üÐÂÇëÇó
+			WaitForSingleObject(g_hEvent, INFINITE);
+			_getch();
+			system("cls");
+			break;
+		}
+		case 3://×Ê½ðÕË»§¿ÚÁî¸üÐÂÇëÇó
+		{
+			sh.ReqTradingAccountPasswordUpdate();//×Ê½ðÕË»§¿ÚÁî¸üÐÂÇëÇó
+			WaitForSingleObject(g_hEvent, INFINITE);
+			_getch();
+			system("cls");
+			break;
+		}
+		case 4://±¨µ¥Â¼ÈëÇëÇó
+		{
+		orderinsert:system("cls");
+			int orderinsert_num;
+			LOG("4.±¨ÈëÒ»±ÊÁ¢¼´µ¥\n");
+			LOG("5.³·ÏúÉÏÒ»±Ê±¨µ¥\n");
+			LOG("6.±¨ÈëÔ¤Âñµ¥-ÏÞ¼Ûµ¥Á¢¼´µ¥\n");
+			LOG("7.³·ÏúÔ¤Âñµ¥-(ÉÏÒ»¸öÔ¤Âñµ¥)\n");
+			LOG("8.±¨ÈëÔ¤Âñ³·µ¥\n");
+			LOG("9.³·ÏúÔ¤Âñ³·µ¥-(ÉÏÒ»¸öÔ¤Âñ³·µ¥)\n");
+			LOG("10.±¨ÈëÌõ¼þµ¥\n");
+			LOG("11.³·ÏúÌõ¼þµ¥-(ÉÏÒ»¸öÌõ¼þµ¥)\n");
+			LOG("25.´óÉÌËùÖ¹Ëðµ¥\n");
+			LOG("26.´óÉÌËùÖ¹Ó¯µ¥\n");
+			LOG("27.FOKÈ«³ÉÈ«³·\n");
+			LOG("28.FAK²¿³É²¿³·\n");
+			LOG("29.ÊÐ¼Ûµ¥\n");
+			LOG("30.Ì×ÀûÖ¸Áî\n");
+			LOG("31.»¥»»µ¥\n");
+			LOG("0.·µ»ØÉÏÒ»²ã\n");
+			cin >> orderinsert_num;
+			switch (orderinsert_num)
+			{
+			case 0:
+				goto loop;
+			case 4://±¨ÈëÆÕÍ¨Á¢¼´µ¥
+			{
+				//sh.ReqOrderInsert_Ordinary();
+				sh.ReqOrderInsert_Test();
+				_getch();
+				break;
+			}
+			case 5://³·ÏúÉÏÒ»±Ê±¨µ¥
+			{
+				sh.ReqOrderAction_Ordinary();//³·ÏúÉÏÒ»±Ê±¨µ¥
+				_getch();
+				break;
+			}
+			case 6://±¨ÈëÔ¤Âñµ¥
+			{
+				sh.ReqParkedOrderInsert();//±¨ÈëÔ¤Âñµ¥
+				_getch();
+				break;
+			}
+			case 7://É¾³ýÔ¤Âñµ¥
+			{
+				sh.ReqRemoveParkedOrder();//É¾³ýÔ¤Âñµ¥
+				_getch();
+				break;
+			}
+			case 8://±¨ÈëÔ¤Âñ³·µ¥
+			{
+				sh.ReqParkedOrderAction();//±¨ÈëÔ¤Âñ³·µ¥
+				_getch();
+				break;
+			}
+			case 9://É¾³ýÔ¤Âñµ¥³·µ¥
+			{
+				sh.ReqRemoveParkedOrderAction();//É¾³ýÔ¤Âñµ¥³·µ¥
+				_getch();
+				break;
+			}
+			case 10://±¨ÈëÌõ¼þµ¥
+			{
+			it:LOG("1.×îÐÂ¼Û´óÓÚÌõ¼þ¼Û\n");
+				LOG("2.×îÐÂ¼Û´óÓÚµÈÓÚÌõ¼þ¼Û\n");
+				LOG("3.×îÐÂ¼ÛÐ¡ÓÚÌõ¼þ¼Û\n");
+				LOG("4.×îÐÂ¼ÛÐ¡ÓÚµÈÓÚÌõ¼þ¼Û\n");
+				LOG("5.ÂôÒ»¼Û´óÓÚÌõ¼þ¼Û\n");
+				LOG("6.ÂôÒ»¼Û´óÓÚµÈÓÚÌõ¼þ¼Û\n");
+				LOG("7.ÂôÒ»¼ÛÐ¡ÓÚÌõ¼þ¼Û\n");
+				LOG("8.ÂôÒ»¼ÛÐ¡ÓÚµÈÓÚÌõ¼þ¼Û\n");
+				LOG("9.ÂòÒ»¼Û´óÓÚÌõ¼þ¼Û\n");
+				LOG("10.ÂòÒ»¼Û´óÓÚµÈÓÚÌõ¼þ¼Û\n");
+				LOG("11.ÂòÒ»¼ÛÐ¡ÓÚÌõ¼þ¼Û\n");
+				LOG("12.ÂòÒ»¼ÛÐ¡ÓÚµÈÓÚÌõ¼þ¼Û\n");
+				LOG("13.·µ»ØÉÏÒ»²ã\n");
+				LOG("ÇëÊäÈëÄãÐèÒª±¨ÈëµÄÌõ¼þµ¥ÀàÐÍ:\n");
+				int num;
+				cin >> num;
+				if (num < 1 || num>13)
+				{
+					LOG("ÊäÈëµÄÐòºÅÓÐÎó,ÇëÖØÐÂÊäÈë.\n");
+					_getch();
+					goto it;
+				}
+				else if (num == 13)
+				{
+					goto orderinsert;
+				}
+				else
+				{
+					sh.ReqOrderInsert_Condition(num);//±¨ÈëÌõ¼þµ¥
+					_getch();
+					break;
+				}
+			}
+			case 11://±¨ÈëÌõ¼þµ¥³·µ¥
+			{
+				sh.ReqOrderAction_Condition();//±¨ÈëÌõ¼þµ¥³·µ¥
+				_getch();
+				break;
+			}
 
-	sh.ReqAuthenticate();
-	WaitForSingleObject(g_hEvent, INFINITE);
-	sh.ReqUserLogin();
-	WaitForSingleObject(g_hEvent, INFINITE);
-
-	//ç»“ç®—å•ç¡®è®¤è¯·æ±‚
-	sh.ReqSettlementInfoConfirm();
-	WaitForSingleObject(g_hEvent, INFINITE);
-
-	string g_chFrontMdaddr = getConfig("config", "FrontMdAddr");
-	CThostFtdcMdApi* pUserMdApi = CThostFtdcMdApi::CreateFtdcMdApi(".\\flow\\md\\");
-	CSimpleMdHandler ash(pUserMdApi);
-	SingleMaStrategy smaStrategy(g_chInstrumentID, pUserApi);
-	BarManager barManager(&smaStrategy);
-	MarketDataWriter marketDataWriter(&barManager);
-	ash.RegisterMarketData(&marketDataWriter);
-	ash.RegisterStrategy(&smaStrategy);
-	pUserMdApi->RegisterSpi(&ash);
-	pUserMdApi->RegisterFront(const_cast<char*>(g_chFrontMdaddr.c_str()));
-	pUserMdApi->Init();
-	WaitForSingleObject(xinhao, INFINITE);
-	sh.ReqQryInstrument();
-	WaitForSingleObject(xinhao, INFINITE);
-	ash.SubscribeMarketData();
-	WaitForSingleObject(xinhao, INFINITE);
-	pUserMdApi->Release();
+			case 25://´óÉÌËùÖ¹Ëðµ¥
+			{
+				sh.ReqOrderInsert_Touch();
+				_getch();
+				break;
+			}
+			case 26://´óÉÌËùÖ¹Ó¯µ¥
+			{
+				sh.ReqOrderInsert_TouchProfit();
+				_getch();
+				break;
+			}
+			case 27://FOKÈ«³ÉÈ«³·
+			{
+				sh.ReqOrderInsert_VC_CV();
+				_getch();
+				break;
+			}
+			case 28://FAK²¿³É²¿³·
+			{
+				sh.ReqOrderInsert_VC_AV();
+				_getch();
+				break;
+			}
+			case 29://ÊÐ¼Ûµ¥
+			{
+				sh.ReqOrderInsert_AnyPrice();
+				_getch();
+				break;
+			}
+			case 30://Ì×ÀûÖ¸Áî
+			{
+				sh.ReqOrderInsert_Arbitrage();
+				_getch();
+				break;
+			}
+			case 31://»¥»»µ¥
+			{
+				sh.ReqOrderInsert_IsSwapOrder();
+				_getch();
+				break;
+			}
+			default:
+				LOG("ÇëÊäÈëÕýÈ·µÄÐòºÅ\n");
+				_getch();
+				goto orderinsert;
+			}
+			goto orderinsert;
+		}
+		case 5://²éÑ¯½çÃæ
+		{
+		search:system("cls");
+			int choose_num;
+			LOG("11.²éÑ¯³É½»\n");
+			LOG("12.²éÑ¯Ô¤Âñµ¥\n");
+			LOG("13.²éÑ¯Ô¤Âñ³·µ¥\n");
+			LOG("14.²éÑ¯±¨µ¥\n");
+			LOG("15.³·µ¥¶ÔÓ¦²éÑ¯±àºÅ\n");
+			LOG("16.ÇëÇó²éÑ¯×Ê½ðÕË»§\n");//ReqQryTradingAccount
+			LOG("17.ÇëÇó²éÑ¯Í¶×ÊÕß³Ö²Ö\n");//ReqQryInvestorPosition
+			LOG("18.ÇëÇó²éÑ¯Í¶×ÊÕß³Ö²ÖÃ÷Ï¸\n");//ReqQryInvestorPositionDetail
+			LOG("19.ÇëÇó²éÑ¯½»Ò×Ëù±£Ö¤½ðÂÊ\n");//ReqQryExchangeMarginRate
+			LOG("20.ÇëÇó²éÑ¯ºÏÔ¼±£Ö¤½ðÂÊ\n");//ReqQryInstrumentMarginRate
+			LOG("21.ÇëÇó²éÑ¯ºÏÔ¼ÊÖÐø·ÑÂÊ\n");//ReqQryInstrumentCommissionRate
+			LOG("22.ÇëÇó²éÑ¯×öÊÐÉÌºÏÔ¼ÊÖÐø·ÑÂÊ\n");//ReqQryMMInstrumentCommissionRate
+			LOG("23.ÇëÇó²éÑ¯×öÊÐÉÌÆÚÈ¨ºÏÔ¼ÊÖÐø·Ñ\n"); //ReqQryMMOptionInstrCommRate
+			LOG("24.ÇëÇó²éÑ¯±¨µ¥ÊÖÐø·Ñ\n");//ReqQryInstrumentOrderCommRate
+			LOG("25.ÇëÇó²éÑ¯ÆÚÈ¨ºÏÔ¼ÊÖÐø·Ñ\n");//ReqQryOptionInstrCommRate
+			LOG("26.ÇëÇó²éÑ¯ºÏÔ¼\n");//ReqQryInstrument
+			LOG("27.ÇëÇó²éÑ¯Í¶×ÊÕß½áËã½á¹û\n");//ReqQrySettlementInfo
+			LOG("28.ÇëÇó²éÑ¯×ªÕÊÁ÷Ë®\n");//ReqQryTransferSerial
+			LOG("29.ÇëÇó²éÑ¯Ñ¯¼Û\n");
+			LOG("30.ÇëÇó²éÑ¯±¨¼Û\n");
+			LOG("31.ÇëÇó²éÑ¯Ö´ÐÐÐû¸æ\n");
+			LOG("32.ÇëÇó²éÑ¯×ªÕÊÒøÐÐ\n");
+			LOG("33.ÇëÇó²éÑ¯½»Ò×Í¨Öª\n");
+			LOG("34.ÇëÇó²éÑ¯½»Ò×±àÂë\n");
+			LOG("35.ÇëÇó²éÑ¯½áËãÐÅÏ¢È·ÈÏ\n");
+			LOG("36.ÇëÇó²éÑ¯²úÆ·×é\n");
+			LOG("37.ÇëÇó²éÑ¯Í¶×ÊÕßµ¥Ôª\n");
+			LOG("38.ÆÚ»õ·¢Æð²éÑ¯ÒøÐÐÓà¶îÇëÇó\n");
+			LOG("39.ÇëÇó²éÑ¯¾­¼Í¹«Ë¾½»Ò×²ÎÊý\n");
+			LOG("0.·µ»ØÉÏÒ»²ã\n");
+			LOG("ÇëÊäÈëÑ¡ÔñµÄÐòºÅ:\n");
+			cin >> choose_num;
+			switch (choose_num)
+			{
+			case 11://ÇëÇó²éÑ¯³É½»
+			{
+				sh.ReqQryTrade();//ÇëÇó²éÑ¯³É½»
+				_getch();
+				break;
+			}
+			case 12://ÇëÇó²éÑ¯·þÎñÆ÷Ô¤Âñµ¥
+			{
+				sh.ReqQryParkedOrder();//ÇëÇó²éÑ¯·þÎñÆ÷Ô¤Âñµ¥
+				_getch();
+				break;
+			}
+			case 13://ÇëÇó²éÑ¯·þÎñÆ÷Ô¤Âñ³·µ¥
+			{
+				sh.ReqQryParkedOrderAction();//ÇëÇó²éÑ¯·þÎñÆ÷Ô¤Âñ³·µ¥
+				_getch();
+				break;
+			}
+			case 14://ÇëÇó²éÑ¯±¨µ¥
+			{
+				sh.ReqQryOrder();//ÇëÇó²éÑ¯±¨µ¥
+				_getch();
+				break;
+			}
+			case 15://³·Ïú²éÑ¯µÄ±¨µ¥»Ø±¨
+			{
+			action:int action_num;
+				LOG("ÇëÊäÈëÐèÒª³·µ¥µÄÐòºÅ£º\n");
+				cin >> action_num;
+				LOG("%d\n", action_num);
+				if (action_num < 1 || action_num > vector_OrderSysID.size())
+				{
+					LOG("ÊäÈëµÄÐòºÅÓÐÎó,ÇëÖØÐÂÊäÈë.\n");
+					_getch();
+					goto action;
+				}
+				sh.ReqOrderAction_forqry(action_num);//³·Ïú²éÑ¯µÄ±¨µ¥»Ø±¨
+				_getch();
+				break;
+			}
+			case 16://ÇëÇó²éÑ¯×Ê½ðÕË»§
+			{
+				sh.ReqQryTradingAccount();//ÇëÇó²éÑ¯×Ê½ðÕË»§
+				_getch();
+				break;
+			}
+			case 17://ÇëÇó²éÑ¯Í¶×ÊÕß³Ö²Ö
+			{
+				sh.ReqQryInvestorPosition();//ÇëÇó²éÑ¯Í¶×ÊÕß³Ö²Ö
+				_getch();
+				break;
+			}
+			case 18://ÇëÇó²éÑ¯Í¶×ÊÕß³Ö²ÖÃ÷Ï¸
+			{
+				sh.ReqQryInvestorPositionDetail();//ÇëÇó²éÑ¯Í¶×ÊÕß³Ö²ÖÃ÷Ï¸
+				_getch();
+				break;
+			}
+			case 19://ÇëÇó²éÑ¯½»Ò×Ëù±£Ö¤½ðÂÊ
+			{
+				sh.ReqQryExchangeMarginRate();//ÇëÇó²éÑ¯½»Ò×Ëù±£Ö¤½ðÂÊ
+				_getch();
+				break;
+			}
+			case 20://ÇëÇó²éÑ¯ºÏÔ¼±£Ö¤½ðÂÊ
+			{
+				sh.ReqQryInstrumentMarginRate();//ÇëÇó²éÑ¯ºÏÔ¼±£Ö¤½ðÂÊ
+				_getch();
+				break;
+			}
+			case 21://ÇëÇó²éÑ¯ºÏÔ¼ÊÖÐø·ÑÂÊ
+			{
+				sh.ReqQryInstrumentCommissionRate();//ÇëÇó²éÑ¯ºÏÔ¼ÊÖÐø·ÑÂÊ
+				_getch();
+				break;
+			}
+			case 22://ÇëÇó²éÑ¯×öÊÐÉÌºÏÔ¼ÊÖÐø·ÑÂÊ
+			{
+				sh.ReqQryMMInstrumentCommissionRate();//ÇëÇó²éÑ¯×öÊÐÉÌºÏÔ¼ÊÖÐø·ÑÂÊ
+				_getch();
+				break;
+			}
+			case 23://ÇëÇó²éÑ¯×öÊÐÉÌÆÚÈ¨ºÏÔ¼ÊÖÐø·Ñ
+			{
+				sh.ReqQryMMOptionInstrCommRate();//ÇëÇó²éÑ¯×öÊÐÉÌºÏÔ¼ÊÖÐø·ÑÂÊ
+				_getch();
+				break;
+			}
+			case 24://ÇëÇó²éÑ¯±¨µ¥ÊÖÐø·Ñ
+			{
+				sh.ReqQryInstrumentOrderCommRate();//ÇëÇó²éÑ¯±¨µ¥ÊÖÐø·Ñ
+				_getch();
+				break;
+			}
+			case 25://ÇëÇó²éÑ¯ÆÚÈ¨ºÏÔ¼ÊÖÐø·Ñ
+			{
+				sh.ReqQryOptionInstrCommRate();//ÇëÇó²éÑ¯ÆÚÈ¨ºÏÔ¼ÊÖÐø·Ñ
+				_getch();
+				break;
+			}
+			case 26://ÇëÇó²éÑ¯ºÏÔ¼
+			{
+				sh.ReqQryInstrument();//ÇëÇó²éÑ¯ºÏÔ¼
+				_getch();
+				break;
+			}
+			case 27://ÇëÇó²éÑ¯Í¶×ÊÕß½áËã½á¹û
+			{
+				sh.ReqQrySettlementInfo();//ÇëÇó²éÑ¯Í¶×ÊÕß½áËã½á¹û
+				_getch();
+				break;
+			}
+			case 28://ÇëÇó²éÑ¯×ªÕÊÁ÷Ë®
+			{
+				sh.ReqQryTransferSerial();//ÇëÇó²éÑ¯Í¶×ÊÕß½áËã½á¹û
+				_getch();
+				break;
+			}
+			case 29://ÇëÇó²éÑ¯Ñ¯¼Û
+			{
+				sh.ReqQryForQuote();//ÇëÇó²éÑ¯Ñ¯¼Û
+				_getch();
+				break;
+			}
+			case 30://ÇëÇó²éÑ¯±¨¼Û
+			{
+				sh.ReqQryQuote();//ÇëÇó²éÑ¯±¨¼Û
+				_getch();
+				break;
+			}
+			case 31://ÇëÇó²éÑ¯Ö´ÐÐÐû¸æ
+			{
+				sh.ReqQryExecOrder();//ÇëÇó²éÑ¯Ö´ÐÐÐû¸æ
+				_getch();
+				break;
+			}
+			case 32://ÇëÇó²éÑ¯×ªÕÊÒøÐÐ
+			{
+				sh.ReqQryTransferBank();
+				_getch();
+				break;
+			}
+			case 33://ÇëÇó²éÑ¯½»Ò×Í¨Öª
+			{
+				sh.ReqQryTradingNotice();
+				_getch();
+				break;
+			}
+			case 34://ÇëÇó²éÑ¯½»Ò×±àÂë
+			{
+				sh.ReqQryTradingCode();
+				_getch();
+				break;
+			}
+			case 35://ÇëÇó²éÑ¯½áËãÐÅÏ¢È·ÈÏ
+			{
+				sh.ReqQrySettlementInfoConfirm();
+				_getch();
+				break;
+			}
+			case 36://ÇëÇó²éÑ¯²úÆ·×é
+			{
+				sh.ReqQryProductGroup();
+				_getch();
+				break;
+			}
+			case 37://ÇëÇó²éÑ¯Í¶×ÊÕßµ¥Ôª
+			{
+				sh.ReqQryInvestUnit();
+				_getch();
+				break;
+			}
+			case 38://ÆÚ»õ·¢Æð²éÑ¯ÒøÐÐÓà¶îÇëÇó
+			{
+				sh.ReqQueryBankAccountMoneyByFuture();
+				_getch();
+				break;
+			}
+			case 39://ÇëÇó²éÑ¯¾­¼Í¹«Ë¾½»Ò×²ÎÊý
+			{
+				sh.ReqQryBrokerTradingParams();
+				_getch();
+				break;
+			}
+			case 0:
+			{
+				goto loop;
+			}
+			default: {
+				LOG("ÇëÊäÈëÕýÈ·µÄÐòºÅ\n");
+				_getch();
+				goto search;
+			}
+			}
+			goto search;
+		}
+		case 6://ÐÐÈ¨&×öÊÐÉÌ
+		{
+		Exec:system("cls");
+			int num_xingquan;
+			LOG("32.Ö´ÐÐÐû¸æÂ¼ÈëÇëÇó\n");
+			LOG("33.Ö´ÐÐÐû¸æ²Ù×÷ÇëÇó\n");
+			LOG("34.·ÅÆúÐÐÈ¨\n");
+			LOG("35.Ñ¯¼ÛÂ¼ÈëÇëÇó\n");
+			LOG("36.×öÊÐÉÌ±¨¼ÛÂ¼ÈëÇëÇó\n");
+			LOG("37.×öÊÐÉÌ±¨¼Û³·ÏúÇëÇó\n");
+			LOG("0.·µ»ØÉÏÒ»²ã")
+			LOG("ÇëÑ¡ÔñÄãÐèÒªµÄ±àÂë");
+			cin >> num_xingquan;
+			switch (num_xingquan)
+			{
+			case 32://Ö´ÐÐÐû¸æÂ¼ÈëÇëÇó
+			{
+				sh.ReqExecOrderInsert(0);
+				_getch();
+				break;
+			}
+			case 33://Ö´ÐÐÐû¸æ²Ù×÷ÇëÇó
+			{
+				sh.ReqExecOrderAction();
+				_getch();
+				break;
+			}
+			case 34://·ÅÆúÐÐÈ¨
+			{
+				sh.ReqExecOrderInsert(1);
+				_getch();
+				break;
+			}
+			case 35://Ñ¯¼ÛÂ¼ÈëÇëÇó
+			{
+				string g_chFrontMdaddr = getConfig("config", "FrontMdAddr");
+				cout << "g_chFrontMdaddr = " << g_chFrontMdaddr << "\n" << endl;
+				CThostFtdcMdApi  *pUserMdApi =
+					CThostFtdcMdApi::CreateFtdcMdApi();
+				CSimpleMdHandler ash(pUserMdApi);
+				pUserMdApi->RegisterSpi(&ash);
+				pUserMdApi->RegisterFront(const_cast<char *>(g_chFrontMdaddr.c_str()));
+				pUserMdApi->Init();
+				WaitForSingleObject(xinhao, INFINITE);
+				ash.SubscribeMarketData();//ÐÐÇé¶©ÔÄÑ¯¼ÛÇëÇó
+				sh.ReqForQuoteInsert();//½»Ò×ÇëÇóÑ¯¼Û
+				_getch();
+				pUserMdApi->Release();
+				break;
+			}
+			case 36://×öÊÐÉÌ±¨¼ÛÂ¼ÈëÇëÇó
+			{
+				sh.ReqQuoteInsert();
+				_getch();
+				break;
+			}
+			case 37://×öÊÐÉÌ±¨¼Û³·ÏúÇëÇó
+			{
+				sh.ReqQuoteAction();
+				_getch();
+				break;
+			}
+			case 0:
+			{
+				goto loop;
+			}
+			default:
+				LOG("ÊäÈëµÄ±àÂëÓÐÎó£¬ÇëÖØÐÂÊäÈë\n");
+				_getch();
+				//goto Exec;
+			}
+			goto Exec;
+		}
+		case 7://ÆÚ»õ×Ê½ð×ªÕË
+		{
+		futrue:system("cls");
+			int num_future;
+			LOG("38.ÆÚ»õ·¢ÆðÒøÐÐ×Ê½ð×ªÆÚ»õÇëÇó\n");
+			LOG("39.ÆÚ»õ·¢ÆðÆÚ»õ×Ê½ð×ªÒøÐÐÇëÇó\n");
+			LOG("0.·µ»ØÉÏÒ»²ã\n");
+			LOG("ÇëÊäÈëÄãÐèÒªµÄ²Ù×÷ÐòºÅ£º");
+			cin >> num_future;
+			switch (num_future)
+			{
+			case 38://ÆÚ»õ·¢ÆðÒøÐÐ×Ê½ð×ªÆÚ»õÇëÇó
+			{
+				sh.ReqFromBankToFutureByFuture();
+				_getch();
+				break;
+			}
+			case 39://ÆÚ»õ·¢ÆðÆÚ»õ×Ê½ð×ªÒøÐÐÇëÇó
+			{
+				sh.ReqFromFutureToBankByFuture();
+				_getch();
+				break;
+			}
+			case 0:
+			{
+				goto loop;
+			}
+			default:
+				LOG("ÊäÈëµÄ±àÂëÓÐÎó£¬ÇëÖØÐÂÊäÈë\n");
+				_getch();
+				//goto futrue;
+			}
+			goto futrue;
+		}
+		case 8://Í­ÆÚÈ¨²âÊÔ
+		{
+		qiquan:system("cls");
+			int num_qiquan;
+			LOG("//////////////Í­ÆÚÈ¨²âÊÔ////////////\n");
+			LOG("1.ÆÚÈ¨×Ô¶Ô³åÂ¼ÈëÇëÇó\n");
+			LOG("2.ÆÚÈ¨×Ô¶Ô³å²Ù×÷ÇëÇó\n");
+			LOG("3.ÇëÇó²éÑ¯ÆÚÈ¨×Ô¶Ô³å\n");
+			LOG("0.·µ»ØÉÏÒ»²ã\n");
+			LOG("ÇëÑ¡ÔñÄãÐèÒªµÄ±àÂë:\n");
+			cin >> num_qiquan;
+			switch (num_qiquan)
+			{
+			case 1:
+			{
+				sh.ReqOptionSelfCloseInsert();
+				_getch();
+				break;
+			}
+			case 2:
+			{
+				sh.ReqOptionSelfCloseAction();
+				_getch();
+				break;
+			}
+			case 3:
+			{
+				sh.ReqQryOptionSelfClose();
+				_getch();
+				break;
+			}
+			case 0:
+				goto loop;
+				break;
+			default:
+				LOG("ÊäÈëµÄÐòºÅÓÐÎó£¬ÇëÖØÐÂÊäÈë¡£\n\n");
+				_getch();
+				goto qiquan;
+			}
+			goto qiquan;
+		}
+		case 9://°æ±¾6.3.13ÐÂ¼Ó½Ó¿Ú
+		{
+		NewVersion:
+			system("cls");
+			int num_Newversion;
+			LOG("ÐÂ°æ±¾²âÊÔ\n");
+			LOG("1.²éÑ¯ÓÃ»§µ±Ç°Ö§³ÖµÄÈÏÖ¤Ä£Ê½(Ä¿Ç°ÔÝ²»ÆôÓÃ)\n");
+			LOG("2.ÓÃ»§·¢³ö»ñÈ¡Í¼ÐÎÑéÖ¤ÂëÇëÇó(Ä¿Ç°ÔÝ²»ÆôÓÃ)\n");
+			LOG("3.ÓÃ»§·¢³ö»ñÈ¡¶ÌÐÅÑéÖ¤ÂëÇëÇó(Ä¿Ç°ÔÝ²»ÆôÓÃ)\n");
+			LOG("4.ÓÃ»§·¢³ö´øÓÐÍ¼Æ¬ÑéÖ¤ÂëµÄµÇÂ½ÇëÇó(Ä¿Ç°ÔÝ²»ÆôÓÃ)\n");
+			LOG("5.ÓÃ»§·¢³ö´øÓÐ¶ÌÐÅÑéÖ¤ÂëµÄµÇÂ½ÇëÇó(Ä¿Ç°ÔÝ²»ÆôÓÃ)\n");
+			LOG("6.ÓÃ»§·¢³ö´øÓÐ¶¯Ì¬¿ÚÁîµÄµÇÂ½ÇëÇó(Ä¿Ç°ÔÝ²»ÆôÓÃ)\n");
+			LOG("0.·µ»ØÉÏÒ»²ã\n");
+			LOG("ÇëÑ¡ÔñÄãÐèÒªµÄ±àÂë:\n");
+			cin >> num_Newversion;
+			switch (num_Newversion)
+			{
+			case 1://²éÑ¯ÓÃ»§µ±Ç°Ö§³ÖµÄÈÏÖ¤Ä£Ê½
+			{
+				sh.ReqUserAuthMethod();
+				_getch();
+				break;
+			}
+			case 2://ÓÃ»§·¢³ö»ñÈ¡Í¼ÐÎÑéÖ¤ÂëÇëÇó
+			{
+				sh.ReqGenUserCaptcha();
+				_getch();
+				break;
+			}
+			case 3://ÓÃ»§·¢³ö»ñÈ¡¶ÌÐÅÑéÖ¤ÂëÇëÇó
+			{
+				sh.ReqGenUserText();
+				_getch();
+				break;
+			}
+			case 4://ÓÃ»§·¢³ö´øÓÐÍ¼Æ¬ÑéÖ¤ÂëµÄµÇÂ½ÇëÇó
+			{
+				sh.ReqUserLoginWithCaptcha();
+				_getch();
+				break;
+			}
+			case 5://ÓÃ»§·¢³ö´øÓÐ¶ÌÐÅÑéÖ¤ÂëµÄµÇÂ½ÇëÇó
+			{
+				sh.ReqUserLoginWithText();
+				_getch();
+				break;
+			}
+			case 6://ÓÃ»§·¢³ö´øÓÐ¶¯Ì¬¿ÚÁîµÄµÇÂ½ÇëÇó
+			{
+				sh.ReqUserLoginWithOTP();
+				_getch();
+				break;
+			}
+			case 0:
+				goto loop;
+				break;
+			default:
+				LOG("ÊäÈëµÄÐòºÅÓÐÎó£¬ÇëÖØÐÂÊäÈë¡£\n\n");
+				_getch();
+				goto NewVersion;
+			}
+			goto NewVersion;
+		}
+		case 0:
+			system("cls");
+			break;
+		case 100:
+			pUserApi->Release();
+			exit(-1);
+		}
+	}
 	return 0;
 }
 
-
-/*int main()
-{
-	SingleMaStrategy smaStrategy(g_chInstrumentID);
-	smaStrategy.OnStart();
-}*/
