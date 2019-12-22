@@ -49,7 +49,7 @@ private:
 	string FileName(CThostFtdcDepthMarketDataField* pDepthMarketData)
 	{
 		string filePath = ".\\md\\";
-		string day = pDepthMarketData->ActionDay;
+		string day = pDepthMarketData->TradingDay;
 		string instrument = pDepthMarketData->InstrumentID;
 		return filePath + instrument + "_" + day + ".csv";
 	};
