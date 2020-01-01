@@ -15,33 +15,34 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="thostmduserapi_se.dll" />
-    <None Include="thosttraderapi_se.dll" />
-    <None Include="WinDataCollect.dll" />
+    <ClInclude Include="getconfig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomMdHandler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomTraderHandler.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="6.3.15_tradeapi64\DataCollect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="6.3.15_tradeapi64\ThostFtdcMdApi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="6.3.15_tradeapi64\ThostFtdcTraderApi.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="6.3.15_tradeapi64\ThostFtdcUserApiDataType.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="6.3.15_tradeapi64\ThostFtdcUserApiStruct.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="thostmduserapi_se.lib" />
-    <Library Include="thosttraderapi_se.lib" />
-    <Library Include="WinDataCollect.lib" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="DataCollect.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ThostFtdcMdApi.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ThostFtdcTraderApi.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ThostFtdcUserApiDataType.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ThostFtdcUserApiStruct.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="MdHandler.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
+    <ClCompile Include="getconfig.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

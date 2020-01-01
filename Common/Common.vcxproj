@@ -76,9 +76,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\songj\workspace_cpp\ctp_single_ma_strategy\Common\6.3.15_tradeapi64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>C:\Users\songj\workspace_cpp\ctp_single_ma_strategy\Common\6.3.15_tradeapi64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>thostmduserapi_se.lib;thosttraderapi_se.lib;WinDataCollect.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -123,22 +126,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="thostmduserapi_se.dll" />
-    <None Include="thosttraderapi_se.dll" />
-    <None Include="WinDataCollect.dll" />
+    <ClInclude Include="6.3.15_tradeapi64\DataCollect.h" />
+    <ClInclude Include="6.3.15_tradeapi64\ThostFtdcMdApi.h" />
+    <ClInclude Include="6.3.15_tradeapi64\ThostFtdcTraderApi.h" />
+    <ClInclude Include="6.3.15_tradeapi64\ThostFtdcUserApiDataType.h" />
+    <ClInclude Include="6.3.15_tradeapi64\ThostFtdcUserApiStruct.h" />
+    <ClInclude Include="CustomMdHandler.h" />
+    <ClInclude Include="CustomTraderHandler.h" />
+    <ClInclude Include="getconfig.h" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="thostmduserapi_se.lib" />
-    <Library Include="thosttraderapi_se.lib" />
-    <Library Include="WinDataCollect.lib" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="DataCollect.h" />
-    <ClInclude Include="MdHandler.h" />
-    <ClInclude Include="ThostFtdcMdApi.h" />
-    <ClInclude Include="ThostFtdcTraderApi.h" />
-    <ClInclude Include="ThostFtdcUserApiDataType.h" />
-    <ClInclude Include="ThostFtdcUserApiStruct.h" />
+    <ClCompile Include="getconfig.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
