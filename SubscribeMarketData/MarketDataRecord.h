@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Common\ThostFtdcUserApiStruct.h"
+#include "ThostFtdcUserApiStruct.h"
 #include <fstream>
 
 using namespace std;

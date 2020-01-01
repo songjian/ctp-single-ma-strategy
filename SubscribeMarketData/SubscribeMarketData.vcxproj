@@ -92,10 +92,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\songj\workspace_cpp\ctp_single_ma_strategy\Common;C:\Users\songj\workspace_cpp\ctp_single_ma_strategy\Common\6.3.15_tradeapi64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\songj\workspace_cpp\ctp_single_ma_strategy\Common\6.3.15_tradeapi64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>thostmduserapi_se.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -157,19 +160,14 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\ThostFtdcMdApi.h" />
-    <ClInclude Include="..\Common\ThostFtdcUserApiDataType.h" />
-    <ClInclude Include="..\Common\ThostFtdcUserApiStruct.h" />
+    <ClInclude Include="..\Common\6.3.15_tradeapi64\ThostFtdcMdApi.h" />
+    <ClInclude Include="..\Common\6.3.15_tradeapi64\ThostFtdcUserApiDataType.h" />
+    <ClInclude Include="..\Common\6.3.15_tradeapi64\ThostFtdcUserApiStruct.h" />
     <ClInclude Include="GetInstrumentID.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="MarketDataRecord.h" />
+    <ClInclude Include="MdHandler.h" />
     <ClInclude Include="stdafx.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Common\thostmduserapi_se.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\Common\thostmduserapi_se.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

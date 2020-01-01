@@ -5,7 +5,7 @@ int main()
 {
 	CGetInstrumentID::ReadInstrumentID();
 
-	CThostFtdcMdApi* pUserMdApi = CThostFtdcMdApi::CreateFtdcMdApi(".\\flow\\SubscribeQuotes\\md");
+	CThostFtdcMdApi* pUserMdApi = CThostFtdcMdApi::CreateFtdcMdApi(".\\flow\\SubscribeMarketData\\md\\");
 	CMdHandler spi(pUserMdApi);
 	pUserMdApi->RegisterSpi(&spi);
 	string chTcpAddress = "tcp://180.168.146.187:10110";

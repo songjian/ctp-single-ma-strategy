@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Common\MdHandler.h"
+#include "MdHandler.h"
 #include "MarketDataRecord.h"
 #include <synchapi.h>
 #include "GetInstrumentID.h"
