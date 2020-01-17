@@ -1,6 +1,7 @@
 #pragma once
 #include "ThostFtdcUserApiStruct.h"
 #include <fstream>
+#include <assert.h>
 
 using namespace std;
 
@@ -8,13 +9,7 @@ class MarketDataRecord
 {
 public:
 	MarketDataRecord() {};
-	~MarketDataRecord()
-	{
-		if (outfile.is_open())
-		{
-			outfile.close();
-		}
-	};
+	~MarketDataRecord() {};
 	void update(CThostFtdcDepthMarketDataField* pDepthMarketData)
 	{
 		MdToFile(pDepthMarketData);
@@ -23,28 +18,45 @@ private:
 	void MdToFile(CThostFtdcDepthMarketDataField* pDepthMarketData)
 	{
 		string fileName = FileName(pDepthMarketData);
-		if (fileName != lastFileName)
+		// 检查文件是否存在
+		ifstream infile(fileName);
+		bool fileExist = !infile ? false : true;  // 标记文件是否存在
+		infile.close();
+
+		// 追加写入记录
+		ofstream outfile(fileName, ios::app);
+
+		// 新文件写入标题行
+		if (!fileExist)
 		{
-			lastFileName = fileName;
-			if (outfile.is_open())
-			{
-				outfile.close();
-			}
-			outfile.open(fileName, ios::app);
+			outfile
+				<< "TradingDay" << ','
+				<< "UpdateTime" << ','
+				<< "ExchangeID" << ','
+				<< "InstrumentID" << ','
+				<< "OpenPrice" << ','
+				<< "HighestPrice" << ','
+				<< "LowestPrice" << ','
+				<< "ClosePrice" << ','
+				<< "LastPrice" << ','
+				<< "Volume" << ','
+				<< "Turnover" << endl;
 		}
-		outfile << pDepthMarketData->TradingDay << ",";
-		outfile << pDepthMarketData->ActionDay << ",";
-		outfile << pDepthMarketData->UpdateTime << ",";
-		outfile << pDepthMarketData->UpdateMillisec << ",";
-		outfile << pDepthMarketData->ExchangeID << ",";
-		outfile << pDepthMarketData->InstrumentID << ",";
-		outfile << pDepthMarketData->OpenPrice << ",";
-		outfile << pDepthMarketData->HighestPrice << ",";
-		outfile << pDepthMarketData->LowestPrice << ",";
-		outfile << pDepthMarketData->ClosePrice << ",";
-		outfile << pDepthMarketData->LastPrice << ",";
-		outfile << pDepthMarketData->Volume << ",";
-		outfile << pDepthMarketData->Turnover << endl;
+
+		outfile
+			<< pDepthMarketData->TradingDay << ','
+			<< pDepthMarketData->UpdateTime << '.' << pDepthMarketData->UpdateMillisec << ','
+			<< pDepthMarketData->ExchangeID << ','
+			<< pDepthMarketData->InstrumentID << ','
+			<< pDepthMarketData->OpenPrice << ','
+			<< pDepthMarketData->HighestPrice << ','
+			<< pDepthMarketData->LowestPrice << ','
+			<< pDepthMarketData->ClosePrice << ','
+			<< pDepthMarketData->LastPrice << ','
+			<< pDepthMarketData->Volume << ','
+			<< pDepthMarketData->Turnover << endl;
+
+		outfile.close();
 	};
 	string FileName(CThostFtdcDepthMarketDataField* pDepthMarketData)
 	{
@@ -53,6 +65,4 @@ private:
 		string instrument = pDepthMarketData->InstrumentID;
 		return filePath + instrument + "_" + day + ".csv";
 	};
-	string lastFileName;
-	ofstream outfile;
 };
