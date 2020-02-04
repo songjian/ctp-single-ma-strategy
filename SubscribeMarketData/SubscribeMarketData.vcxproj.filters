@@ -26,9 +26,6 @@
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="MarketDataRecord.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="GetInstrumentID.h">
       <Filter>头文件</Filter>
     </ClInclude>
